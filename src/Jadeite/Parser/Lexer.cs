@@ -35,6 +35,8 @@ namespace Jadeite.Parser
             return input.Replace("\r\n", "\n");
         }
 
+        private char CurrentChar => _inputPosition < _input.Length ? _input[_inputPosition] : '\0';
+
         private static void AssertExpression(string exp)
         {
             // todo - in jade:
@@ -212,10 +214,10 @@ namespace Jadeite.Parser
                 name = name.Substring(0, name.Length - 1);
                 t = CreateToken<TagToken>(name);
                 Defer(CreateToken<ColonToken>());
-                if (_input[_inputPosition] != ' ')
+                if (CurrentChar != ' ')
                     Debug.WriteLine("Warning: space required after `:` on line {0} of jade file \"{1}\"", _lineNumber, _filename);
 
-                while (_input[_inputPosition] == ' ')
+                while (CurrentChar == ' ')
                 {
                     Consume(1);
                 }
@@ -379,8 +381,8 @@ namespace Jadeite.Parser
             Consume(match.Length - 1);
             var filter = match.Groups[1].Value;
             var attributes = match.Groups[2].Value == "(" ? Attributes() : null;
-            if (match.Groups[2].Value != " " && _input[_inputPosition] != ' ')
-                throw new JadeiteParserException(_lineNumber, "Expected space after include:filter but got '" + _input[_inputPosition] + "'");
+            if (match.Groups[2].Value != " " && CurrentChar != ' ')
+                throw new JadeiteParserException(_lineNumber, "Expected space after include:filter but got '" + CurrentChar + "'");
 
             match = s_IncludeFilteredPathRegex.Match(_input, _inputPosition);
             if (!match.Success || match.Groups[1].Value.Trim() == "")
@@ -579,7 +581,7 @@ namespace Jadeite.Parser
         private static readonly char[] s_KeyCharList = { ' ', ',', '!', '=', '\n' };
         private AttributesToken Attributes()
         {
-            if (_input[_inputPosition] != '(')
+            if (CurrentChar != '(')
                 return null;
 
             var range = BracketExpression();
@@ -739,7 +741,7 @@ namespace Jadeite.Parser
                 }
             }
 
-            if (_input[_inputPosition] == '/')
+            if (CurrentChar == '/')
             {
                 Consume(1);
                 t.SelfClosing = true;
@@ -795,11 +797,11 @@ namespace Jadeite.Parser
             _lineNumber++;
             Consume(indents + 1);
 
-            if (_input[_inputPosition] == ' ' || _input[_inputPosition] == '\t')
+            if (CurrentChar == ' ' || CurrentChar == '\t')
                 throw new JadeiteParserException(_lineNumber, "Invalid indentation, you can use tabs or spaces but not both.");
 
             // blank line
-            if (_input[_inputPosition] == '\n')
+            if (CurrentChar == '\n')
             {
                 _pipeless = false;
                 return CreateToken<NewLineToken>();
