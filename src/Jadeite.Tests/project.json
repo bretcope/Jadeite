@@ -1,0 +1,13 @@
+{
+    "version": "1.0.0-*",
+    "dependencies": {
+"Jadeite": "1.0.0-*"
+    },
+
+    "frameworks" : {
+        "aspnet50" : { 
+            "dependencies": {
+            }
+        }
+    }
+}

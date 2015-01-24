@@ -1,7 +1,8 @@
 {
     "version": "1.0.0-*",
     "dependencies": {
-        "Jadeite": "1.0.0-*"
+        "Jadeite": "1.0.0-*",
+"Jadeite.Tests": "1.0.0-*"
     },
     "commands": {
         "run": "run"

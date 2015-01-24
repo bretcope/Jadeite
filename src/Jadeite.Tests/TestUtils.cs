@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Jadeite.Parser;
 
-namespace TestConsole
+namespace Jadeite.Tests
 {
     public static class TestUtils
     {
@@ -63,37 +63,46 @@ namespace TestConsole
             Token t;
             int i = 0;
             StringBuilder dump = new StringBuilder();
-            while (true)
+            try
             {
-                t = lexer.Advance();
-                if (t.GetType() == TokenTypes.EndOfStream)
-                    break;
-
-                dump.AppendFormat("{0}: {1}\n", i, t.JadeEquivalentType);
-
-                if (t.JadeEquivalentType == "indent")
+                while (true)
                 {
-                    dump.AppendFormat("    Indents: {0}\n", ((IndentToken)t).Indents);
-                }
-                else
-                {
-                    if (!String.IsNullOrEmpty(t.Value))
+                    t = lexer.Advance();
+                    if (t.GetType() == TokenTypes.EndOfStream)
+                        break;
+
+                    dump.AppendFormat("{0}: {1}\n", i, t.JadeEquivalentType);
+
+                    if (t.JadeEquivalentType == "indent")
                     {
-                        dump.AppendFormat("    Value: \"{0}\"\n", Escape(t.Value));
+                        dump.AppendFormat("    Indents: {0}\n", ((IndentToken) t).Indents);
                     }
-
-                    if (t.JadeEquivalentType == "attrs")
+                    else
                     {
-                        var attrs = (AttributesToken)t;
-                        dump.AppendFormat("    Attributes: {0}\n", attrs.Attributes.Count);
-                        foreach (var a in attrs.Attributes)
+                        if (!String.IsNullOrEmpty(t.Value))
                         {
-                            dump.AppendFormat("        Name: \"{0}\", Value: \"{1}\", Escaped: {2}\n", Escape(a.Name), Escape(a.Value), a.Escaped ? "true" : "false");
+                            dump.AppendFormat("    Value: \"{0}\"\n", Escape(t.Value));
+                        }
+
+                        if (t.JadeEquivalentType == "attrs")
+                        {
+                            var attrs = (AttributesToken) t;
+                            dump.AppendFormat("    Attributes: {0}\n", attrs.Attributes.Count);
+                            foreach (var a in attrs.Attributes)
+                            {
+                                dump.AppendFormat("        Name: \"{0}\", Value: \"{1}\", Escaped: {2}\n",
+                                    Escape(a.Name), Escape(a.Value), a.Escaped ? "true" : "false");
+                            }
                         }
                     }
-                }
 
-                i++;
+                    i++;
+                }
+            }
+            catch (Exception)
+            {
+                Console.WriteLine(dump.ToString());
+                throw;
             }
 
             return dump.ToString().Trim();
