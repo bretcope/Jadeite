@@ -10,5 +10,10 @@ namespace Jadeite
         {
             LineNumber = lineNumber;
         }
+
+        public JadeiteParserException(string message, Exception innerException = null) : base(message, innerException)
+        {
+            LineNumber = -1;
+        }
     }
 }

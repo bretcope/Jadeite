@@ -67,9 +67,15 @@
     <Compile Include="Exceptions.cs" />
     <Compile Include="Parser\CharacterParser.cs" />
     <Compile Include="Parser\Lexer.cs" />
+    <Compile Include="Parser\Nodes\AttributesNode.cs" />
+    <Compile Include="Parser\Nodes\BlockNode.cs" />
+    <Compile Include="Parser\Nodes\MixinNode.cs" />
+    <Compile Include="Parser\Nodes\Node.cs" />
+    <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

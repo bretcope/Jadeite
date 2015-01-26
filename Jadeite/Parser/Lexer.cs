@@ -21,6 +21,8 @@ namespace Jadeite.Parser
         private bool _pipeless = false;
         private int _inputPosition = 0;
 
+        public int LineNumber => _lineNumber;
+
         public Lexer(string input, string filename)
         {
             _input = NormalizeInput(input);
@@ -109,7 +111,7 @@ namespace Jadeite.Parser
         }
 
         // Lookahead `n` tokens.
-        private Token LookAhead(int n)
+        public Token LookAhead(int n)
         {
             var fetch = n - _stash.Count;
             while (fetch-- > 0)
