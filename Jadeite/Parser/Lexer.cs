@@ -691,7 +691,7 @@ namespace Jadeite.Parser
 
                     key = key.Trim();
                     key = s_StartAndEndQuotesRegex.Replace(key, "");
-                    t.Attributes.Add(new AttributeItem { Name = key, Value = val, Escaped = escapedAttr });
+                    t.Attributes.Add(new AttributeItem { Name = key, Value = val == "" ? "true" : val, Escaped = escapedAttr });
 
                     key = "";
                     val = "";
