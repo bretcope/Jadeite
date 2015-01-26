@@ -39,10 +39,9 @@ namespace Jadeite.Tests
             throw new Exception("Unable to determine the root of the Jadeite solution.");
         }
 
-        public static string GetExample(string filename)
+        public static string[] GetExampleFiles()
         {
-            filename = filename.Replace('/', Path.DirectorySeparatorChar);
-            return File.ReadAllText(Path.Combine(ExamplesRoot, filename));
+            return Directory.GetFiles(ExamplesRoot, "*.jade");
         }
 
         public static string GetNodeResult(string script, string args)
@@ -55,7 +54,9 @@ namespace Jadeite.Tests
                     Arguments = Path.Combine(NodeRoot, script) + " " + args,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
-                    UseShellExecute = false
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true
                 }
             };
 
@@ -77,7 +78,7 @@ namespace Jadeite.Tests
 
         public static string DumpCSharpLexer(string filename)
         {
-            var jade = GetExample(filename);
+            var jade = File.ReadAllText(filename);
 
             var lexer = new Lexer(jade, filename);
             Token t;
@@ -130,7 +131,7 @@ namespace Jadeite.Tests
 
         public static string DumpNodeLexer(string filename)
         {
-            return GetNodeResult("LexerDump.js", filename).Trim();
+            return GetNodeResult("LexerDump.js", "\"" + filename + "\"").Trim();
         }
     }
 }

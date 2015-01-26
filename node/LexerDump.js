@@ -1,7 +1,7 @@
 "use strict";
 
 var jade = require('./jade');
-var path = __dirname + '/jade/examples/' + process.argv[2];
+var path = process.argv[2];
 var str = require('fs').readFileSync(path, 'utf8');
 
 str = str.replace(/^\uFEFF/, '');
