@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Jadeite.Parser
 {
@@ -39,8 +41,28 @@ namespace Jadeite.Parser
 
         private static void AssertExpression(string exp)
         {
-            // todo - in jade:
-            //this verifies that a JavaScript expression is valid
+            //this verifies that a C# expression is valid
+            ValidateSyntaxNode(SyntaxFactory.ParseExpression(exp));
+        }
+
+        private static void ValidateSyntaxNode(SyntaxNode node)
+        {
+            if (node.ContainsSkippedText)
+                throw new Exception("Skipped text");
+
+            foreach (var n in node.ChildNodes())
+            {
+                if (n.ContainsSkippedText)
+                    throw new Exception("Skipped text");
+
+                ValidateSyntaxNode(n);
+            }
+
+            foreach (var t in node.ChildTokens())
+            {
+                if (t.IsMissing)
+                    throw new Exception("Missing Token");
+            }
         }
 
         private static void AssertNestingCorrect(string exp)

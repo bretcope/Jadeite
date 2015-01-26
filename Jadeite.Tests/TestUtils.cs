@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using Jadeite.Parser;
 
@@ -8,21 +9,40 @@ namespace Jadeite.Tests
 {
     public static class TestUtils
     {
-        public static readonly string NodeRoot = "../../node/";
-        public static readonly string JadeRoot = NodeRoot + "jade/";
-        public static readonly string ExamplesRoot = JadeRoot + "examples/";
+        public static readonly string JadeiteRoot;
+        public static readonly string NodeRoot;
+        public static readonly string JadeRoot;
+        public static readonly string ExamplesRoot;
 
         static TestUtils()
         {
-            NodeRoot = NodeRoot.Replace('/', Path.DirectorySeparatorChar);
-            JadeRoot = JadeRoot.Replace('/', Path.DirectorySeparatorChar);
-            ExamplesRoot = ExamplesRoot.Replace('/', Path.DirectorySeparatorChar);
+            JadeiteRoot = FindSolutionRoot();
+
+            NodeRoot = Path.Combine(JadeiteRoot, "node");
+            JadeRoot = Path.Combine(NodeRoot, "jade");
+            ExamplesRoot = Path.Combine(JadeRoot, "examples");
+        }
+
+        private static string FindSolutionRoot()
+        {
+            // try to find Jadeite root (assume it's going to be 
+            var dir = new DirectoryInfo(Directory.GetCurrentDirectory());
+            do
+            {
+                if (File.Exists(Path.Combine(dir.FullName, "Jadeite.sln")))
+                {
+                    return dir.FullName;
+                }
+            }
+            while ((dir = dir.Parent) != null);
+
+            throw new Exception("Unable to determine the root of the Jadeite solution.");
         }
 
         public static string GetExample(string filename)
         {
-            filename = filename.Replace('/', Path.PathSeparator);
-            return File.ReadAllText(ExamplesRoot + filename);
+            filename = filename.Replace('/', Path.DirectorySeparatorChar);
+            return File.ReadAllText(Path.Combine(ExamplesRoot, filename));
         }
 
         public static string GetNodeResult(string script, string args)
@@ -32,7 +52,7 @@ namespace Jadeite.Tests
                 StartInfo =
                 {
                     FileName = "node",
-                    Arguments = NodeRoot + script + " " + args,
+                    Arguments = Path.Combine(NodeRoot, script) + " " + args,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     UseShellExecute = false
