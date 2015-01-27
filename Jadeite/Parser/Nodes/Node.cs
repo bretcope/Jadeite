@@ -6,10 +6,11 @@ namespace Jadeite.Parser.Nodes
         public abstract string Type { get; }
         public int LineNumber { get; set; }
         public string FileName { get; set; }
+        public Node Block { get; set; }
 
         public virtual bool IsBlock => false;
         public virtual bool IsText => false;
         public virtual bool IsTextOnly => false;
-        public virtual bool IsYield => false;
+        public virtual bool IsYield { get; set; }
     }
 }

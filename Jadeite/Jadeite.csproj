@@ -68,11 +68,23 @@
     <Compile Include="Parser\CharacterParser.cs" />
     <Compile Include="Parser\Lexer.cs" />
     <Compile Include="Parser\Nodes\AttributesNode.cs" />
+    <Compile Include="Parser\Nodes\BlockComment.cs" />
     <Compile Include="Parser\Nodes\BlockNode.cs" />
+    <Compile Include="Parser\Nodes\CaseNode.cs" />
+    <Compile Include="Parser\Nodes\CodeNode.cs" />
+    <Compile Include="Parser\Nodes\CommentNode.cs" />
+    <Compile Include="Parser\Nodes\DocTypeNode.cs" />
+    <Compile Include="Parser\Nodes\EachNode.cs" />
+    <Compile Include="Parser\Nodes\FilterNode.cs" />
+    <Compile Include="Parser\Nodes\LiteralNode.cs" />
+    <Compile Include="Parser\Nodes\MixinBlockNode.cs" />
     <Compile Include="Parser\Nodes\MixinNode.cs" />
     <Compile Include="Parser\Nodes\Node.cs" />
+    <Compile Include="Parser\Nodes\TagNode.cs" />
+    <Compile Include="Parser\Nodes\TextNode.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Token.cs" />
+    <Compile Include="Parser\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

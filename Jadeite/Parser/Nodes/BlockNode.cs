@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 
 namespace Jadeite.Parser.Nodes
@@ -9,7 +10,9 @@ namespace Jadeite.Parser.Nodes
 
         public override string Type => "Block";
         public override bool IsBlock => true;
+        public bool IsSubBlock { get; set; }
         public IReadOnlyList<Node> Nodes { get; }
+        public string Name { get; set; }
 
         public bool IsEmpty => _nodes.Count == 0;
 
@@ -42,6 +45,7 @@ namespace Jadeite.Parser.Nodes
                 //if ()
             }
 
+            throw new NotImplementedException();
             return ret;
         }
     }

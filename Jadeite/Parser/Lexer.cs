@@ -104,8 +104,13 @@ namespace Jadeite.Parser
             return t;
         }
 
+        public void DeferDiv()
+        {
+            Defer(CreateToken<TagToken>("div"));
+        }
+
         // Defer the given `tok`.
-        private void Defer(Token t)
+        public void Defer(Token t)
         {
             _deferredTokens.Enqueue(t);
         }
