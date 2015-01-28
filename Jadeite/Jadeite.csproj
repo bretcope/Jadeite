@@ -68,7 +68,7 @@
     <Compile Include="Parser\CharacterParser.cs" />
     <Compile Include="Parser\Lexer.cs" />
     <Compile Include="Parser\Nodes\AttributesNode.cs" />
-    <Compile Include="Parser\Nodes\BlockComment.cs" />
+    <Compile Include="Parser\Nodes\BlockCommentNode.cs" />
     <Compile Include="Parser\Nodes\BlockNode.cs" />
     <Compile Include="Parser\Nodes\CaseNode.cs" />
     <Compile Include="Parser\Nodes\CodeNode.cs" />
@@ -82,6 +82,7 @@
     <Compile Include="Parser\Nodes\Node.cs" />
     <Compile Include="Parser\Nodes\TagNode.cs" />
     <Compile Include="Parser\Nodes\TextNode.cs" />
+    <Compile Include="Parser\Nodes\WhenNode.cs" />
     <Compile Include="Parser\Parser.cs" />
     <Compile Include="Parser\Token.cs" />
     <Compile Include="Parser\Utils.cs" />

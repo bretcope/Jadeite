@@ -7,6 +7,7 @@ namespace Jadeite.Parser.Nodes
         public int LineNumber { get; set; }
         public string FileName { get; set; }
         public Node Block { get; set; }
+        public bool Debug { get; set; }
 
         public virtual bool IsBlock => false;
         public virtual bool IsText => false;

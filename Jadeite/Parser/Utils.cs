@@ -46,5 +46,15 @@ namespace Jadeite.Parser
             if (after != null)
                 after(ast);
         }
+
+//        public static string PathJoin(params string[] parts)
+//        {
+//            //
+//        }
+//
+//        public static string PathNormalizeDelimiters(string path)
+//        {
+//            //
+//        }
     }
 }

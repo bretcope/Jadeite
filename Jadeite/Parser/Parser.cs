@@ -10,7 +10,7 @@ namespace Jadeite.Parser
 {
     public class ParserOptions
     {
-        //
+        public string BaseDir { get; set; }
     }
 
     public class Parser
@@ -210,7 +210,7 @@ namespace Jadeite.Parser
 
         private Node ParseBlockExpansion()
         {
-            if (PeekType() == typeof(ColonToken))
+            if (PeekType() == TokenTypes.Colon)
             {
                 Advance();
                 return new BlockNode(ParseExpression());
@@ -221,45 +221,149 @@ namespace Jadeite.Parser
 
         private Node ParseCase()
         {
-            throw new NotImplementedException();
+            var node = new CaseNode(Expect<CaseToken>().Value);
+            node.LineNumber = Line();
+
+            var block = new BlockNode();
+            block.LineNumber = Line();
+            block.FileName = _filename;
+            Expect<IndentToken>();
+            while(PeekType() != TokenTypes.Outdent)
+            {
+                if (PeekType() == TokenTypes.Comment || PeekType() == TokenTypes.NewLine)
+                {
+                    Advance();
+                }
+                else if (PeekType() == TokenTypes.When)
+                {
+                    block.PushNode(ParseWhen());
+                }
+                else if (PeekType() == TokenTypes.Default)
+                {
+                    block.PushNode(ParseDefault());
+                }
+                else
+                {
+                    throw new JadeiteParserException("Unexpected token '" + PeekType().Name + "' expected 'when', 'default', or a new line.");
+                }
+            }
+
+            Expect<OutdentToken>();
+
+            node.Block = block;
+            return node;
         }
 
         private Node ParseWhen()
         {
-            throw new NotImplementedException();
+            var val = Expect<WhenToken>().Value;
+            if (PeekType() != TokenTypes.NewLine)
+                return new WhenNode(val, ParseBlockExpansion());
+
+            return new WhenNode(val);
         }
 
         private Node ParseDefault()
         {
-            throw new NotImplementedException();
+            Expect<DefaultToken>();
+            return new WhenNode("default", ParseBlockExpansion());
         }
 
         private Node ParseCode()
         {
-            throw new NotImplementedException();
+            var tok = Expect<CodeToken>();
+            var node = new CodeNode(tok.Value, tok.Buffer, tok.Escape);
+            node.LineNumber = Line();
+
+            // throw an error if an else does not have an if
+            if (tok.IsElse && !tok.HasIf)
+                throw new JadeiteParserException("Unexpected else without if");
+
+            // handle block
+            var hasBlock = PeekType() == TokenTypes.Indent;
+            if (hasBlock)
+                node.Block = Block();
+
+            // handle missing block
+            if (tok.RequiresBlock && !hasBlock)
+                node.Block = new BlockNode();
+
+            // mark presense of if for future elses
+            if (tok.IsIf)
+            {
+                var code = Peek() as CodeToken;
+                if (code == null && PeekType() == TokenTypes.NewLine)
+                    code = LookAhead(2) as CodeToken;
+
+                if (code != null && code.IsElse)
+                    code.HasIf = true;
+            }
+
+            return node;
         }
 
         private Node ParseComment()
         {
-            throw new NotImplementedException();
+            var tok = Expect<CommentToken>();
+            Node node;
+
+            var block = ParseTextBlock();
+            if (block != null)
+                node = new BlockCommentNode(tok.Value, block, tok.Buffer);
+            else
+                node = new CommentNode(tok.Value, tok.Buffer);
+
+            node.LineNumber = Line();
+            return node;
         }
 
         private Node ParseDocType()
         {
-            throw new NotImplementedException();
+            var node = new DocTypeNode(Expect<DocTypeToken>().Value);
+            node.LineNumber = Line();
+            return node;
         }
 
         private Node ParseFilter()
         {
-            throw new NotImplementedException();
+            var tok = Expect<FilterToken>();
+            var attributes = Accept<AttributesToken>();
+
+            var block = ParseTextBlock() ?? new BlockNode();
+            var node = new FilterNode(tok.Value, block, attributes?.Attributes);
+            node.LineNumber = Line();
+            return node;
         }
 
         private Node ParseEach()
         {
-            throw new NotImplementedException();
+            var tok = Expect<EachToken>();
+            var node = new EachNode(tok.Code, tok.Value, tok.Key);
+            node.LineNumber = Line();
+            node.Block = Block();
+
+            var code = Peek() as CodeToken;
+            if (code != null && code.Value == "else")
+            {
+                Advance();
+                node.Alternative = Block();
+            }
+
+            return node;
         }
 
-        // ResolvePath
+        private string ResolvePath(string path, string purpose)
+        {
+            if (!path.StartsWith("/") && String.IsNullOrEmpty(_filename))
+                throw new JadeiteParserException("The filename option is required to use '" + purpose + "' with relative paths.");
+
+            if (path.StartsWith("/") && String.IsNullOrEmpty(_options.BaseDir))
+                throw new JadeiteParserException("The ParserOptions.BaseDir option is required to use '" + purpose + "' with absolute paths.");
+
+            //
+
+            throw new NotImplementedException();
+        }
 
         private Node ParseExtends()
         {
@@ -339,12 +443,12 @@ namespace Jadeite.Parser
             return list;
         }
 
-        private Node ParseTextBlock()
+        private BlockNode ParseTextBlock()
         {
             throw new NotImplementedException();
         }
 
-        private Node Block()
+        private BlockNode Block()
         {
             throw new NotImplementedException();
         }

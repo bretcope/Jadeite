@@ -82,6 +82,7 @@ namespace Jadeite.Parser
         public bool IsElse { get; set; }
         public bool Escape { get; set; }
         public bool Buffer { get; set; }
+        public bool HasIf { get; set; }
     }
 
     public class EachToken : Token
