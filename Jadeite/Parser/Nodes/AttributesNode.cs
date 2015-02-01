@@ -11,6 +11,7 @@ namespace Jadeite.Parser.Nodes
         public override string Type => "Attrs";
         public IReadOnlyList<AttributeItem> Attributes { get; }
         public IReadOnlyList<AttributesBlockToken> AttributesBlocks { get; }
+        public bool SelfClosing { get; set; }
 
         public AttributesNode()
         {

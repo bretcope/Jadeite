@@ -7,7 +7,6 @@ namespace Jadeite.Parser.Nodes
 
         public string Name { get; }
         public string Args { get; }
-        public BlockNode Block { get; }
         public bool Call { get; }
 
         public MixinNode(string name, string args, BlockNode block, bool call)

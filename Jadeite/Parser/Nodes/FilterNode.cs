@@ -15,4 +15,5 @@ namespace Jadeite.Parser.Nodes
             Block = block;
             Attributes = attributes;
         }
+    }
 }

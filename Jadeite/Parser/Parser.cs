@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -22,7 +23,7 @@ namespace Jadeite.Parser
         private readonly Lexer _lexer;
         private readonly ParserOptions _options;
         private Dictionary<string, BlockNode> _blocks = new Dictionary<string, BlockNode>(); 
-        private readonly Dictionary<string, MixinNode> _mixins = new Dictionary<string, MixinNode>();
+        private Dictionary<string, MixinNode> _mixins = new Dictionary<string, MixinNode>();
         private Stack<Parser> _contexts = new Stack<Parser>();
         private int _inMixin = 0;
         private List<string> _dependencies = new List<string>();
@@ -212,7 +213,7 @@ namespace Jadeite.Parser
             return node;
         }
 
-        private Node ParseBlockExpansion()
+        private BlockNode ParseBlockExpansion()
         {
             if (PeekType() == TokenTypes.Colon)
             {
@@ -273,7 +274,7 @@ namespace Jadeite.Parser
             return new WhenNode("default", ParseBlockExpansion());
         }
 
-        private Node ParseCode()
+        private CodeNode ParseCode()
         {
             var tok = Expect<CodeToken>();
             var node = new CodeNode(tok.Value, tok.Buffer, tok.Escape);
@@ -366,7 +367,7 @@ namespace Jadeite.Parser
 
             path = Utils.PathJoin(path[0] == '/' ? _options.BaseDir : Utils.PathDirName(_filename), path);
 
-            if (!Utils.PathBaseName(path).EndsWith(".jade"))
+            if (!Utils.PathBaseName(path).Contains("."))
                 path += ".jade";
 
             return path;
@@ -375,6 +376,8 @@ namespace Jadeite.Parser
         private Node ParseExtends()
         {
             var path = ResolvePath(Expect<ExtendsToken>().Value.Trim(), "extends");
+            if (!path.EndsWith(".jade"))
+                path += ".jade";
 
             _dependencies.Add(path);
             var str = File.ReadAllText(path, new UTF8Encoding(false));
@@ -452,17 +455,79 @@ namespace Jadeite.Parser
 
         private Node ParseInclude()
         {
-            throw new NotImplementedException();
+            var tok = Expect<IncludeToken>();
+
+            var path = ResolvePath(tok.Value.Trim(), "include");
+            _dependencies.Add(path);
+
+            string str = File.ReadAllText(path, new UTF8Encoding(false));
+
+            if (!String.IsNullOrEmpty(tok.Filter))
+            {
+                throw new NotImplementedException("Filters have not been implemented in Jadeite yet.");
+            }
+
+            // non-jade
+            if (!path.EndsWith(".jade"))
+            {
+                str = str.Replace("\r", "");
+                return new LiteralNode(str);
+            }
+
+            var parser = new Parser(str, path, _options);
+            parser._dependencies = _dependencies;
+
+            parser._blocks = new Dictionary<string, BlockNode>(_blocks);
+            parser.IsIncluded = true;
+
+            parser._mixins = _mixins;
+
+            _contexts.Push(parser);
+            var ast = parser.Parse();
+            _contexts.Pop();
+            ast.FileName = path;
+
+            if (PeekType() == TokenTypes.Indent)
+                ast.IncludeBlock().PushNode(Block());
+
+            return ast;
         }
 
-        private Node ParseCall()
+        private MixinNode ParseCall()
         {
-            throw new NotImplementedException();
+            var tok = Expect<CallToken>();
+            var mixin = new MixinNode(tok.Value, tok.Arguments, new BlockNode(), true);
+
+            Tag(mixin);
+            if (mixin.Code != null)
+            {
+                mixin.Block.PushNode(mixin.Code);
+                mixin.Code = null;
+            }
+
+            if (mixin.Block.IsEmpty)
+                mixin.Block = null;
+
+            return mixin;
         }
 
-        private Node ParseMixin()
+        private MixinNode ParseMixin()
         {
-            throw new NotImplementedException();
+            var tok = Expect<MixinToken>();
+            var name = tok.Value;
+            var args = tok.Arguments;
+            
+            if (PeekType() == TokenTypes.Indent) // definition
+            {
+                _inMixin++;
+                var mixin = new MixinNode(name, args, Block(), false);
+                _mixins[name] = mixin;
+                _inMixin--;
+                return mixin;
+            }
+            
+            // call
+            return new MixinNode(name, args, null, true);
         }
 
         private static readonly Regex s_InlineTagsRegex = new Regex(@"(\\)?#\[((?:.|\n)*)$");
@@ -515,27 +580,148 @@ namespace Jadeite.Parser
 
         private BlockNode ParseTextBlock()
         {
-            throw new NotImplementedException();
+            var block = new BlockNode();
+            block.LineNumber = Line();
+
+            var body = Accept<PipelessTextToken>();
+            if (body == null)
+                return null;
+
+            block.Nodes = body.Lines.Select(ParseInlineTagsInText).SelectMany(n => n).ToList();
+            return block;
         }
 
         private BlockNode Block()
         {
-            throw new NotImplementedException();
+            var block = new BlockNode();
+            block.LineNumber = Line();
+            block.FileName = _filename;
+
+            Expect<IndentToken>();
+            while (PeekType() != TokenTypes.Outdent)
+            {
+                if (PeekType() == TokenTypes.NewLine)
+                {
+                    Advance();
+                }
+                else
+                {
+                    var expr = ParseExpression();
+                    expr.FileName = _filename;
+                    block.PushNode(expr);
+                }
+            }
+
+            Expect<OutdentToken>();
+            return block;
         }
 
         private Node ParseInterpolation()
         {
-            throw new NotImplementedException();
+            var tok = Expect<InterpolationToken>();
+            var tag = new TagNode(tok.Value);
+            tag.Buffer = true;
+            return Tag(tag);
         }
 
         private Node ParseTag()
         {
-            throw new NotImplementedException();
+            var tok = Expect<TagToken>();
+            var tag = new TagNode(tok.Value);
+            tag.SelfClosing = tok.SelfClosing;
+            return Tag(tag);
         }
 
-        private Node Tag()
+        private AttributesNode Tag(AttributesNode tag)
         {
-            throw new NotImplementedException();
+            tag.LineNumber = Line();
+
+            Type peekType;
+            var seenAttrs = false;
+            // (attrs | class | id)*
+            while (true)
+            {
+                peekType = PeekType();
+                if (peekType == TokenTypes.Id || peekType == TokenTypes.Class)
+                {
+                    var tok = Advance();
+                    tag.SetAttribute(new AttributeItem() { Name = tok.JadeEquivalentType, Value = '"' + tok.Value + '"' });
+                }
+                else if (peekType == TokenTypes.Attributes)
+                {
+                    if (seenAttrs)
+                        Debug.WriteLine(_filename + ", line " + Peek().LineNumber + ":\nYou should not have jade tags with multiple attributes.");
+
+                    seenAttrs = true;
+                    var tok = Expect<AttributesToken>();
+
+                    if (tok.SelfClosing)
+                        tag.SelfClosing = true;
+
+                    foreach (var a in tok.Attributes)
+                    {
+                        tag.SetAttribute(a);
+                    }
+                }
+                else if (peekType == TokenTypes.AttributesBlock)
+                {
+                    tag.AddAttributes(Expect<AttributesBlockToken>());
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            // check immediate '.'
+            if (PeekType() == TokenTypes.Dot)
+            {
+                tag.IsTextOnly = true;
+                Advance();
+            }
+
+            // (text | code | ':')?
+            peekType = PeekType();
+            if (peekType == TokenTypes.Text)
+            {
+                tag.Block.PushNode(ParseText());
+            }
+            else if (peekType == TokenTypes.Code)
+            {
+                tag.Code = ParseCode();
+            }
+            else if (peekType == TokenTypes.Colon)
+            {
+                Advance();
+                tag.Block = new BlockNode(ParseExpression());
+            }
+            else if (peekType != TokenTypes.NewLine
+                && peekType != TokenTypes.Indent
+                && peekType != TokenTypes.Outdent
+                && peekType != TokenTypes.EndOfStream
+                && peekType != TokenTypes.PipelessText)
+            {
+                throw new JadeiteParserException("Unexpected token `" + peekType.Name + "` expected `text`, `code`, `:`, `newline` or `eos`");
+            }
+
+            while (PeekType() == TokenTypes.NewLine)
+            {
+                Advance();
+            }
+
+            // block?
+            if (tag.IsTextOnly)
+            {
+                tag.Block = ParseTextBlock() ?? new BlockNode();
+            }
+            else if (PeekType() == TokenTypes.Indent)
+            {
+                var block = Block();
+                foreach (var n in block.Nodes)
+                    tag.Block.PushNode(n);
+            }
+
+            return tag;
         }
     }
 }

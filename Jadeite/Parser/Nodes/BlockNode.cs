@@ -8,10 +8,9 @@ namespace Jadeite.Parser.Nodes
     {
 
         public override string Type => "Block";
-        public override bool IsBlock => true;
         public bool IsSubBlock { get; set; }
         public string Name { get; set; }
-        public List<Node> Nodes { get; set; } = new List<Node>();
+        public IList<Node> Nodes { get; set; } = new List<Node>();
 
         public bool IsEmpty => Nodes.Count == 0;
 
@@ -19,6 +18,7 @@ namespace Jadeite.Parser.Nodes
         public List<Node> Appended { get; set; } = new List<Node>();
         public List<Node> Prepended { get; set; } = new List<Node>();
         public BlockMode Mode { get; set; }
+        public bool IsYield { get; set; }
 
         public BlockNode(Node node = null)
         {
@@ -39,16 +39,31 @@ namespace Jadeite.Parser.Nodes
         }
 
         // Return the "last" block, or the first `yield` node.
-        public Node IncludeBlock()
+        public BlockNode IncludeBlock()
         {
             var ret = this;
 
             foreach (var node in Nodes)
             {
-                //if ()
+                var block = node as BlockNode;
+                if (block != null)
+                {
+                    if (block.IsYield)
+                        return block;
+                    if (block.IsTextOnly)
+                        continue;
+
+                    ret = block.IncludeBlock();
+                }
+                else if (node.Block != null && !node.Block.IsEmpty)
+                {
+                    ret = node.Block.IncludeBlock();
+                }
+
+                if (ret.IsYield)
+                    return ret;
             }
 
-            throw new NotImplementedException();
             return ret;
         }
     }

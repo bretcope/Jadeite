@@ -5,7 +5,7 @@
         public override string Type => "When";
         public string Expression { get; }
 
-        public WhenNode(string expression, Node block = null)
+        public WhenNode(string expression, BlockNode block = null)
         {
             Expression = expression;
             Block = block;

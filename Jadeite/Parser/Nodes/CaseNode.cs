@@ -7,7 +7,7 @@ namespace Jadeite.Parser.Nodes
 
         public string Expression { get; }
 
-        public CaseNode(string expression, Node block = null)
+        public CaseNode(string expression, BlockNode block = null)
         {
             Expression = expression;
             Block = block;
