@@ -6,33 +6,36 @@ namespace Jadeite.Parser.Nodes
 {
     public class BlockNode : Node
     {
-        private readonly List<Node> _nodes = new List<Node>();
 
         public override string Type => "Block";
         public override bool IsBlock => true;
         public bool IsSubBlock { get; set; }
-        public IReadOnlyList<Node> Nodes { get; }
         public string Name { get; set; }
+        public List<Node> Nodes { get; set; } = new List<Node>();
 
-        public bool IsEmpty => _nodes.Count == 0;
+        public bool IsEmpty => Nodes.Count == 0;
+
+        internal Parser Parser { get; set; }
+        public List<Node> Appended { get; set; } = new List<Node>();
+        public List<Node> Prepended { get; set; } = new List<Node>();
+        public BlockMode Mode { get; set; }
 
         public BlockNode(Node node = null)
         {
-            Nodes = _nodes.AsReadOnly();
             if (node != null)
-                _nodes.Add(node);
+                Nodes.Add(node);
         }
 
         public int PushNode(Node node)
         {
-            _nodes.Add(node);
-            return _nodes.Count;
+            Nodes.Add(node);
+            return Nodes.Count;
         }
 
         public int UnshiftNode(Node node)
         {
-            _nodes.Insert(0, node);
-            return _nodes.Count;
+            Nodes.Insert(0, node);
+            return Nodes.Count;
         }
 
         // Return the "last" block, or the first `yield` node.
@@ -40,7 +43,7 @@ namespace Jadeite.Parser.Nodes
         {
             var ret = this;
 
-            foreach (var node in _nodes)
+            foreach (var node in Nodes)
             {
                 //if ()
             }

@@ -2,7 +2,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using Jadeite.Parser.Nodes;
 
@@ -19,15 +21,17 @@ namespace Jadeite.Parser
         private readonly string _filename;
         private readonly Lexer _lexer;
         private readonly ParserOptions _options;
-        private readonly Dictionary<string, BlockNode> _blocks = new Dictionary<string, BlockNode>(); 
+        private Dictionary<string, BlockNode> _blocks = new Dictionary<string, BlockNode>(); 
         private readonly Dictionary<string, MixinNode> _mixins = new Dictionary<string, MixinNode>();
-        private readonly Stack<Parser> _contexts = new Stack<Parser>();
+        private Stack<Parser> _contexts = new Stack<Parser>();
         private int _inMixin = 0;
-        //Dependencies
+        private List<string> _dependencies = new List<string>();
         private int _inBlock = 0;
         private Parser _extendingParser;
 
         private bool IsIncluded { get; set; }
+
+        public IReadOnlyList<string> Dependencies => _dependencies.AsReadOnly();
 
         public Parser(string str, string filename, ParserOptions options)
         {
@@ -360,24 +364,90 @@ namespace Jadeite.Parser
             if (path.StartsWith("/") && String.IsNullOrEmpty(_options.BaseDir))
                 throw new JadeiteParserException("The ParserOptions.BaseDir option is required to use '" + purpose + "' with absolute paths.");
 
-            //
+            path = Utils.PathJoin(path[0] == '/' ? _options.BaseDir : Utils.PathDirName(_filename), path);
 
-            throw new NotImplementedException();
+            if (!Utils.PathBaseName(path).EndsWith(".jade"))
+                path += ".jade";
+
+            return path;
         }
 
         private Node ParseExtends()
         {
-            throw new NotImplementedException();
+            var path = ResolvePath(Expect<ExtendsToken>().Value.Trim(), "extends");
+
+            _dependencies.Add(path);
+            var str = File.ReadAllText(path, new UTF8Encoding(false));
+            var parser = new Parser(str, path, _options);
+
+            parser._dependencies = _dependencies;
+            parser._blocks = _blocks;
+            parser.IsIncluded = IsIncluded;
+            parser._contexts = _contexts;
+            parser._extendingParser = _extendingParser;
+
+            // todo: null node
+            return new LiteralNode("");
         }
 
-        private Node ParseBlock()
+        private BlockNode ParseBlock()
         {
-            throw new NotImplementedException();
+            var tok = Expect<BlockToken>();
+
+            _inBlock++;
+            var block = PeekType() == TokenTypes.Indent ? Block() : new BlockNode(new LiteralNode(""));
+            _inBlock--;
+            block.Name = tok.Value.Trim();
+            block.LineNumber = tok.LineNumber;
+
+            IEnumerable<Node> allNodes;
+            BlockNode prev = null;
+            if (_blocks.TryGetValue(block.Name, out prev))
+            {
+                if (prev.Mode == BlockMode.Replace)
+                    return prev;
+
+                allNodes = prev.Prepended.Concat(block.Nodes).Concat(prev.Appended);
+            }
+            else
+            {
+                prev = new BlockNode();
+                allNodes = block.Nodes;
+            }
+
+            switch (tok.Mode)
+            {
+                case BlockMode.Append:
+                    prev.Appended = prev.Parser == this ?
+                        prev.Appended.Concat(block.Nodes).ToList() :
+                        block.Nodes.Concat(prev.Appended).ToList();
+                    break;
+                case BlockMode.Prepend:
+                    prev.Prepended = prev.Parser == this ?
+                        block.Nodes.Concat(prev.Prepended).ToList() :
+                        prev.Prepended.Concat(block.Nodes).ToList();
+                    break;
+            }
+
+            block.Nodes = allNodes.ToList();
+            block.Appended = prev.Appended;
+            block.Prepended = prev.Prepended;
+            block.Mode = tok.Mode;
+            block.Parser = this;
+
+            block.IsSubBlock = _inBlock > 0;
+
+            _blocks[block.Name] = block;
+            return block;
         }
 
-        private Node ParseMixinBlock()
+        private MixinBlockNode ParseMixinBlock()
         {
-            throw new NotImplementedException();
+            Expect<MixinBlockToken>();
+            if (_inMixin == 0)
+                throw new JadeiteParserException("Anonymous blocks are not allowed unless they are part of a mixin.");
+
+            return new MixinBlockNode();
         }
 
         private Node ParseInclude()

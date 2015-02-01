@@ -2,6 +2,13 @@
 {
     public class LiteralNode : Node
     {
-         public override string Type => "Literal";
+        public override string Type => "Literal";
+
+        public string Value { get; }
+
+        public LiteralNode(string value)
+        {
+            Value = value;
+        }
     }
 }
