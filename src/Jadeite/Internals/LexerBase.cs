@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Jadeite.Internals
 {
@@ -10,7 +11,15 @@ namespace Jadeite.Internals
             Header,
             Document,
             TagInterpolation,
+            Code,
             PlainTextBlock,
+        }
+
+        protected enum IndentMode
+        {
+            Unknown,
+            Tabs,
+            Spaces,
         }
 
         internal const char INVALID_CHAR = char.MaxValue;
@@ -19,13 +28,14 @@ namespace Jadeite.Internals
         protected int _line = 1;
         protected int _column = 1;
         protected int _length;
-        protected bool _indentDiscovered;
-        protected string _indentString;
+        protected IndentMode _indentMode;
+        protected int _indentCharCount;
         protected int _indentLevel;
-        protected string _leadingTrivia = "";
+        protected string _trivia = "";
 
         private Queue<Token> _tokenQueue = new Queue<Token>();
         private Stack<LexerContext> _contextStack = new Stack<LexerContext>();
+        protected int PlainTextIndentLevel { get; private set; }
 
         public string Input { get; }
 
@@ -69,6 +79,9 @@ namespace Jadeite.Internals
         protected void EnterContext(LexerContext context)
         {
             _contextStack.Push(context);
+
+            if (context == LexerContext.PlainTextBlock)
+                PlainTextIndentLevel = _indentLevel + 1;
         }
 
         protected void ExitContext()
@@ -79,9 +92,16 @@ namespace Jadeite.Internals
             _contextStack.Pop();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected char CharAt(int index)
+        {
+            return index < _length ? Input[index] : INVALID_CHAR;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected char CurrentCharacter()
         {
-            return _index < _length ? Input[_index] : INVALID_CHAR;
+            return CharAt(_index);
         }
 
         protected char PeekCharacter()
@@ -102,7 +122,7 @@ namespace Jadeite.Internals
         }
 
         // a quick way to get case-insensitive comparison (prefix must be lowercase)
-        protected bool IsNextText(string lowerCasePrefix, bool requireTrailingWordBoundary = false)
+        protected bool IsNextText(string lowerCasePrefix, bool requireWordBoundary)
         {
             if (lowerCasePrefix.Length > _length - _index)
                 return false;
@@ -122,7 +142,7 @@ namespace Jadeite.Internals
                 return false;
             }
 
-            if (requireTrailingWordBoundary)
+            if (requireWordBoundary)
             {
                 if (ii == _length)
                     return true;
@@ -134,7 +154,11 @@ namespace Jadeite.Internals
             return true;
         }
 
-        protected void ConsumeLeadingTrivia()
+        /// <summary>
+        /// Consumes any spaces or tabs starting at the current index.
+        /// </summary>
+        /// <returns>True if any trivia was consumed.</returns>
+        protected bool ConsumeWhiteSpaceAsTrivia()
         {
             var end = _index;
             while (end < _length)
@@ -148,9 +172,34 @@ namespace Jadeite.Internals
 
             if (end > _index)
             {
-                _leadingTrivia += Input.Substring(_index, end - _index);
+                var sub = Input.Substring(_index, end - _index);
+                _trivia += sub;
                 _index = end;
+
+                return true;
             }
+
+            return false;
+        }
+
+        protected void ConsumeLeadingTrivia(int length)
+        {
+            ConsumeTrivia(length);
+        }
+
+        protected void ConsumeTrailingTrivia(int length)
+        {
+            ConsumeTrivia(length);
+        }
+
+        private void ConsumeTrivia(int length)
+        {
+            if (length < 1)
+                return;
+
+            var sub = Input.Substring(_index, length);
+            _trivia += sub;
+            _index += length;
         }
 
         // yes, this could be done with a regex, but the switch is an order of magnitude faster
@@ -232,11 +281,43 @@ namespace Jadeite.Internals
             switch (type)
             {
 //                case TokenType.Invalid:
-//                case TokenType.EndOfInput:
+                case TokenType.EndOfInput:
+                    return _index >= _length ? CreateToken(TokenType.EndOfInput, 0) : null;
 //                case TokenType.Indent:
 //                case TokenType.Outdent:
-//                case TokenType.NewLine:
-//                    break;
+                case TokenType.NewLine:
+                    switch (CurrentCharacter())
+                    {
+                        case '\n':
+                            return CreateToken(type, 1);
+                        case '\r':
+                            if (_index + 1 < _length && Input[_index + 1] == '\n')
+                                return CreateToken(type, 2);
+
+                            return CreateToken(type, 1);
+                    }
+                    return null;
+                case TokenType.BlankLine:
+                    var i = _index;
+                    for (; i < _length; i++)
+                    {
+                        switch (Input[i])
+                        {
+                            case ' ':
+                            case '\t':
+                                continue;
+                            case '\n':
+                            case '\r':
+                                return CreateToken(type, i - _index);
+                            default:
+                                return null;
+                        }
+                    }
+
+                    if (i == _length && _index != _length)
+                        return CreateToken(type, i - _index);
+
+                    return null;
 //                case TokenType.Space:
 //                    return GetExactTextToken(type, ' ');
 //                case TokenType.Dot:
@@ -279,39 +360,39 @@ namespace Jadeite.Internals
 //                    return GetExactTextToken(type, ':');
 //                case TokenType.Extends:
 //                    return GetExactTextToken(type, Keyword.EXTENDS);
-                case TokenType.Prepend:
-                    return GetExactTextToken(type, Keyword.PREPEND);
-                case TokenType.Append:
-                    return GetExactTextToken(type, Keyword.APPEND);
-                case TokenType.Block:
-                    return GetExactTextToken(type, Keyword.BLOCK);
-                case TokenType.Mixin:
-                    return GetExactTextToken(type, Keyword.MIXIN);
-                case TokenType.Each:
-                    return GetExactTextToken(type, Keyword.EACH);
-                case TokenType.If:
-                    return GetExactTextToken(type, Keyword.IF);
-                case TokenType.Else:
-                    return GetExactTextToken(type, Keyword.ELSE);
-                case TokenType.Switch:
-                    return GetExactTextToken(type, Keyword.SWITCH);
-                case TokenType.Case:
-                    return GetExactTextToken(type, Keyword.CASE);
-                case TokenType.AndAttributes:
-                    return GetExactTextToken(type, Keyword.ANDATTRIBUTES);
+//                case TokenType.Prepend:
+//                    return GetExactTextToken(type, Keyword.PREPEND);
+//                case TokenType.Append:
+//                    return GetExactTextToken(type, Keyword.APPEND);
+//                case TokenType.Block:
+//                    return GetExactTextToken(type, Keyword.BLOCK);
+//                case TokenType.Mixin:
+//                    return GetExactTextToken(type, Keyword.MIXIN);
+//                case TokenType.Each:
+//                    return GetExactTextToken(type, Keyword.EACH);
+//                case TokenType.If:
+//                    return GetExactTextToken(type, Keyword.IF);
+//                case TokenType.Else:
+//                    return GetExactTextToken(type, Keyword.ELSE);
+//                case TokenType.Switch:
+//                    return GetExactTextToken(type, Keyword.SWITCH);
+//                case TokenType.Case:
+//                    return GetExactTextToken(type, Keyword.CASE);
+//                case TokenType.AndAttributes:
+//                    return GetExactTextToken(type, Keyword.ANDATTRIBUTES);
                 case TokenType.Model:
                     return GetExactTextToken(type, Keyword.MODEL);
                 case TokenType.LineComment:
                     return GetLineComment();
-                case TokenType.BlockComment:
-                case TokenType.DocType:
-                case TokenType.TagName:
-                case TokenType.ClassName:
-                case TokenType.Id:
-                case TokenType.Text:
-                case TokenType.NumberLiteral:
-                case TokenType.Identifier:
-                    break;
+//                case TokenType.BlockComment:
+//                case TokenType.DocType:
+//                case TokenType.TagName:
+//                case TokenType.ClassName:
+//                case TokenType.Id:
+//                case TokenType.Text:
+//                case TokenType.NumberLiteral:
+//                case TokenType.Identifier:
+//                    break;
             }
 
             throw new Exception($"Huh? {type} token..."); // todo
@@ -322,14 +403,27 @@ namespace Jadeite.Internals
             return CurrentCharacter() == literal ? CreateToken(type, 1) : null;
         }
 
-        private Token GetExactTextToken(TokenType type, string literal)
+        private Token GetExactTextToken(TokenType type, string literal, bool requireWordBoundary = true)
         {
-            return IsNextText(literal) ? CreateToken(type, literal.Length, literal) : null;
+            if (!IsNextText(literal, requireWordBoundary))
+                return null;
+
+            var tok = CreateToken(type, literal.Length, literal);
+            if (requireWordBoundary)
+            {
+                if (ConsumeWhiteSpaceAsTrivia())
+                {
+                    tok.TrailingTrivia = _trivia;
+                    _trivia = "";
+                }
+            }
+
+            return tok;
         }
         
         private Token GetLineComment()
         {
-            if (!IsNextText("//"))
+            if (!IsNextText("//", false))
                 return null;
 
             var start = _index + 2;
@@ -347,7 +441,7 @@ namespace Jadeite.Internals
             return CreateToken(TokenType.LineComment, length + 2, useful);
         }
 
-        private Token CreateToken(TokenType type, int length, string usefulValue = null)
+        protected Token CreateToken(TokenType type, int length, string usefulValue = null)
         {
             var raw = Input.Substring(_index, length);
             var tok = new Token
@@ -361,12 +455,12 @@ namespace Jadeite.Internals
                     Line = _line,
                     Column = _column,
                 },
-                LeadingTrivia = _leadingTrivia
+                LeadingTrivia = _trivia
             };
 
             _tokenQueue.Enqueue(tok);
 
-            _leadingTrivia = "";
+            _trivia = "";
 
             // figure out the new line and column numbers
             // this does mean we rescan the text, but it's probably the most reliable way

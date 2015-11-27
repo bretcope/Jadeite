@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Jadeite.Internals
 {
     public enum TokenType
@@ -8,9 +7,11 @@ namespace Jadeite.Internals
         EndOfInput,
 
         // significant white space
+        IndentDefinition,
         Indent,
         Outdent,
         NewLine,
+        BlankLine,
         Space,
 
         // symbols / operators
@@ -83,6 +84,7 @@ namespace Jadeite.Internals
         public string UsefulValue { get; internal set; }
         public Position Position { get; internal set; }
         public string LeadingTrivia { get; internal set; }
+        public string TrailingTrivia { get; internal set; }
 
         internal Token()
         {
