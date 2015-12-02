@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Jadeite.Internals
 {
     public partial class Lexer
     {
+        // don't need stack because the tag state is never nested
         private bool _isTagInterpolation;
 
         private void TransitionToTag(bool isInterpolation)
@@ -44,13 +46,44 @@ namespace Jadeite.Internals
                     TransitionToAttributes();
                     return;
                 case ' ':
+                    ConsumeTrivia(1);
                     ExitState();
-                    TransitionToBody();
+                    TransitionToBody(_isTagInterpolation);
+                    return;
+                case ']':
+                    if (_isTagInterpolation)
+                    {
+                        ExitState();
+                        TransitionToBody(true);
+                        return;
+                    }
+                    throw new Exception($"Unexpected token ']' at line {Line}, column {Column}.");
+                case '\r':
+                case '\n':
+                case INVALID_CHAR:
+                    ExitState();
                     return;
                 default:
-                    // todo - scan html identifiers
+                    ScanHtmlIdentifierOrThrow();
                     return;
             }
+        }
+
+        private void ScanHtmlIdentifierOrThrow()
+        {
+            if (!IsWordOrHyphenCharacter(CurrentChar()))
+                throw new Exception($"Unexpected token at line {Line}, column {Column}.");
+
+            var len = 1;
+            for (var i = Index + 1; i < Length; i++)
+            {
+                if (IsWordOrHyphenCharacter(Input[i]))
+                    len++;
+                else
+                    break;
+            }
+
+            ConsumeToken(TokenType.HtmlIdentifier, len);
         }
     }
 }

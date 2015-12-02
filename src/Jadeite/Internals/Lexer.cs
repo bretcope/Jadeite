@@ -67,7 +67,16 @@ namespace Jadeite.Internals
 
         private void ExitState()
         {
-            _stateStack.Pop();
+            var oldState = _stateStack.Pop();
+            switch (oldState)
+            {
+                case LexerState.Tag:
+                    OnExitTag();
+                    break;
+                case LexerState.Body:
+                    OnExitBody();
+                    break;
+            }
         }
 
         private Token ConsumePossibleKeyword()
