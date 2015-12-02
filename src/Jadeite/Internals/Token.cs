@@ -1,4 +1,6 @@
 ﻿
+using System;
+
 namespace Jadeite.Internals
 {
     public enum TokenType
@@ -7,16 +9,13 @@ namespace Jadeite.Internals
         EndOfInput,
 
         // significant white space
-        IndentDefinition,
         Indent,
-        Outdent,
         NewLine,
-        BlankLine,
-        Space,
 
         // symbols / operators
         Dot,
         Pipe,
+        Hash,
         OpenParen,
         CloseParen,
         OpenEscapedInterpolation,    // #{
@@ -29,6 +28,9 @@ namespace Jadeite.Internals
         NotEquals, // !=
         Comma,
         Plus,
+        Minus,
+        PlusPlus,
+        MinusMinus,
         LogicalOr,  // ||
         LogicalAnd, // &&
         LogicalNot, // !
@@ -52,13 +54,11 @@ namespace Jadeite.Internals
         // elements
         LineComment,
         BlockComment,
-        DocType,
-        TagName,
-        ClassName,
-        Id,
-        Text,
+        HtmlIdentifier,
+        CodeIdentifier,
         NumberLiteral,
-        Identifier,
+        StringLiteral,
+        BodyText,
     }
 
     internal static class Keyword
@@ -75,13 +75,46 @@ namespace Jadeite.Internals
         public const string CASE = "case";
         public const string ANDATTRIBUTES = "&attributes";
         public const string MODEL = "model";
+
+        public static string GetString(TokenType type)
+        {
+            switch (type)
+            {
+                case TokenType.Extends:
+                    return EXTENDS;
+                case TokenType.Prepend:
+                    return PREPEND;
+                case TokenType.Append:
+                    return APPEND;
+                case TokenType.Block:
+                    return BLOCK;
+                case TokenType.Mixin:
+                    return MIXIN;
+                case TokenType.Each:
+                    return EACH;
+                case TokenType.If:
+                    return IF;
+                case TokenType.Else:
+                    return ELSE;
+                case TokenType.Switch:
+                    return SWITCH;
+                case TokenType.Case:
+                    return CASE;
+                case TokenType.AndAttributes:
+                    return ANDATTRIBUTES;
+                case TokenType.Model:
+                    return MODEL;
+                default:
+                    throw new Exception($"Keyword.GetString() called with token type {type}. Only keyword token types are allowed."); // todo
+            }
+        }
     }
 
     public class Token
     {
         public TokenType Type { get; internal set; }
         public string RawValue { get; internal set; }
-        public string UsefulValue { get; internal set; }
+        public string Value { get; internal set; }
         public Position Position { get; internal set; }
         public string LeadingTrivia { get; internal set; }
         public string TrailingTrivia { get; internal set; }
