@@ -70,9 +70,6 @@ namespace Jadeite.Internals
             var oldState = _stateStack.Pop();
             switch (oldState)
             {
-                case LexerState.Tag:
-                    OnExitTag();
-                    break;
                 case LexerState.Body:
                     OnExitBody();
                     break;

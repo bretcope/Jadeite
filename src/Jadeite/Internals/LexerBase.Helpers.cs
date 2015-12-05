@@ -1,4 +1,5 @@
 ﻿
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace Jadeite.Internals
@@ -13,6 +14,21 @@ namespace Jadeite.Internals
             {
                 case ' ':
                 case '\t':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        protected static bool IsWhiteSpaceNewLineOrEnd(char c)
+        {
+            switch (c)
+            {
+                case ' ':
+                case '\t':
+                case '\r':
+                case '\n':
+                case INVALID_CHAR:
                     return true;
                 default:
                     return false;
@@ -164,6 +180,44 @@ namespace Jadeite.Internals
                 default:
                     return false;
             }
+        }
+
+        protected static bool IsHexDigit(char c)
+        {
+            switch (c)
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
+                case 'a':
+                case 'b':
+                case 'c':
+                case 'd':
+                case 'e':
+                case 'f':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        protected static int HexValue(char c)
+        {
+            Debug.Assert(IsHexDigit(c));
+            return (c >= '0' && c <= '9') ? c - '0' : (c & 0xdf) - 'A' + 10;
         }
     }
 }

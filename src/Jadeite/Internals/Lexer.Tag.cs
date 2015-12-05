@@ -20,15 +20,10 @@ namespace Jadeite.Internals
             {
                 case '.':
                     ConsumeToken(TokenType.Dot, 1);
-                    switch (CurrentChar())
+                    if (IsWhiteSpaceNewLineOrEnd(CurrentChar()))
                     {
-                        case ' ':
-                        case '\t':
-                        case '\r':
-                        case '\n':
-                            ExitState();
-                            TransitionToPipelessText();
-                            break;
+                        ExitState();
+                        TransitionToPipelessText();
                     }
                     return;
                 case '#':
@@ -40,6 +35,12 @@ namespace Jadeite.Internals
                     var tok = ConsumeToken(TokenType.Colon, 1);
                     if (ConsumeWhiteSpaceAsTrivia() > 0)
                         tok.TrailingTrivia = PopTrivia();
+                    return;
+                case '=':
+                    ConsumeToken(TokenType.Equals, 1);
+                    ConsumeWhiteSpaceAsTrivia();
+                    ExitState();
+                    TransitionToCode(_isTagInterpolation ? TokenType.CloseSquareBracket : TokenType.NewLine);
                     return;
                 case '(':
                     ConsumeToken(TokenType.OpenParen, 1);

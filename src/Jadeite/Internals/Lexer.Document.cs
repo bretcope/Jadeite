@@ -33,7 +33,7 @@ namespace Jadeite.Internals
                         case ' ':
                             ConsumeTrivia(1);
                             tok.TrailingTrivia = PopTrivia();
-                            TransitionToBody();
+                            TransitionToBody(isInterpolation: false);
                             return;
                         case '\n':
                         case '\r':
