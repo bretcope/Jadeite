@@ -22,6 +22,10 @@ namespace Jadeite.Internals
                     ConsumeToken(TokenType.Dot, 1);
                     if (IsWhiteSpaceNewLineOrEnd(CurrentChar()))
                     {
+                        ConsumeWhiteSpaceAsTrivia();
+                        if (!IsNewLineOrEnd(CurrentChar()))
+                            throw new Exception($"Invalid pipeless text syntax. Expected a new line after the dot on line {Line}."); // todo
+
                         ExitState();
                         TransitionToPipelessText();
                     }
@@ -38,10 +42,18 @@ namespace Jadeite.Internals
                     return;
                 case '=':
                     ConsumeToken(TokenType.Equals, 1);
-                    ConsumeWhiteSpaceAsTrivia();
                     ExitState();
-                    TransitionToCode(_isTagInterpolation ? TokenType.CloseSquareBracket : TokenType.NewLine);
+                    TransitionToCode(_isTagInterpolation ? CodeScanMode.SquareInterpolation : CodeScanMode.Line);
                     return;
+                case '!':
+                    if (NextChar() == '=')
+                    {
+                        ConsumeToken(TokenType.NotEquals, 2);
+                        ExitState();
+                        TransitionToCode(_isTagInterpolation ? CodeScanMode.SquareInterpolation : CodeScanMode.Line);
+                        return;
+                    }
+                    throw new Exception($"Unexpected token ']' at line {Line}, column {Column}."); // todo
                 case '(':
                     ConsumeToken(TokenType.OpenParen, 1);
                     TransitionToAttributes();
@@ -58,7 +70,7 @@ namespace Jadeite.Internals
                         TransitionToBody(true);
                         return;
                     }
-                    throw new Exception($"Unexpected token ']' at line {Line}, column {Column}.");
+                    throw new Exception($"Unexpected token ']' at line {Line}, column {Column}."); // todo
                 case '\r':
                 case '\n':
                 case INVALID_CHAR:
@@ -84,7 +96,7 @@ namespace Jadeite.Internals
                     break;
             }
 
-            ConsumeToken(TokenType.HtmlIdentifier, len);
+            ConsumeToken(TokenType.HtmlIdentifier, len, useTextAsValue: true);
         }
     }
 }

@@ -48,20 +48,21 @@ namespace Jadeite.Internals
                 Lex();
         }
 
-        protected Token ConsumeToken(TokenType type, int length, string value = null)
+        protected Token ConsumeToken(TokenType type, int length, object value = null, bool useTextAsValue = false)
         {
-            var raw = Input.Substring(Index, length);
+            var text = Input.Substring(Index, length);
             var tok = new Token
             {
                 Type = type,
-                RawValue = raw,
-                Value = value ?? raw,
+                Text = text,
+                Value = useTextAsValue ? text : value,
                 LeadingTrivia = PopTrivia(),
                 Position = new Position
                 {
                     Index = Index,
                     Line = Line,
                     Column = Column,
+                    Length = length
                 }
             };
 
@@ -81,7 +82,7 @@ namespace Jadeite.Internals
                 else
                     _trivia += sub;
 
-                Index += length;
+                UpdatePosition(Index + length);
             }
         }
 
@@ -125,9 +126,9 @@ namespace Jadeite.Internals
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        protected char RelativeCharAt(int offset)
+        protected char NextChar()
         {
-            return CharAt(Index + offset);
+            return CharAt(Index + 1);
         }
 
         private void UpdatePosition(int newIndex)

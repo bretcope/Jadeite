@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,15 +12,9 @@ namespace TestConsoleApp
     {
         public static void Main(string[] args)
         {
-            var test = @"
-a.some-class#myId This is body text #[b and bold text], isn't that great?
-.test
-    p: a Text
-    p
-        | piped text
-";
+            var test = File.ReadAllText("Master.jade");
 
-            var lexer = new Lexer(test, "    ");
+            var lexer = new Lexer(test, "  ");
             Token tok;
             while ((tok = lexer.Advance()).Type != TokenType.EndOfInput)
             {
@@ -30,7 +25,8 @@ a.some-class#myId This is body text #[b and bold text], isn't that great?
         public static void PrintToken(Token tok)
         {
             Console.WriteLine(tok.Type);
-            Console.WriteLine($"  `{tok.Value}`");
+            if (tok.Value != null)
+                Console.WriteLine($"  `{tok.Value}`");
         }
     }
 }

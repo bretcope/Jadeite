@@ -56,7 +56,7 @@ namespace Jadeite.Internals
                             if (i == Index)
                             {
                                 ConsumeToken(TokenType.OpenEscapedInterpolation, 2);
-                                TransitionToCode(TokenType.CloseCurly);
+                                TransitionToCode(CodeScanMode.CurlyInterpolation);
                                 return;
                             }
 
@@ -82,7 +82,7 @@ namespace Jadeite.Internals
                             if (i == Index)
                             {
                                 ConsumeToken(TokenType.OpenNonEscapedInterpolation, 2);
-                                TransitionToCode(TokenType.CloseCurly);
+                                TransitionToCode(CodeScanMode.CurlyInterpolation);
                                 return;
                             }
 

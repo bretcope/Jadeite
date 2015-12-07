@@ -15,7 +15,26 @@ namespace Jadeite.Internals
 
         private void ScanPipelessText()
         {
-            throw new NotImplementedException();
+            switch (CurrentChar())
+            {
+                case '\r':
+                case '\n':
+                    TransitionToIndent(_pipelessIndent);
+                    break;
+                case INVALID_CHAR:
+                    ExitState();
+                    return;
+                default:
+                    if (IndentLevel < _pipelessIndent)
+                    {
+                        ExitState();
+                    }
+                    else
+                    {
+                        TransitionToBody(false);
+                    }
+                    break;
+            }
         }
     }
 }

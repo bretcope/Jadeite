@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Diagnostics;
 
 namespace Jadeite.Internals
 {
@@ -12,7 +13,30 @@ namespace Jadeite.Internals
 
         private void ScanAttributes()
         {
-            throw new NotImplementedException();
+            ConsumeWhiteSpaceAsTrivia();
+
+            switch (CurrentChar())
+            {
+                case ')':
+                    ConsumeToken(TokenType.CloseParen, 1);
+                    ExitState();
+                    return;
+                case '=':
+                    ConsumeToken(TokenType.Equals, 1);
+                    TransitionToCode(CodeScanMode.Attributes);
+                    return;
+                case ',':
+                    ConsumeToken(TokenType.Comma, 1);
+                    return;
+                case '\r':
+                case '\n':
+                case INVALID_CHAR:
+                    ExitState();
+                    return;
+                default:
+                    ScanHtmlIdentifierOrThrow();
+                    return;
+            }
         }
     }
 }

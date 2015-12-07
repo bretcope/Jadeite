@@ -28,7 +28,7 @@ namespace Jadeite.Internals
             switch (CurrentChar())
             {
                 case '\r':
-                    ConsumeToken(TokenType.NewLine, RelativeCharAt(1) == '\n' ? 2 : 1);
+                    ConsumeToken(TokenType.NewLine, NextChar() == '\n' ? 2 : 1);
                     IndentLevel = 0;
                     return;
                 case '\n':

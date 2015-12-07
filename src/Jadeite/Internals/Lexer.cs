@@ -14,6 +14,7 @@ namespace Jadeite.Internals
             Body,
             Code,
             Attributes,
+            HtmlComment,
         }
 
         private readonly Stack<LexerState> _stateStack = new Stack<LexerState>();
@@ -55,6 +56,9 @@ namespace Jadeite.Internals
                 case LexerState.Attributes:
                     ScanAttributes();
                     break;
+                case LexerState.HtmlComment:
+                    ScanHtmlComment();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -76,7 +80,7 @@ namespace Jadeite.Internals
             }
         }
 
-        private Token ConsumePossibleKeyword()
+        private Token ConsumePossibleJadeiteKeyword()
         {
             Token tok = null;
 
@@ -88,18 +92,8 @@ namespace Jadeite.Internals
                 case 'b':
                     TryConsumeKeyword(TokenType.Block, out tok);
                     break;
-                case 'c':
-                    TryConsumeKeyword(TokenType.Case, out tok);
-                    break;
                 case 'e':
-                    if (TryConsumeKeyword(TokenType.Each, out tok)
-                        || TryConsumeKeyword(TokenType.Else, out tok)
-                        || TryConsumeKeyword(TokenType.Extends, out tok))
-                    {
-                    }
-                    break;
-                case 'i':
-                    TryConsumeKeyword(TokenType.If, out tok);
+                    TryConsumeKeyword(TokenType.Extends, out tok);
                     break;
                 case 'm':
                     if (TryConsumeKeyword(TokenType.Mixin, out tok)
@@ -109,6 +103,29 @@ namespace Jadeite.Internals
                     break;
                 case 'p':
                     TryConsumeKeyword(TokenType.Prepend, out tok);
+                    break;
+            }
+
+            return tok;
+        }
+
+        private Token ConsumePossibleCodeKeyword()
+        {
+            Token tok = null;
+
+            switch (CurrentChar())
+            {
+                case 'c':
+                    TryConsumeKeyword(TokenType.Case, out tok);
+                    break;
+                case 'e':
+                    if (TryConsumeKeyword(TokenType.Each, out tok)
+                        || TryConsumeKeyword(TokenType.Else, out tok))
+                    {
+                    }
+                    break;
+                case 'i':
+                    TryConsumeKeyword(TokenType.If, out tok);
                     break;
                 case 's':
                     TryConsumeKeyword(TokenType.Switch, out tok);

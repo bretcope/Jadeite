@@ -13,29 +13,45 @@ namespace Jadeite.Internals
         NewLine,
 
         // symbols / operators
+        Hash,
         Dot,
         Pipe,
-        Hash,
+        PipePipe,
+        And,
+        AndAnd,
+        Plus,
+        PlusPlus,
+        PlusEquals,
+        Minus,
+        MinusMinus,
+        MinusEquals,
+        Asterisk,
+        AsteriskEquals,
+        ForwardSlash,
+        ForwardSlashEquals,
+        Equals,
+        EqualsEquals,
+        LessThan,
+        LessThanLessThan,
+        LessThanEquals,
+        GreaterThan,
+        GreaterThanGreaterThan,
+        GreaterThanEquals,
+        Comma,
+        SemiColon,
+        Not, // !
+        NotEquals, // !=
+        QuestionMark,
+        Colon,
         OpenParen,
         CloseParen,
         OpenEscapedInterpolation,    // #{
         OpenNonEscapedInterpolation, // !{
+        OpenCurly,
         CloseCurly,
         OpenTagInterpolation, // #[
+        OpenSquareBracket,
         CloseSquareBracket,
-        Equals,
-        EqualsEquals,
-        NotEquals, // !=
-        Comma,
-        Plus,
-        Minus,
-        PlusPlus,
-        MinusMinus,
-        LogicalOr,  // ||
-        LogicalAnd, // &&
-        LogicalNot, // !
-        QuestionMark,
-        Colon,
 
         // keywords
         Extends,
@@ -52,11 +68,13 @@ namespace Jadeite.Internals
         Model,
 
         // elements
-        LineComment,
-        BlockComment,
+        CodeComment,
+        BufferedHtmlComment,
+        UnbufferedHtmlComment,
         HtmlIdentifier,
         CodeIdentifier,
-        NumberLiteral,
+        IntegerLiteral,
+        FloatingPointLiteral,
         StringLiteral,
         BodyText,
     }
@@ -113,8 +131,8 @@ namespace Jadeite.Internals
     public class Token
     {
         public TokenType Type { get; internal set; }
-        public string RawValue { get; internal set; }
-        public string Value { get; internal set; }
+        public string Text { get; internal set; }
+        public object Value { get; internal set; }
         public Position Position { get; internal set; }
         public string LeadingTrivia { get; internal set; }
         public string TrailingTrivia { get; internal set; }

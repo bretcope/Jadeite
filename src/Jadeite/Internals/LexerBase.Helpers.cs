@@ -20,6 +20,7 @@ namespace Jadeite.Internals
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static bool IsWhiteSpaceNewLineOrEnd(char c)
         {
             switch (c)
@@ -35,185 +36,102 @@ namespace Jadeite.Internals
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsNewLineOrEnd(char c)
+        {
+            switch (c)
+            {
+                case '\r':
+                case '\n':
+                case INVALID_CHAR:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsNewLine(char c)
+        {
+            switch (c)
+            {
+                case '\r':
+                case '\n':
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsCodeIdentifierCharacter(char c)
+        {
+            return IsWordCharacter(c) || c == '$';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static bool IsWordCharacter(char c)
         {
-            switch (c)
-            {
-                case 'A':
-                case 'B':
-                case 'C':
-                case 'D':
-                case 'E':
-                case 'F':
-                case 'G':
-                case 'H':
-                case 'I':
-                case 'J':
-                case 'K':
-                case 'L':
-                case 'M':
-                case 'N':
-                case 'O':
-                case 'P':
-                case 'Q':
-                case 'R':
-                case 'S':
-                case 'T':
-                case 'U':
-                case 'V':
-                case 'W':
-                case 'X':
-                case 'Y':
-                case 'Z':
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'e':
-                case 'f':
-                case 'g':
-                case 'h':
-                case 'i':
-                case 'j':
-                case 'k':
-                case 'l':
-                case 'm':
-                case 'n':
-                case 'o':
-                case 'p':
-                case 'q':
-                case 'r':
-                case 's':
-                case 't':
-                case 'u':
-                case 'v':
-                case 'w':
-                case 'x':
-                case 'y':
-                case 'z':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '_':
-                    return true;
-                default:
-                    return false;
-            }
+            if (c >= 'a' && c <= 'z')
+                return true;
+
+            if (c >= 'A' && c <= 'Z')
+                return true;
+
+            if (c >= '0' && c <= '9')
+                return true;
+
+            if (c == '_')
+                return true;
+
+            return false;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static bool IsWordOrHyphenCharacter(char c)
         {
-            switch (c)
-            {
-                case 'A':
-                case 'B':
-                case 'C':
-                case 'D':
-                case 'E':
-                case 'F':
-                case 'G':
-                case 'H':
-                case 'I':
-                case 'J':
-                case 'K':
-                case 'L':
-                case 'M':
-                case 'N':
-                case 'O':
-                case 'P':
-                case 'Q':
-                case 'R':
-                case 'S':
-                case 'T':
-                case 'U':
-                case 'V':
-                case 'W':
-                case 'X':
-                case 'Y':
-                case 'Z':
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'e':
-                case 'f':
-                case 'g':
-                case 'h':
-                case 'i':
-                case 'j':
-                case 'k':
-                case 'l':
-                case 'm':
-                case 'n':
-                case 'o':
-                case 'p':
-                case 'q':
-                case 'r':
-                case 's':
-                case 't':
-                case 'u':
-                case 'v':
-                case 'w':
-                case 'x':
-                case 'y':
-                case 'z':
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case '_':
-                case '-':
-                    return true;
-                default:
-                    return false;
-            }
+            return IsWordCharacter(c) || c == '-';
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsBinaryDigit(char c)
+        {
+            return c == '0' || c == '1';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsOctalDigit(char c)
+        {
+            return c == '0' || c == '7';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static bool IsDecimalDigit(char c)
+        {
+            return c >= '0' && c <= '9';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static bool IsHexDigit(char c)
         {
-            switch (c)
-            {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                case 'A':
-                case 'B':
-                case 'C':
-                case 'D':
-                case 'E':
-                case 'F':
-                case 'a':
-                case 'b':
-                case 'c':
-                case 'd':
-                case 'e':
-                case 'f':
-                    return true;
-                default:
-                    return false;
-            }
+            return IsDecimalDigit(c) || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static int OctalValue(char c)
+        {
+            Debug.Assert(IsOctalDigit(c));
+            return c - '0';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected static int DecimalValue(char c)
+        {
+            Debug.Assert(IsDecimalDigit(c));
+            return c - '0';
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected static int HexValue(char c)
         {
             Debug.Assert(IsHexDigit(c));
