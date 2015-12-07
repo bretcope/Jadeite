@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     public partial class Lexer
     {

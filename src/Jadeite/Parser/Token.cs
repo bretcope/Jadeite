@@ -1,7 +1,7 @@
 ﻿
 using System;
 
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     public enum TokenType
     {

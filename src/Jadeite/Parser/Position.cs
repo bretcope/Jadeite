@@ -1,4 +1,4 @@
-﻿namespace Jadeite.Internals
+﻿namespace Jadeite.Parser
 {
     public struct Position
     {

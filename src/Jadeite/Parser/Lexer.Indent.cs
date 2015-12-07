@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     public partial class Lexer
     {

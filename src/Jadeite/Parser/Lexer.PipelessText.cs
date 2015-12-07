@@ -1,7 +1,5 @@
 ﻿
-using System;
-
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     public partial class Lexer
     {

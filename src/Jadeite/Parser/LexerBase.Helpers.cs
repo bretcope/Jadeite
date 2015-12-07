@@ -1,8 +1,7 @@
-﻿
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     // Nothing in this file should affect the state of the lexer.
     public partial class LexerBase

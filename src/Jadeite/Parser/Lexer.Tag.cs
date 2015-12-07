@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace Jadeite.Internals
+namespace Jadeite.Parser
 {
     public partial class Lexer
     {
