@@ -1,0 +1,186 @@
+// todos
+	- Add doctype keyword
+	- Add mixin call
+
+--- TERMINALS --------------------------------------------
+
+Significant Whitespace
+	end-of-input
+	indent
+	outdent
+	new-line
+
+Templating Kewords:
+	extends
+	prepend
+	append
+	block
+	mixin
+
+Templating Elements
+	buffered-html-comment
+	unbuffered-html-comment
+	html-identifier
+	html-text
+
+Code Keywords:
+	each
+	if
+	else
+	switch
+	case
+	model
+
+Code Elements
+	code-comment
+	code-identifier
+	integer-literal
+	floating-point-literal
+	string-literal
+
+Punctuation
+	#
+	.
+	|
+	||
+	&
+	&&
+	+
+	++
+	+=
+	-
+	--
+	-=
+	*
+	*=
+	/
+	/=
+	=
+	==
+	<
+	<<
+	<=
+	>
+	>>
+	>=
+	,
+	;
+	!
+	!=
+	?
+	:
+	(
+	)
+	#{
+	!{
+	{
+	}
+	#[
+	[
+	]
+
+--- NON-TERMINALS ----------------------------------------
+
+File
+	Document MixinList end-of-input
+
+Document
+	DocumentHeader DocumentBody
+	ε
+
+DocumentHeader
+	ModelDefinition Doctype
+	ε
+
+ModelDefinition
+	model code-identifier EndOfLine
+	ε
+
+Doctype
+	doctype body-text EndOfLine
+	ε
+
+DocumentBody
+	DocumentElement
+	DocumentElement DocumentBody
+
+DocumentElement
+	Tag
+	MixinCall
+	Code
+
+Tag
+	TagDeclaration TagAttributes TagBody
+
+TagDeclaration
+	TagName ClassOrIdList
+	TagName
+	ClassOrIdList
+
+TagName
+	html-identifier
+
+ClassOrIdList
+	ClassOrId ClassOrIdList
+	ClassOrId
+
+ClassOrId
+	ClassName
+	IdName
+
+ClassName
+	. html-identifier
+
+IdName
+	# html-identifier
+
+TagAttributes
+	( TagAttributeList )
+	ε
+
+TagAttributeList
+	TagAttribute , TagAttributeList
+	TagAttribute
+	ε
+
+TagAttribute
+	html-identifier = Code
+
+TagBody
+	NormalTagBody
+	PipelessTagBody
+	EscapedCodeTagBody
+	UnescapedCodeTagBody
+
+NormalTagBody
+	Bod
+
+PipelessTagBody
+	. EndOfLine PipelessTextBlock
+
+PipelessTextBlock
+	indent .... outdent
+	ε
+
+
+MixinCall
+	//
+
+Code
+	//
+
+MixinList
+	Mixin MixinList
+	ε
+
+Mixin
+	mixin MixinBody
+
+MixinBody
+	//
+
+EndOfLine
+	new-line
+	end-of-input
+
+ε
