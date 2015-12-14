@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Jadeite.Internals;
+using Jadeite.Parser;
 
 namespace TestConsoleApp
 {

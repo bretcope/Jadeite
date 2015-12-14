@@ -1,5 +1,6 @@
 ﻿
 using System;
+using Jadeite.Parser.Nodes;
 
 namespace Jadeite.Parser
 {
@@ -12,7 +13,7 @@ namespace Jadeite.Parser
         Indent,
         NewLine,
 
-        // symbols / operators
+        // punctuation
         Hash,
         Dot,
         Pipe,
@@ -39,8 +40,8 @@ namespace Jadeite.Parser
         GreaterThanEquals,
         Comma,
         SemiColon,
-        Not, // !
-        NotEquals, // !=
+        Bang,
+        BangEquals,
         QuestionMark,
         Colon,
         OpenParen,
@@ -67,16 +68,18 @@ namespace Jadeite.Parser
         AndAttributes, // &attributes
         Model,
 
-        // elements
-        CodeComment,
+        // templating elements
         BufferedHtmlComment,
         UnbufferedHtmlComment,
         HtmlIdentifier,
+        HtmlText,
+
+        // code elements
+        CodeComment,
         CodeIdentifier,
         IntegerLiteral,
         FloatingPointLiteral,
         StringLiteral,
-        BodyText,
     }
 
     internal static class Keyword
@@ -128,7 +131,7 @@ namespace Jadeite.Parser
         }
     }
 
-    public class Token
+    public class Token : ISyntaxElement
     {
         public TokenType Type { get; internal set; }
         public string Text { get; internal set; }
@@ -136,6 +139,11 @@ namespace Jadeite.Parser
         public Position Position { get; internal set; }
         public string LeadingTrivia { get; internal set; }
         public string TrailingTrivia { get; internal set; }
+
+        public bool IsToken => true;
+        public bool IsNode => false;
+        public bool IsHtmlNode => false;
+        public bool IsCodeNode => false;
 
         internal Token()
         {

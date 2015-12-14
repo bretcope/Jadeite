@@ -108,7 +108,7 @@ namespace Jadeite.Parser
                 return;
             }
 
-            ConsumeToken(TokenType.BodyText, i - Index, sb.ToString());
+            ConsumeToken(TokenType.HtmlText, i - Index, sb.ToString());
             sb.Clear();
         }
 
