@@ -169,9 +169,9 @@ namespace Jadeite.Parser
                     return;
                 case '!':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.NotEquals, 2);
+                        ConsumeToken(TokenType.BangEquals, 2);
                     else
-                        ConsumeToken(TokenType.Not, 1);
+                        ConsumeToken(TokenType.Bang, 1);
                     return;
                 case '?':
                     ConsumeToken(TokenType.QuestionMark, 1);

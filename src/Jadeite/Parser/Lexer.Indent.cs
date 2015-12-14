@@ -29,11 +29,9 @@ namespace Jadeite.Parser
             {
                 case '\r':
                     ConsumeToken(TokenType.NewLine, NextChar() == '\n' ? 2 : 1);
-                    IndentLevel = 0;
                     return;
                 case '\n':
                     ConsumeToken(TokenType.NewLine, 1);
-                    IndentLevel = 0;
                     return;
                 case INVALID_CHAR:
                     ExitState();
@@ -94,10 +92,34 @@ namespace Jadeite.Parser
             }
 
             // actually consume the indents
+            var oldIndent = IndentLevel;
             var newIndent = charCount / _indentCharCount;
-            for (var il = 0; il < newIndent; il++)
+            var delta = newIndent - oldIndent;
+
+            if (delta < 0)
             {
-                ConsumeToken(TokenType.Indent, _indentCharCount);
+                // the new indent is less than the old indent
+                // consume up to the new indent as trivia
+                ConsumeTrivia(newIndent * _indentCharCount);
+
+                do
+                {
+                    ConsumeToken(TokenType.Outdent, 0);
+                    delta++;
+
+                } while (delta < 0);
+            }
+            else
+            {
+                // new indent is greater than, or equal to, the old
+                // consume up to the old indent as trivia
+                ConsumeTrivia(oldIndent * _indentCharCount);
+
+                while (delta > 0)
+                {
+                    ConsumeToken(TokenType.Indent, _indentCharCount);
+                    delta--;
+                }
             }
 
             IndentLevel = newIndent;

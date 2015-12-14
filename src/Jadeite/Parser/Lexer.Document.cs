@@ -24,6 +24,11 @@ namespace Jadeite.Parser
                     TransitionToIndent();
                     return;
                 case INVALID_CHAR:
+                    while (IndentLevel > 0)
+                    {
+                        ConsumeToken(TokenType.Outdent, 0);
+                        IndentLevel--;
+                    }
                     ConsumeToken(TokenType.EndOfInput, 0);
                     return;
                 case '|':
@@ -74,7 +79,7 @@ namespace Jadeite.Parser
                 case '!':
                     if (NextChar() == '=')
                     {
-                        ConsumeToken(TokenType.NotEquals, 2);
+                        ConsumeToken(TokenType.BangEquals, 2);
                         TransitionToCode(CodeScanMode.Line);
                         return;
                     }

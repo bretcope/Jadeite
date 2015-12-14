@@ -47,7 +47,7 @@ namespace Jadeite.Parser
                 case '!':
                     if (NextChar() == '=')
                     {
-                        ConsumeToken(TokenType.NotEquals, 2);
+                        ConsumeToken(TokenType.BangEquals, 2);
                         ExitState();
                         TransitionToCode(_isTagInterpolation ? CodeScanMode.SquareInterpolation : CodeScanMode.Line);
                         return;

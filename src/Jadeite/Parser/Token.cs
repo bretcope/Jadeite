@@ -11,6 +11,7 @@ namespace Jadeite.Parser
 
         // significant white space
         Indent,
+        Outdent,
         NewLine,
 
         // punctuation
