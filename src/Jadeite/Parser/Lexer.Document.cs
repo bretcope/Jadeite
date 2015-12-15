@@ -24,6 +24,7 @@ namespace Jadeite.Parser
                     TransitionToIndent();
                     return;
                 case INVALID_CHAR:
+                    ConsumeToken(TokenType.EndOfLine, 0);
                     while (IndentLevel > 0)
                     {
                         ConsumeToken(TokenType.Outdent, 0);

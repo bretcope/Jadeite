@@ -31,13 +31,13 @@ namespace Jadeite.Parser
             {
                 case '\r':
                     if (_indentConsumesNewLines)
-                        ConsumeToken(TokenType.NewLine, NextChar() == '\n' ? 2 : 1);
+                        ConsumeToken(TokenType.EndOfLine, NextChar() == '\n' ? 2 : 1);
                     else 
                         ExitState();
                     return;
                 case '\n':
                     if (_indentConsumesNewLines)
-                        ConsumeToken(TokenType.NewLine, 1);
+                        ConsumeToken(TokenType.EndOfLine, 1);
                     else 
                         ExitState();
                     return;
