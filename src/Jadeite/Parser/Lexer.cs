@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Jadeite.Parser
 {
@@ -66,6 +67,7 @@ namespace Jadeite.Parser
 
         private void PushState(LexerState state)
         {
+            Debug.Assert(_stateStack.Count == 0 || _stateStack.Peek() != LexerState.Indent, "Cannot nest from indent state.");
             _stateStack.Push(state);
         }
 

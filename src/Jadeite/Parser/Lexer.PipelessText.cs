@@ -17,6 +17,11 @@ namespace Jadeite.Parser
             {
                 case '\r':
                 case '\n':
+                    var i = Index + 1;
+                    while (IsNewLine(CharAt(i)))
+                        i++;
+
+                    ConsumeToken(TokenType.HtmlText, i - Index, useTextAsValue: true);
                     TransitionToIndent(_pipelessIndent);
                     break;
                 case INVALID_CHAR:

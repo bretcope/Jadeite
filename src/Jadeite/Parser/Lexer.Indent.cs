@@ -14,12 +14,14 @@ namespace Jadeite.Parser
         private int _maxIndent;
         private IndentType _indentType;
         private int _indentCharCount;
+        private bool _indentConsumesNewLines;
 
         private int IndentLevel { get; set; }
 
-        private void TransitionToIndent(int maxIndent = int.MaxValue)
+        private void TransitionToIndent(int maxIndent = int.MaxValue, bool consumeNewLines = true)
         {
             _maxIndent = maxIndent;
+            _indentConsumesNewLines = consumeNewLines;
             PushState(LexerState.Indent);
         }
 
@@ -28,10 +30,16 @@ namespace Jadeite.Parser
             switch (CurrentChar())
             {
                 case '\r':
-                    ConsumeToken(TokenType.NewLine, NextChar() == '\n' ? 2 : 1);
+                    if (_indentConsumesNewLines)
+                        ConsumeToken(TokenType.NewLine, NextChar() == '\n' ? 2 : 1);
+                    else 
+                        ExitState();
                     return;
                 case '\n':
-                    ConsumeToken(TokenType.NewLine, 1);
+                    if (_indentConsumesNewLines)
+                        ConsumeToken(TokenType.NewLine, 1);
+                    else 
+                        ExitState();
                     return;
                 case INVALID_CHAR:
                     ExitState();
