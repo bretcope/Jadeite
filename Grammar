@@ -1,14 +1,18 @@
 // todos
 	- Add doctype keyword
 	- Add mixin call
+	- Figure out how to deal with unbuffered code blocks
+
+- Terminals are camelCase or literal symbols
+- Non-terminals are PascalCase
 
 --- TERMINALS --------------------------------------------
 
 Significant Whitespace
-	end-of-input
+	endOfInput
+	endOfLine
 	indent
 	outdent
-	new-line
 
 Templating Kewords:
 	extends
@@ -18,10 +22,10 @@ Templating Kewords:
 	mixin
 
 Templating Elements
-	buffered-html-comment
-	unbuffered-html-comment
-	html-identifier
-	html-text
+	bufferedHtmlComment
+	unbufferedHtmlComment
+	htmlIdentifier
+	htmlText
 
 Code Keywords:
 	each
@@ -32,11 +36,11 @@ Code Keywords:
 	model
 
 Code Elements
-	code-comment
-	code-identifier
-	integer-literal
-	floating-point-literal
-	string-literal
+	codeComment
+	codeIdentifier
+	integerLiteral
+	floatingPointLiteral
+	stringLiteral
 
 Punctuation
 	#
@@ -82,43 +86,54 @@ Punctuation
 --- NON-TERMINALS ----------------------------------------
 
 File
-	Document MixinList end-of-input
+	Template MixinList endOfInput
 
-Document
-	DocumentHeader DocumentBody
-	ε
-
-DocumentHeader
-	ModelDefinition Doctype
+Template
+	ModelDefinition Document
 	ε
 
 ModelDefinition
-	model code-identifier EndOfLine
+	endOfLine ModelDefinition
+	model codeIdentifier endOfLine
 	ε
 
-Doctype
-	doctype body-text EndOfLine
+Document
+	DoctypeDefinition DocumentBody
+	ε
+
+DoctypeDefinition
+	endOfLine DoctypeDefinition
+	doctype htmlText endOfLine
 	ε
 
 DocumentBody
-	DocumentElement
-	DocumentElement DocumentBody
+	DocumentBodyElement DocumentBody
+	ε
 
-DocumentElement
+DocumentBodyElement
 	Tag
-	MixinCall
-	Code
+	BufferedCode
+	UnescapedBufferedCode
+	UnbufferedCode
+	NestedDocumentBlock
+	endOfLine
+
+OptionalNestedDocumentBlock
+	NestedDocumentBlock
+	ε
+
+NestedDocumentBlock
+	indent DocumentBody outdent
 
 Tag
-	TagDeclaration TagAttributes TagBody
+	TagDefinition TagAttributes TagBody
 
-TagDeclaration
-	TagName ClassOrIdList
-	TagName
+InterpolatedTag
+	#[ TagDefinition TagAttributes InterpolatedTagBody ]
+
+TagDefinition
+	htmlIdentifier ClassOrIdList
 	ClassOrIdList
-
-TagName
-	html-identifier
 
 ClassOrIdList
 	ClassOrId ClassOrIdList
@@ -129,58 +144,68 @@ ClassOrId
 	IdName
 
 ClassName
-	. html-identifier
+	. htmlIdentifier
 
 IdName
-	# html-identifier
+	# htmlIdentifier
 
 TagAttributes
-	( TagAttributeList )
+	( TagAttributesList )
 	ε
 
-TagAttributeList
-	TagAttribute , TagAttributeList
+TagAttributesList
+	TagAttribute , TagAttributesList
 	TagAttribute
 	ε
 
 TagAttribute
-	html-identifier = Code
+	htmlIdentifier = Code
 
 TagBody
-	NormalTagBody
-	PipelessTagBody
-	EscapedCodeTagBody
-	UnescapedCodeTagBody
-
-NormalTagBody
-	Bod
-
-PipelessTagBody
-	. EndOfLine PipelessTextBlock
+	PipelessTextBlock
+	TagExpansion
+	BufferedCode
+	UnescapedBufferedCode
+	TextBody
 
 PipelessTextBlock
-	indent .... outdent
+	. endofLine OptionalNestedDocumentBlock
+
+TagExpansion
+	: Tag
+
+BufferedCode
+	= Code endOfLine OptionalNestedDocumentBlock
+
+InterpolatedBufferedCode
+	#{ Code }
+
+UnescapedBufferedCode
+	!= Code endOfLine OptionalNestedDocumentBlock
+
+InterpolatedUnescapedBufferedCode
+	!{ Code }
+
+UnbufferedCode
+	- Code endOfLine OptionalNestedDocumentBlock
+
+TextBody
+	TextBodyElementList endOfLine OptionalNestedDocumentBlock
+
+TextBodyElementList
+	TextBodyElement TextBodyElementList
 	ε
 
+TextBodyElement
+	htmlText
+	InterpolatedTag
+	InterpolatedBufferedCode
+	InterpolatedUnescapedBufferedCode
 
-MixinCall
+InterpolatedTagBody
 	//
 
 Code
 	//
-
-MixinList
-	Mixin MixinList
-	ε
-
-Mixin
-	mixin MixinBody
-
-MixinBody
-	//
-
-EndOfLine
-	new-line
-	end-of-input
 
 ε
