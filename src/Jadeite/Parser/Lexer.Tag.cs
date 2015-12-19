@@ -70,6 +70,13 @@ namespace Jadeite.Parser
                         return;
                     }
                     throw new Exception($"Unexpected token ']' at line {Line}, column {Column}."); // todo
+                case '/':
+                    ConsumeToken(TokenType.ForwardSlash, 1);
+                    ConsumeWhiteSpaceAsTrivia();
+                    if (!IsNewLineOrEnd(CurrentChar()))
+                        throw new Exception($"Expected end of line after the '/' on line {Line}."); // todo
+                    ExitState();
+                    return;
                 case '\r':
                 case '\n':
                 case INVALID_CHAR:
