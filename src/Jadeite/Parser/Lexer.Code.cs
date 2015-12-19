@@ -33,8 +33,8 @@ namespace Jadeite.Parser
         {
             ConsumeWhiteSpaceAsTrivia();
 
-            var isUnbuffered = _codeScanMode == CodeScanMode.UnbufferedBlock;
-            if (isUnbuffered && IndentLevel < _codeUnbufferedIndent)
+            var isBlock = _codeScanMode == CodeScanMode.UnbufferedBlock;
+            if (isBlock && IndentLevel < _codeUnbufferedIndent)
             {
                 switch (CurrentChar())
                 {
@@ -54,7 +54,7 @@ namespace Jadeite.Parser
             {
                 case '\r':
                 case '\n':
-                    if (isUnbuffered)
+                    if (isBlock)
                         TransitionToIndent();
                     else 
                         ExitState();
