@@ -68,6 +68,7 @@ namespace Jadeite.Parser
         Case,
         AndAttributes, // &attributes
         Model,
+        Doctype,
 
         // templating elements
         BufferedHtmlComment,
@@ -97,6 +98,7 @@ namespace Jadeite.Parser
         public const string CASE = "case";
         public const string ANDATTRIBUTES = "&attributes";
         public const string MODEL = "model";
+        public const string DOCTYPE = "doctype";
 
         public static string GetString(TokenType type)
         {
@@ -126,6 +128,8 @@ namespace Jadeite.Parser
                     return ANDATTRIBUTES;
                 case TokenType.Model:
                     return MODEL;
+                case TokenType.Doctype:
+                    return DOCTYPE;
                 default:
                     throw new Exception($"Keyword.GetString() called with token type {type}. Only keyword token types are allowed."); // todo
             }

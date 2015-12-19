@@ -94,6 +94,9 @@ namespace Jadeite.Parser
                 case 'b':
                     TryConsumeKeyword(TokenType.Block, out tok);
                     break;
+                case 'd':
+                    TryConsumeKeyword(TokenType.Doctype, out tok);
+                    break;
                 case 'e':
                     TryConsumeKeyword(TokenType.Extends, out tok);
                     break;

@@ -111,6 +111,9 @@ namespace Jadeite.Parser
                 case TokenType.Model:
                     TransitionToCode(CodeScanMode.Line);
                     return true;
+                case TokenType.Doctype:
+                    TransitionToBody(isInterpolation: false);
+                    return true;
                 case TokenType.Extends:
                 case TokenType.Prepend:
                 case TokenType.Append:
