@@ -2,9 +2,11 @@
 	- Add doctype keyword
 	- Add mixin call
 	- Figure out how to deal with unbuffered code blocks
+	- Make lexer aware of 
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
+- A grammar element followed by "-opt" is optional, and can resolve to ε
 
 --- TERMINALS --------------------------------------------
 
@@ -86,53 +88,43 @@ Punctuation
 --- NON-TERMINALS ----------------------------------------
 
 File
-	Template MixinList endOfInput
+	Template-opt MixinList-opt endOfInput
 
 Template
 	ModelDefinition Document
-	ε
 
 ModelDefinition
 	endOfLine ModelDefinition
 	model codeIdentifier endOfLine
-	ε
 
 Document
-	DoctypeDefinition DocumentBody
-	ε
+	DoctypeDefinition-opt DocumentBody
 
 DoctypeDefinition
 	endOfLine DoctypeDefinition
 	doctype htmlText endOfLine
-	ε
 
 DocumentBody
 	DocumentBodyElement DocumentBody
-	ε
+	DocumentBodyElement
 
 DocumentBodyElement
 	Tag
 	BufferedCode
 	UnescapedBufferedCode
 	UnbufferedCode
-	NestedDocumentBlock
+	DocumentBlock
+	HtmlComment
 	endOfLine
 
-OptionalNestedDocumentBlock
-	NestedDocumentBlock
-	ε
-
-NestedDocumentBlock
+DocumentBlock
 	indent DocumentBody outdent
 
 Tag
-	TagDefinition TagAttributes TagBody
+	TagElementDeclaration TagAttributes TagBody
 
-InterpolatedTag
-	#[ TagDefinition TagAttributes InterpolatedTagBody ]
-
-TagDefinition
-	htmlIdentifier ClassOrIdList
+TagElementDeclaration
+	htmlIdentifier ClassOrIdList-opt
 	ClassOrIdList
 
 ClassOrIdList
@@ -140,72 +132,69 @@ ClassOrIdList
 	ClassOrId
 
 ClassOrId
-	ClassName
-	IdName
-
-ClassName
-	. htmlIdentifier
-
-IdName
-	# htmlIdentifier
+	. htmlIdentifier  // class name
+	# htmlIdentifier  // ID
 
 TagAttributes
-	( TagAttributesList )
-	ε
+	( TagAttributesList-opt )
 
 TagAttributesList
 	TagAttribute , TagAttributesList
 	TagAttribute
-	ε
 
 TagAttribute
 	htmlIdentifier = Code
 
 TagBody
-	PipelessTextBlock
-	TagExpansion
-	BufferedCode
-	UnescapedBufferedCode
-	TextBody
+	: Tag                                                // tag expansion
+	. endofLine PipelessTextBlock-opt                    // pipeless text
+	= Code-opt endOfLine CodeBlock-opt                   // escaped buffered code
+	!= Code-opt endOfLine CodeBlock-opt                  // unescaped buffered code
+	TextBodyElementList-opt endOfLine DocumentBlock-opt  // normal body
+	/ endOfLine                                          // self-closing tag
 
 PipelessTextBlock
-	. endofLine OptionalNestedDocumentBlock
-
-TagExpansion
-	: Tag
-
-BufferedCode
-	= Code endOfLine OptionalNestedDocumentBlock
-
-InterpolatedBufferedCode
-	#{ Code }
-
-UnescapedBufferedCode
-	!= Code endOfLine OptionalNestedDocumentBlock
-
-InterpolatedUnescapedBufferedCode
-	!{ Code }
+	indent TextBodyElementList outdent
 
 UnbufferedCode
-	- Code endOfLine OptionalNestedDocumentBlock
+	- Code endOfLine DocumentBlock-opt
 
-TextBody
-	TextBodyElementList endOfLine OptionalNestedDocumentBlock
+HtmlComment
+	bufferedHtmlComment endOfLine
+	unbufferedHtmlComment endOfLine
 
 TextBodyElementList
+	TextBodyElement
 	TextBodyElement TextBodyElementList
-	ε
 
 TextBodyElement
 	htmlText
-	InterpolatedTag
-	InterpolatedBufferedCode
-	InterpolatedUnescapedBufferedCode
+	#[ InterpolatedTagDeclaration ]  // interpolated tag
+	#{ Code }                        // interpolated escaped buffered code
+	!{ Code }                        // interpolated unescaped buffered code
+
+InterpolatedTag
+	#[ InterpolatedTagDeclaration ]
+
+InterpolatedTagDeclaration
+	TagElementDeclaration TagAttributes-opt InterpolatedTagBody-opt
 
 InterpolatedTagBody
-	//
+	: InterpolatedTagDeclaration  // tag expansion
+	= Code                        // escaped buffered code
+	!= Code                       // unescaped buffered code
+	TextBodyElementList           // normal body
+	/                             // self-closing tag
+
+CodeBlock
+	indent MultiLineCode outdent
+
+MultiLineCode
+	Code endOfLine
+	Code endOfLine MultiLineCode
 
 Code
 	//
 
-ε
+MixinList
+	//
