@@ -1,8 +1,5 @@
 // todos
-	- Add doctype keyword
 	- Add mixin call
-	- Figure out how to deal with unbuffered code blocks
-	- Make lexer aware of 
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
@@ -102,7 +99,7 @@ Document
 
 DoctypeDefinition
 	endOfLine DoctypeDefinition
-	doctype htmlText endOfLine
+	doctype TextBodyElementList endOfLine
 
 DocumentBody
 	DocumentBodyElement DocumentBody
@@ -148,16 +145,30 @@ TagAttribute
 TagBody
 	: Tag                                                // tag expansion
 	. endofLine PipelessTextBlock-opt                    // pipeless text
-	= Code-opt endOfLine CodeBlock-opt                   // escaped buffered code
-	!= Code-opt endOfLine CodeBlock-opt                  // unescaped buffered code
+	BufferedCode DocumentBlock-opt                       // escaped buffered code
+	UnescapedBufferedCode DocumentBlock-opt              // unescaped buffered code
 	TextBodyElementList-opt endOfLine DocumentBlock-opt  // normal body
 	/ endOfLine                                          // self-closing tag
 
 PipelessTextBlock
 	indent TextBodyElementList outdent
 
+BufferedCode
+	= Code endOfLine
+
+UnescapedBufferedCode
+	!= Code endOfLine
+
 UnbufferedCode
+	- endOfLine UnbufferedCodeBlock
 	- Code endOfLine DocumentBlock-opt
+
+UnbufferedCodeBlock
+	indent MultiLineCode outdent
+
+MultiLineCode
+	Code endOfLine
+	Code endOfLine MultiLineCode
 
 HtmlComment
 	bufferedHtmlComment endOfLine
@@ -185,13 +196,6 @@ InterpolatedTagBody
 	!= Code                       // unescaped buffered code
 	TextBodyElementList           // normal body
 	/                             // self-closing tag
-
-CodeBlock
-	indent MultiLineCode outdent
-
-MultiLineCode
-	Code endOfLine
-	Code endOfLine MultiLineCode
 
 Code
 	//
