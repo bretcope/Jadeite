@@ -66,16 +66,37 @@ namespace Jadeite.Parser
                     ConsumeToken(TokenType.Dot, 1);
                     return;
                 case '|':
-                    if (NextChar() == '|')
-                        ConsumeToken(TokenType.PipePipe, 2);
-                    else
-                        ConsumeToken(TokenType.Pipe, 1);
-                    return;
+                    switch (NextChar())
+                    {
+                        case '|':
+                            ConsumeToken(TokenType.PipePipe, 2);
+                            return;
+                        case '=':
+                            ConsumeToken(TokenType.PipeEquals, 2);
+                            return;
+                        default:
+                            ConsumeToken(TokenType.Pipe, 1);
+                            return;
+                    }
                 case '&':
-                    if (NextChar() == '&')
-                        ConsumeToken(TokenType.AndAnd, 2);
+                    switch (NextChar())
+                    {
+                        case '&':
+                            ConsumeToken(TokenType.AndAnd, 2);
+                            return;
+                        case '=':
+                            ConsumeToken(TokenType.AndEquals, 2);
+                            return;
+                        default:
+                            ConsumeToken(TokenType.And, 1);
+                            return;
+
+                    }
+                case '^':
+                    if (NextChar() == '=')
+                        ConsumeToken(TokenType.CaretEquals, 2);
                     else
-                        ConsumeToken(TokenType.And, 1);
+                        ConsumeToken(TokenType.Caret, 1);
                     return;
                 case '+':
                     switch (NextChar())
