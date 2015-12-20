@@ -17,38 +17,38 @@ Stuff that Jadeite code can do:
 
 The following are reserved keywords, and may only be used as variable names if prefixed with `@`.
 
-- `var`
-- `const`
-- `loop`
-- `in`
-- `if`
-- `else`
-- `switch`
-- `case`
-- `default`
 - `break`
+- `case`
+- `const`
 - `continue`
-- `null`
-- `true`
+- `default`
+- `else`
 - `false`
-- `return`
 - `func`
+- `if`
+- `in`
+- `loop`
 - `model`
+- `null`
+- `return`
+- `switch`
+- `true`
+- `var`
 
 The following type keywords are available only for the purpose of numeric casting and as parameter type declarations:
 
+- `bool` (parameter declaration only)
 - `byte`
+- `char`
+- `double`
+- `int`
+- `long`
 - `sbyte`
 - `short`
-- `ushort`
-- `int`
-- `uint`
-- `long`
-- `ulong`
-- `double`
-- `char`
 - `string` (parameter declaration only)
-- `bool` (parameter declaration only)
+- `uint`
+- `ulong`
+- `ushort`
 
 Any line in a Jadeite template which begins with one of the above keywords is automatically interpreted as unbuffered code, and therefore does not need to start with a `-`.
 
