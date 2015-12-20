@@ -31,8 +31,8 @@ html(lang="en")
     p foo
     p bar
     //- will not output within markup
-    p foo
-    p bar
+    p(width=23)&attributes(someVar) foo
+    p&attributes(var1, var2) bar
     div
       //
         As much text as you want

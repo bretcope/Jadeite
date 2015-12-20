@@ -15,6 +15,7 @@ namespace Jadeite.Parser
             Body,
             Code,
             Attributes,
+            AndAttributes,
             HtmlComment,
         }
 
@@ -56,6 +57,9 @@ namespace Jadeite.Parser
                     break;
                 case LexerState.Attributes:
                     ScanAttributes();
+                    break;
+                case LexerState.AndAttributes:
+                    ScanAndAttributes();
                     break;
                 case LexerState.HtmlComment:
                     ScanHtmlComment();
@@ -138,6 +142,12 @@ namespace Jadeite.Parser
             }
 
             return tok;
+        }
+
+        private bool TryConsumeKeyword(TokenType type)
+        {
+            Token tok;
+            return TryConsumeKeyword(type, out tok);
         }
 
         private bool TryConsumeKeyword(TokenType type, out Token tok)

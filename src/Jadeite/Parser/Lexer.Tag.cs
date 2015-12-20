@@ -33,7 +33,15 @@ namespace Jadeite.Parser
                     ConsumeToken(TokenType.Hash, 1);
                     return;
                 case '&':
-                    throw new NotImplementedException("Haven't implemented &attributes yet.");
+                    if (!TryConsumeKeyword(TokenType.AndAttributes))
+                        throw new Exception($"Unexpected '&' not followed by 'attributes' at Line {Line} Column {Column}."); // todo
+
+                    if (CurrentChar() != '(')
+                        throw new Exception($"Expected an open paren '(' to follow &attributes at Line {Line} Column {Column}."); // todo
+
+                    ConsumeToken(TokenType.OpenParen, 1);
+                    TransitionToAndAttributes();
+                    return;
                 case ':':
                     var tok = ConsumeToken(TokenType.Colon, 1);
                     if (ConsumeWhiteSpaceAsTrivia() > 0)

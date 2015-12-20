@@ -1,5 +1,6 @@
 // todos
 	- Add mixin call
+	- unescaped attributes
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
@@ -19,6 +20,7 @@ Templating Kewords:
 	append
 	block
 	mixin
+	&attributes
 
 Templating Elements
 	bufferedHtmlComment
@@ -118,7 +120,7 @@ DocumentBlock
 	indent DocumentBody outdent
 
 Tag
-	TagElementDeclaration TagAttributes TagBody
+	TagElementDeclaration TagAttributes-opt AndAttributes-opt TagBody
 
 TagElementDeclaration
 	htmlIdentifier ClassOrIdList-opt
@@ -141,6 +143,11 @@ TagAttributesList
 
 TagAttribute
 	htmlIdentifier = Code
+	htmlIdentifier != Code
+	htmlIdentifier
+
+AndAttributes
+	&attributes ( CodeIdentifierList-opt )
 
 TagBody
 	: Tag                                                // tag expansion
@@ -201,4 +208,16 @@ Code
 	//
 
 MixinList
-	//
+	MixinDeclaration MixinList
+	MixinDeclaration
+
+MixinDeclaration
+	endOfLine MixinDeclaration
+	mixin htmlIdentifier MixinParametersDeclaration-opt DocumentBlock
+
+MixinParametersDeclaration
+	( CodeIdentifierList-opt )
+
+CodeIdentifierList
+	codeIdentifier , CodeIdentifierList
+	codeIdentifier
