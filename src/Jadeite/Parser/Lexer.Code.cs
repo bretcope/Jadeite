@@ -145,6 +145,12 @@ namespace Jadeite.Parser
                             ConsumeToken(TokenType.ForwardSlash, 1);
                             return;
                     }
+                case '%':
+                    if (NextChar() == '=')
+                        ConsumeToken(TokenType.PercentEquals, 2);
+                    else
+                        ConsumeToken(TokenType.Percent, 1);
+                    return;
                 case '=':
                     if (NextChar() == '=')
                         ConsumeToken(TokenType.EqualsEquals, 2);

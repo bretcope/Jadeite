@@ -35,6 +35,8 @@ namespace Jadeite.Parser
         AsteriskEquals,
         ForwardSlash,
         ForwardSlashEquals,
+        Percent,
+        PercentEquals,
         Equals,
         EqualsEquals,
         LessThan,
