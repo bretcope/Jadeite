@@ -1,4 +1,6 @@
-﻿namespace Jadeite.Parser
+﻿using System;
+
+namespace Jadeite.Parser
 {
     public partial class Lexer
     {
@@ -19,6 +21,12 @@
                     return;
                 case '=':
                     ConsumeToken(TokenType.Equals, 1);
+                    TransitionToCode(CodeScanMode.Attributes);
+                    return;
+                case '!':
+                    if (NextChar() != '=')
+                        throw new Exception($"Expected token at Line {Line} Column {Column}."); // todo
+                    ConsumeToken(TokenType.BangEquals, 2);
                     TransitionToCode(CodeScanMode.Attributes);
                     return;
                 case ',':
