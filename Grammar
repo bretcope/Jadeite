@@ -14,7 +14,7 @@ Significant Whitespace
 	indent
 	outdent
 
-Templating Kewords:
+Templating Kewords
 	extends
 	prepend
 	append
@@ -28,7 +28,7 @@ Templating Elements
 	htmlIdentifier
 	htmlText
 
-Code Keywords:
+Code Keywords
 	each
 	if
 	else
@@ -97,17 +97,17 @@ ModelDefinition
 	model codeIdentifier endOfLine
 
 Document
-	DoctypeDefinition-opt DocumentBody
+	ExtendsDefinition-opt DocumentBody
 
-DoctypeDefinition
-	endOfLine DoctypeDefinition
-	doctype TextBodyElementList endOfLine
+ExtendsDefinition
+	extends ( ArgumentList )  // expecting params (string viewName, object viewModel)
 
 DocumentBody
 	DocumentBodyElement DocumentBody
 	DocumentBodyElement
 
 DocumentBodyElement
+	DoctypeDefinition
 	Tag
 	BufferedCode
 	UnescapedBufferedCode
@@ -115,6 +115,9 @@ DocumentBodyElement
 	DocumentBlock
 	HtmlComment
 	endOfLine
+
+DoctypeDefinition
+	doctype TextBodyElementList endOfLine
 
 DocumentBlock
 	indent DocumentBody outdent
@@ -187,37 +190,44 @@ TextBodyElementList
 
 TextBodyElement
 	htmlText
-	#[ InterpolatedTagDeclaration ]  // interpolated tag
+	#[ InterpolatedTagDefinition ]   // interpolated tag
 	#{ Code }                        // interpolated escaped buffered code
 	!{ Code }                        // interpolated unescaped buffered code
 
 InterpolatedTag
-	#[ InterpolatedTagDeclaration ]
+	#[ InterpolatedTagDefinition ]
 
-InterpolatedTagDeclaration
+InterpolatedTagDefinition
 	TagElementDeclaration TagAttributes-opt InterpolatedTagBody-opt
 
 InterpolatedTagBody
-	: InterpolatedTagDeclaration  // tag expansion
+	: InterpolatedTagDefinition   // tag expansion
 	= Code                        // escaped buffered code
 	!= Code                       // unescaped buffered code
 	TextBodyElementList           // normal body
 	/                             // self-closing tag
 
-Code
-	//
-
 MixinList
-	MixinDeclaration MixinList
-	MixinDeclaration
+	MixinDefinition MixinList
+	MixinDefinition
 
-MixinDeclaration
-	endOfLine MixinDeclaration
-	mixin htmlIdentifier MixinParametersDeclaration-opt DocumentBlock
+MixinDefinition
+	endOfLine MixinDefinition
+	mixin htmlIdentifier MixinParametersDefinition-opt DocumentBlock
 
-MixinParametersDeclaration
+MixinParametersDefinition
 	( CodeIdentifierList-opt )
 
 CodeIdentifierList
 	codeIdentifier , CodeIdentifierList
 	codeIdentifier
+
+Code
+	//
+
+ArgumentList
+	Expression , ArgumentList
+	Expression
+
+Expression
+	//
