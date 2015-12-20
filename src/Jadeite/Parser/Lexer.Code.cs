@@ -134,7 +134,10 @@ namespace Jadeite.Parser
                     switch (NextChar())
                     {
                         case '<':
-                            ConsumeToken(TokenType.LessThanLessThan, 2);
+                            if (CharAt(Index + 2) == '=')
+                                ConsumeToken(TokenType.LessThanLessThanEquals, 3);
+                            else
+                                ConsumeToken(TokenType.LessThanLessThan, 2);
                             return;
                         case '=':
                             ConsumeToken(TokenType.LessThanEquals, 2);
@@ -147,7 +150,10 @@ namespace Jadeite.Parser
                     switch (NextChar())
                     {
                         case '>':
-                            ConsumeToken(TokenType.GreaterThanGreaterThan, 2);
+                            if (CharAt(Index + 2) == '=')
+                                ConsumeToken(TokenType.GreaterThanGreaterThanEquals, 3);
+                            else
+                                ConsumeToken(TokenType.GreaterThanGreaterThan, 2);
                             return;
                         case '=':
                             ConsumeToken(TokenType.GreaterThanEquals, 2);
