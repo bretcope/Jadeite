@@ -17,6 +17,7 @@ namespace Jadeite.Parser
             Attributes,
             AndAttributes,
             HtmlComment,
+            NamedBlock,
         }
 
         private readonly Stack<LexerState> _stateStack = new Stack<LexerState>();
@@ -64,6 +65,9 @@ namespace Jadeite.Parser
                 case LexerState.HtmlComment:
                     ScanHtmlComment();
                     break;
+                case LexerState.NamedBlock:
+                    ScanNamedBlock();
+                    break;
                 default:
                     throw new NotImplementedException();
             }
@@ -103,6 +107,9 @@ namespace Jadeite.Parser
                     break;
                 case 'e':
                     TryConsumeKeyword(TokenType.Extends, out tok);
+                    break;
+                case 'i':
+                    TryConsumeKeyword(TokenType.Include, out tok);
                     break;
                 case 'm':
                     if (TryConsumeKeyword(TokenType.Mixin, out tok)

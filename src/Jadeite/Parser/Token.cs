@@ -60,6 +60,7 @@ namespace Jadeite.Parser
         Prepend,
         Append,
         Block,
+        Include,
         Mixin,
         Each,
         If,
@@ -90,6 +91,7 @@ namespace Jadeite.Parser
         public const string PREPEND = "prepend";
         public const string APPEND = "append";
         public const string BLOCK = "block";
+        public const string INCLUDE = "include";
         public const string MIXIN = "mixin";
         public const string EACH = "each";
         public const string IF = "if";
@@ -112,6 +114,8 @@ namespace Jadeite.Parser
                     return APPEND;
                 case TokenType.Block:
                     return BLOCK;
+                case TokenType.Include:
+                    return INCLUDE;
                 case TokenType.Mixin:
                     return MIXIN;
                 case TokenType.Each:

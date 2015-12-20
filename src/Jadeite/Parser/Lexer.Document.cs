@@ -114,10 +114,13 @@ namespace Jadeite.Parser
                 case TokenType.Doctype:
                     TransitionToBody(isInterpolation: false);
                     return true;
-                case TokenType.Extends:
                 case TokenType.Prepend:
                 case TokenType.Append:
                 case TokenType.Block:
+                    TransitionToNamedBlock();
+                    return true;
+                case TokenType.Extends:
+                case TokenType.Include:
                 case TokenType.Mixin:
                 default:
                     throw new Exception($"Unsupported transition from document to keyword type {tok.Type}.");
