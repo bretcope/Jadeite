@@ -1,6 +1,9 @@
 // todos
 	- Add mixin call
-	- unescaped attributes
+	- Filters
+	- Add include to lexer
+	- Add extends to lexer
+	- Add named blocks to lexer
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
@@ -19,6 +22,7 @@ Templating Kewords
 	prepend
 	append
 	block
+	include
 	mixin
 	&attributes
 
@@ -108,16 +112,31 @@ DocumentBody
 
 DocumentBodyElement
 	DoctypeDefinition
-	Tag
+	NamedBlock
+	IncludeDefinition
 	BufferedCode
 	UnescapedBufferedCode
 	UnbufferedCode
 	DocumentBlock
 	HtmlComment
+	Tag
 	endOfLine
 
 DoctypeDefinition
 	doctype TextBodyElementList endOfLine
+
+NamedBlock
+	NamedBlockPrefix htmlIdentifier endOfLine DocumentBlock-opt
+
+NamedBlockPrefix
+	block append
+	block prepend
+	block
+	append
+	prepend
+
+IncludeDefinition
+	include ( ArgumentList )  // expecting params (string viewName, object viewModel)
 
 DocumentBlock
 	indent DocumentBody outdent
