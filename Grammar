@@ -6,7 +6,7 @@
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
-- A grammar element followed by "-opt" is optional, and can resolve to ε
+- A grammar element followed by "_opt" is optional, and can resolve to ε
 
 --- TERMINALS --------------------------------------------
 
@@ -17,27 +17,53 @@ Significant Whitespace
 	outdent
 
 Templating Kewords
-	extends
-	prepend
 	append
 	block
+	doctype
+	extends
 	include
 	mixin
-	&attributes
+	prepend
+
+Code Keywords
+	attributes
+	break
+	case
+	const
+	continue
+	default
+	else
+	false
+	func
+	if
+	in
+	loop
+	model
+	null
+	return
+	switch
+	true
+	var
+
+Type Keywords
+	bool
+	byte
+	char
+	double
+	int
+	long
+	sbyte
+	short
+	string
+	uint
+	ulong
+	ushort
 
 Templating Elements
 	bufferedHtmlComment
 	unbufferedHtmlComment
 	htmlIdentifier
 	htmlText
-
-Code Keywords
-	each
-	if
-	else
-	switch
-	case
-	model
 
 Code Elements
 	codeComment
@@ -95,10 +121,10 @@ Punctuation
 	[
 	]
 
---- NON-TERMINALS ----------------------------------------
+--- TEMPLATE NON-TERMINALS -------------------------------
 
 File
-	Template-opt MixinList-opt endOfInput
+	Template_opt MixinList_opt endOfInput
 
 Template
 	ModelDefinition Document
@@ -108,7 +134,7 @@ ModelDefinition
 	model codeIdentifier endOfLine
 
 Document
-	ExtendsDefinition-opt DocumentBody
+	ExtendsDefinition_opt DocumentBody
 
 ExtendsDefinition
 	extends ( ArgumentList )  // expecting params (string viewName, object viewModel)
@@ -133,7 +159,7 @@ DoctypeDefinition
 	doctype TextBodyElementList endOfLine
 
 NamedBlock
-	NamedBlockPrefix htmlIdentifier endOfLine DocumentBlock-opt
+	NamedBlockPrefix htmlIdentifier endOfLine DocumentBlock_opt
 
 NamedBlockPrefix
 	block append
@@ -149,10 +175,10 @@ DocumentBlock
 	indent DocumentBody outdent
 
 Tag
-	TagElementDeclaration TagAttributes-opt AndAttributes-opt TagBody
+	TagElementDeclaration TagAttributes_opt AndAttributes_opt TagBody
 
 TagElementDeclaration
-	htmlIdentifier ClassOrIdList-opt
+	htmlIdentifier ClassOrIdList_opt
 	ClassOrIdList
 
 ClassOrIdList
@@ -164,47 +190,43 @@ ClassOrId
 	# htmlIdentifier  // ID
 
 TagAttributes
-	( TagAttributesList-opt )
+	( TagAttributesList_opt )
 
 TagAttributesList
 	TagAttribute , TagAttributesList
 	TagAttribute
 
 TagAttribute
-	htmlIdentifier = Code
-	htmlIdentifier != Code
+	htmlIdentifier = Expression
+	htmlIdentifier != Expression
 	htmlIdentifier
 
 AndAttributes
-	&attributes ( CodeIdentifierList-opt )
+	&attributes ( CodeIdentifierList_opt )
 
 TagBody
 	: Tag                                                // tag expansion
-	. endofLine PipelessTextBlock-opt                    // pipeless text
-	BufferedCode DocumentBlock-opt                       // escaped buffered code
-	UnescapedBufferedCode DocumentBlock-opt              // unescaped buffered code
-	TextBodyElementList-opt endOfLine DocumentBlock-opt  // normal body
+	. endofLine PipelessTextBlock_opt                    // pipeless text
+	BufferedCode DocumentBlock_opt                       // escaped buffered code
+	UnescapedBufferedCode DocumentBlock_opt              // unescaped buffered code
+	TextBodyElementList_opt endOfLine DocumentBlock_opt  // normal body
 	/ endOfLine                                          // self-closing tag
 
 PipelessTextBlock
 	indent TextBodyElementList outdent
 
 BufferedCode
-	= Code endOfLine
+	= Expression endOfLine
 
 UnescapedBufferedCode
-	!= Code endOfLine
+	!= Expression endOfLine
 
 UnbufferedCode
 	- endOfLine UnbufferedCodeBlock
-	- Code endOfLine DocumentBlock-opt
+	-_opt Statement
 
 UnbufferedCodeBlock
-	indent MultiLineCode outdent
-
-MultiLineCode
-	Code endOfLine
-	Code endOfLine MultiLineCode
+	indent StatementList outdent
 
 HtmlComment
 	bufferedHtmlComment endOfLine
@@ -217,19 +239,19 @@ TextBodyElementList
 TextBodyElement
 	htmlText
 	#[ InterpolatedTagDefinition ]   // interpolated tag
-	#{ Code }                        // interpolated escaped buffered code
-	!{ Code }                        // interpolated unescaped buffered code
+	#{ Expression }                  // interpolated escaped buffered code
+	!{ Expression }                  // interpolated unescaped buffered code
 
 InterpolatedTag
 	#[ InterpolatedTagDefinition ]
 
 InterpolatedTagDefinition
-	TagElementDeclaration TagAttributes-opt InterpolatedTagBody-opt
+	TagElementDeclaration TagAttributes_opt InterpolatedTagBody_opt
 
 InterpolatedTagBody
 	: InterpolatedTagDefinition   // tag expansion
-	= Code                        // escaped buffered code
-	!= Code                       // unescaped buffered code
+	= Expression                  // escaped buffered code
+	!= Expression                 // unescaped buffered code
 	TextBodyElementList           // normal body
 	/                             // self-closing tag
 
@@ -239,26 +261,155 @@ MixinList
 
 MixinDefinition
 	endOfLine MixinDefinition
-	mixin htmlIdentifier MixinParametersDefinition-opt DocumentBlock
+	mixin htmlIdentifier MixinParametersDefinition_opt DocumentBlock
 
 MixinParametersDefinition
-	( CodeIdentifierList-opt )
+	( CodeIdentifierList_opt )
+
+--- STATEMENTS -------------------------------------------
+
+Statement
+	StatementExpression endOfLine
+	SelectionStatement
+	IterationStatement
+	JumpStatement
+
+StatementList
+	Statement StatementList
+	Statement
+
+DeclarationStatement
+	LocalVariableDeclaration
+	LocalConstantDeclaration
+
+StatementExpression
+	InvocationExpression
+	Assignment
+	PostIncrementExpression
+	PostDecrementExpression
+	PreIncrementExpression
+	PreDecrementExpression
+
+SelectionStatement
+	IfStatement
+	SwitchStatement
+
+IfStatement
+	if Expression endOfLine DocumentBlock ElseStatement_opt
+
+ElseStatement
+	else IfStatement
+	else endOfLine DocumentBlock
+
+SwitchStatement
+	switch Expression endOfLine SwitchBody
+
+SwitchBody
+	indent SwitchSectionList outdent
+
+SwitchSectionList
+	SwitchSection SwitchSectionList
+	SwitchSection
+
+SwitchSection
+	SwitchLabelList DocumentBlock
+
+SwitchLabelList
+	SwitchLabel SwitchLabelList
+	SwitchLabel
+
+SwitchLabel
+	case ExpressionList endOfLine
+	default endOfLine
+
+IterationStatement
+	loop Expression_opt endOfLine DocumentBlock                                     // while
+	loop ForInitializer_opt ; Expression ; ForIterator_opt endOfLine DocumentBlock  // for
+	loop AssignmentTarget in Expression endOfLine DocumentBlock                   // for-each
+
+ForInitializer
+	LocalVariableDeclaration
+	StatementExpressionList
+
+ForIterator
+	StatementExpressionList
+
+StatementExpressionList
+	StatementExpression , StatementExpressionList
+	StatementExpression
+
+JumpStatement
+	BreakStatement
+	ContinueStatement
+	ReturnStatement
+
+BreakStatement
+	break endOfLine
+
+ContinueStatement
+	continue endOfLine
+
+ReturnStatement
+	return ExpressionList_opt endOfLine
+
+AssignmentTarget
+	codeIdentifier
+	SingleVariableDeclaration
+	MultipleVariableDeclaration
+	( IdentifierOrDeclarationList )
+
+IdentifierOrDeclarationList
+	IdentifierOrDeclaration , IdentifierOrDeclarationList
+	IdentifierOrDeclaration
+
+IdentifierOrDeclaration
+	codeIdentifier
+	SingleVariableDeclaration
+
+SingleVariableDeclaration
+	var codeIdentifier
+
+MultipleVariableDeclaration
+	var ( CodeIdentifierList )
 
 CodeIdentifierList
 	codeIdentifier , CodeIdentifierList
 	codeIdentifier
 
-Code
-	Statement ; Code
-	Statement ;-opt
-
-Statement
-	Expression
-	//
+--- EXPRESSIONS ------------------------------------------
 
 ArgumentList
 	Expression , ArgumentList
 	Expression
 
 Expression
+	ConditionalExpression
+	Assignment
+
+ExpressionList
+	Expression , ExpressionList
+	Expression
+
+PrimaryExpression
+	//
+
+Assignment
+	//
+
+ConditionalExpression
+	//
+
+InvocationExpression
+	PrimaryExpression ( ArgumentList_opt )
+
+PostIncrementExpression
+	//
+
+PostDecrementExpression
+	//
+
+PreIncrementExpression
+	//
+
+PreDecrementExpression
 	//

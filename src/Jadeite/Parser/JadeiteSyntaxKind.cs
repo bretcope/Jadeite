@@ -67,7 +67,6 @@ namespace Jadeite.Parser
 
         [StartOf(SyntaxCategory.TemplateKeyword)]
         AppendKeyword,
-        AttributesKeyword,
         BlockKeyword,
         DoctypeKeyword,
         ExtendsKeyword,
@@ -76,6 +75,7 @@ namespace Jadeite.Parser
         PrependKeyword,
 
         [StartOf(SyntaxCategory.CodeKeyword)]
+        AttributesKeyword,
         BreakKeyword,
         CaseKeyword,
         ConstKeyword,

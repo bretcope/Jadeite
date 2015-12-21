@@ -97,9 +97,7 @@ namespace Jadeite.Parser
             switch (CurrentChar())
             {
                 case 'a':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.AppendKeyword, out tok))
-                        break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.AttributesKeyword);
+                    TryConsumeKeyword(JadeiteSyntaxKind.AppendKeyword, out tok);
                     break;
                 case 'b':
                     TryConsumeKeyword(JadeiteSyntaxKind.BlockKeyword, out tok);
@@ -130,6 +128,9 @@ namespace Jadeite.Parser
 
             switch (CurrentChar())
             {
+                case 'a':
+                    TryConsumeKeyword(JadeiteSyntaxKind.AttributesKeyword, out tok);
+                    break;
                 case 'b':
                     if (TryConsumeKeyword(JadeiteSyntaxKind.BreakKeyword, out tok))
                         break;
