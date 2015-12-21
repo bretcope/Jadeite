@@ -15,11 +15,11 @@ namespace Jadeite.Parser
             switch (CurrentChar())
             {
                 case ')':
-                    ConsumeToken(TokenType.CloseParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.CloseParen, 1);
                     ExitState();
                     return;
                 case ',':
-                    ConsumeToken(TokenType.Comma, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Comma, 1);
                     return;
                 default:
                     ScanCodeIdentifier();

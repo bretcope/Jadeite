@@ -40,7 +40,7 @@ namespace Jadeite.Parser
                         {
                             if (i == Index)
                             {
-                                ConsumeToken(TokenType.CloseSquareBracket, 1);
+                                ConsumeToken(JadeiteSyntaxKind.CloseSquareBracket, 1);
                                 ExitState();
                                 return;
                             }
@@ -54,7 +54,7 @@ namespace Jadeite.Parser
                         {
                             if (i == Index)
                             {
-                                ConsumeToken(TokenType.OpenEscapedInterpolation, 2);
+                                ConsumeToken(JadeiteSyntaxKind.OpenEscapedInterpolation, 2);
                                 TransitionToCode(CodeScanMode.CurlyInterpolation);
                                 return;
                             }
@@ -66,7 +66,7 @@ namespace Jadeite.Parser
                         {
                             if (i == Index)
                             {
-                                ConsumeToken(TokenType.OpenTagInterpolation, 2);
+                                ConsumeToken(JadeiteSyntaxKind.OpenTagInterpolation, 2);
                                 TransitionToTag(isInterpolation: true);
                                 return;
                             }
@@ -80,7 +80,7 @@ namespace Jadeite.Parser
                         {
                             if (i == Index)
                             {
-                                ConsumeToken(TokenType.OpenNonEscapedInterpolation, 2);
+                                ConsumeToken(JadeiteSyntaxKind.OpenNonEscapedInterpolation, 2);
                                 TransitionToCode(CodeScanMode.CurlyInterpolation);
                                 return;
                             }
@@ -108,7 +108,7 @@ namespace Jadeite.Parser
                 return;
             }
 
-            ConsumeToken(TokenType.HtmlText, i - Index, sb.ToString());
+            ConsumeToken(JadeiteSyntaxKind.HtmlText, i - Index, sb.ToString());
             sb.Clear();
         }
 

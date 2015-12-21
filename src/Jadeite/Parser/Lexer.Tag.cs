@@ -18,7 +18,7 @@ namespace Jadeite.Parser
             switch (CurrentChar())
             {
                 case '.':
-                    ConsumeToken(TokenType.Dot, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Dot, 1);
                     if (IsWhiteSpaceNewLineOrEnd(CurrentChar()))
                     {
                         ConsumeWhiteSpaceAsTrivia();
@@ -30,39 +30,40 @@ namespace Jadeite.Parser
                     }
                     return;
                 case '#':
-                    ConsumeToken(TokenType.Hash, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Hash, 1);
                     return;
                 case '&':
-                    if (!TryConsumeKeyword(TokenType.AndAttributes))
+                    ConsumeToken(JadeiteSyntaxKind.And, 1);
+                    if (!TryConsumeKeyword(JadeiteSyntaxKind.AttributesKeyword))
                         throw new Exception($"Unexpected '&' not followed by 'attributes' at Line {Line} Column {Column}."); // todo
 
                     if (CurrentChar() != '(')
                         throw new Exception($"Expected an open paren '(' to follow &attributes at Line {Line} Column {Column}."); // todo
 
-                    ConsumeToken(TokenType.OpenParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.OpenParen, 1);
                     TransitionToAndAttributes();
                     return;
                 case ':':
-                    var tok = ConsumeToken(TokenType.Colon, 1);
+                    var tok = ConsumeToken(JadeiteSyntaxKind.Colon, 1);
                     if (ConsumeWhiteSpaceAsTrivia() > 0)
                         tok.TrailingTrivia = PopTrivia();
                     return;
                 case '=':
-                    ConsumeToken(TokenType.Equals, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Equals, 1);
                     ExitState();
                     TransitionToCode(_isTagInterpolation ? CodeScanMode.SquareInterpolation : CodeScanMode.Line);
                     return;
                 case '!':
                     if (NextChar() == '=')
                     {
-                        ConsumeToken(TokenType.BangEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.BangEquals, 2);
                         ExitState();
                         TransitionToCode(_isTagInterpolation ? CodeScanMode.SquareInterpolation : CodeScanMode.Line);
                         return;
                     }
                     throw new Exception($"Unexpected token ']' at line {Line}, column {Column}."); // todo
                 case '(':
-                    ConsumeToken(TokenType.OpenParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.OpenParen, 1);
                     TransitionToAttributes();
                     return;
                 case ' ':
@@ -79,7 +80,7 @@ namespace Jadeite.Parser
                     }
                     throw new Exception($"Unexpected token ']' at line {Line}, column {Column}."); // todo
                 case '/':
-                    ConsumeToken(TokenType.ForwardSlash, 1);
+                    ConsumeToken(JadeiteSyntaxKind.ForwardSlash, 1);
                     ConsumeWhiteSpaceAsTrivia();
                     if (!IsNewLineOrEnd(CurrentChar()))
                         throw new Exception($"Expected end of line after the '/' on line {Line}."); // todo
@@ -110,7 +111,7 @@ namespace Jadeite.Parser
                     break;
             }
 
-            ConsumeToken(TokenType.HtmlIdentifier, len, useTextAsValue: true);
+            ConsumeToken(JadeiteSyntaxKind.HtmlIdentifier, len, useTextAsValue: true);
         }
     }
 }

@@ -22,14 +22,14 @@ namespace Jadeite.Parser.Nodes
         {
             foreach (var tok in tokens)
             {
-                Debug.Assert(tok.Type == TokenType.Indent);
+                Debug.Assert(tok.Type == JadeiteSyntaxKind.Indent);
                 AddChild(tok);
             }
         }
 
         internal void SetTagName(Token tok)
         {
-            Debug.Assert(tok.Type == TokenType.HtmlIdentifier);
+            Debug.Assert(tok.Type == JadeiteSyntaxKind.HtmlIdentifier);
             Debug.Assert(TagNameToken == null);
             Debug.Assert(tok.Value is string);
 
@@ -40,7 +40,7 @@ namespace Jadeite.Parser.Nodes
 
         internal void SetId(Token tok)
         {
-            Debug.Assert(tok.Type == TokenType.HtmlIdentifier);
+            Debug.Assert(tok.Type == JadeiteSyntaxKind.HtmlIdentifier);
             Debug.Assert(Id == null);
             Debug.Assert(tok.Value is string);
 
@@ -51,7 +51,7 @@ namespace Jadeite.Parser.Nodes
 
         internal void AddClassName(Token tok)
         {
-            Debug.Assert(tok.Type == TokenType.HtmlIdentifier);
+            Debug.Assert(tok.Type == JadeiteSyntaxKind.HtmlIdentifier);
             Debug.Assert(tok.Value is string);
 
             AddChild(tok);

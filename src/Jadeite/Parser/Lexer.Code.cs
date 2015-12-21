@@ -63,52 +63,52 @@ namespace Jadeite.Parser
                     ExitState();
                     return;
                 case '.':
-                    ConsumeToken(TokenType.Dot, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Dot, 1);
                     return;
                 case '|':
                     switch (NextChar())
                     {
                         case '|':
-                            ConsumeToken(TokenType.PipePipe, 2);
+                            ConsumeToken(JadeiteSyntaxKind.PipePipe, 2);
                             return;
                         case '=':
-                            ConsumeToken(TokenType.PipeEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.PipeEquals, 2);
                             return;
                         default:
-                            ConsumeToken(TokenType.Pipe, 1);
+                            ConsumeToken(JadeiteSyntaxKind.Pipe, 1);
                             return;
                     }
                 case '&':
                     switch (NextChar())
                     {
                         case '&':
-                            ConsumeToken(TokenType.AndAnd, 2);
+                            ConsumeToken(JadeiteSyntaxKind.AndAnd, 2);
                             return;
                         case '=':
-                            ConsumeToken(TokenType.AndEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.AndEquals, 2);
                             return;
                         default:
-                            ConsumeToken(TokenType.And, 1);
+                            ConsumeToken(JadeiteSyntaxKind.And, 1);
                             return;
 
                     }
                 case '^':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.CaretEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.CaretEquals, 2);
                     else
-                        ConsumeToken(TokenType.Caret, 1);
+                        ConsumeToken(JadeiteSyntaxKind.Caret, 1);
                     return;
                 case '+':
                     switch (NextChar())
                     {
                         case '+':
-                            ConsumeToken(TokenType.PlusPlus, 2);
+                            ConsumeToken(JadeiteSyntaxKind.PlusPlus, 2);
                             break;
                         case '=':
-                            ConsumeToken(TokenType.PlusEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.PlusEquals, 2);
                             break;
                         default:
-                            ConsumeToken(TokenType.Plus, 1);
+                            ConsumeToken(JadeiteSyntaxKind.Plus, 1);
                             break;
                     }
                     return;
@@ -116,61 +116,61 @@ namespace Jadeite.Parser
                     switch (NextChar())
                     {
                         case '-':
-                            ConsumeToken(TokenType.MinusMinus, 2);
+                            ConsumeToken(JadeiteSyntaxKind.MinusMinus, 2);
                             break;
                         case '=':
-                            ConsumeToken(TokenType.MinusEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.MinusEquals, 2);
                             break;
                         default:
-                            ConsumeToken(TokenType.Minus, 1);
+                            ConsumeToken(JadeiteSyntaxKind.Minus, 1);
                             break;
                     }
                     return;
                 case '*':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.AsteriskEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.AsteriskEquals, 2);
                     else
-                        ConsumeToken(TokenType.Asterisk, 1);
+                        ConsumeToken(JadeiteSyntaxKind.Asterisk, 1);
                     return;
                 case '/':
                     switch (NextChar())
                     {
                         case '=':
-                            ConsumeToken(TokenType.ForwardSlashEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.ForwardSlashEquals, 2);
                             return;
                         case '/':
                             ScanCodeLineComment();
                             return;
                         default:
-                            ConsumeToken(TokenType.ForwardSlash, 1);
+                            ConsumeToken(JadeiteSyntaxKind.ForwardSlash, 1);
                             return;
                     }
                 case '%':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.PercentEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.PercentEquals, 2);
                     else
-                        ConsumeToken(TokenType.Percent, 1);
+                        ConsumeToken(JadeiteSyntaxKind.Percent, 1);
                     return;
                 case '=':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.EqualsEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.EqualsEquals, 2);
                     else
-                        ConsumeToken(TokenType.Equals, 1);
+                        ConsumeToken(JadeiteSyntaxKind.Equals, 1);
                     return;
                 case '<':
                     switch (NextChar())
                     {
                         case '<':
                             if (CharAt(Index + 2) == '=')
-                                ConsumeToken(TokenType.LessThanLessThanEquals, 3);
+                                ConsumeToken(JadeiteSyntaxKind.LessThanLessThanEquals, 3);
                             else
-                                ConsumeToken(TokenType.LessThanLessThan, 2);
+                                ConsumeToken(JadeiteSyntaxKind.LessThanLessThan, 2);
                             return;
                         case '=':
-                            ConsumeToken(TokenType.LessThanEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.LessThanEquals, 2);
                             return;
                         default:
-                            ConsumeToken(TokenType.LessThan, 1);
+                            ConsumeToken(JadeiteSyntaxKind.LessThan, 1);
                             return;
                     }
                 case '>':
@@ -178,15 +178,15 @@ namespace Jadeite.Parser
                     {
                         case '>':
                             if (CharAt(Index + 2) == '=')
-                                ConsumeToken(TokenType.GreaterThanGreaterThanEquals, 3);
+                                ConsumeToken(JadeiteSyntaxKind.GreaterThanGreaterThanEquals, 3);
                             else
-                                ConsumeToken(TokenType.GreaterThanGreaterThan, 2);
+                                ConsumeToken(JadeiteSyntaxKind.GreaterThanGreaterThan, 2);
                             return;
                         case '=':
-                            ConsumeToken(TokenType.GreaterThanEquals, 2);
+                            ConsumeToken(JadeiteSyntaxKind.GreaterThanEquals, 2);
                             return;
                         default:
-                            ConsumeToken(TokenType.GreaterThan, 1);
+                            ConsumeToken(JadeiteSyntaxKind.GreaterThan, 1);
                             return;
                     }
                 case ',':
@@ -195,25 +195,25 @@ namespace Jadeite.Parser
                         ExitState();
                         return;
                     }
-                    ConsumeToken(TokenType.Comma, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Comma, 1);
                     return;
                 case ';':
-                    ConsumeToken(TokenType.SemiColon, 1);
+                    ConsumeToken(JadeiteSyntaxKind.SemiColon, 1);
                     return;
                 case '!':
                     if (NextChar() == '=')
-                        ConsumeToken(TokenType.BangEquals, 2);
+                        ConsumeToken(JadeiteSyntaxKind.BangEquals, 2);
                     else
-                        ConsumeToken(TokenType.Bang, 1);
+                        ConsumeToken(JadeiteSyntaxKind.Bang, 1);
                     return;
                 case '?':
-                    ConsumeToken(TokenType.QuestionMark, 1);
+                    ConsumeToken(JadeiteSyntaxKind.QuestionMark, 1);
                     return;
                 case ':':
-                    ConsumeToken(TokenType.Colon, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Colon, 1);
                     return;
                 case '(':
-                    ConsumeToken(TokenType.OpenParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.OpenParen, 1);
                     _codeNestingStack.Push('(');
                     return;
                 case ')':
@@ -227,10 +227,10 @@ namespace Jadeite.Parser
                         ExitState();
                         return;
                     }
-                    ConsumeToken(TokenType.CloseParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.CloseParen, 1);
                     return;
                 case '{':
-                    ConsumeToken(TokenType.OpenCurly, 1);
+                    ConsumeToken(JadeiteSyntaxKind.OpenCurly, 1);
                     _codeNestingStack.Push('{');
                     return;
                 case '}':
@@ -244,10 +244,10 @@ namespace Jadeite.Parser
                         ExitState();
                         return;
                     }
-                    ConsumeToken(TokenType.CloseCurly, 1);
+                    ConsumeToken(JadeiteSyntaxKind.CloseCurly, 1);
                     return;
                 case '[':
-                    ConsumeToken(TokenType.OpenSquareBracket, 1);
+                    ConsumeToken(JadeiteSyntaxKind.OpenSquareBracket, 1);
                     _codeNestingStack.Push('[');
                     return;
                 case ']':
@@ -261,7 +261,7 @@ namespace Jadeite.Parser
                         ExitState();
                         return;
                     }
-                    ConsumeToken(TokenType.CloseSquareBracket, 1);
+                    ConsumeToken(JadeiteSyntaxKind.CloseSquareBracket, 1);
                     return;
                 case '@':
                     if (NextChar() == '"')
@@ -385,7 +385,7 @@ namespace Jadeite.Parser
                     break;
             }
 
-            ConsumeToken(TokenType.CodeIdentifier, len, useTextAsValue: true);
+            ConsumeToken(JadeiteSyntaxKind.CodeIdentifier, len, useTextAsValue: true);
         }
     }
 }

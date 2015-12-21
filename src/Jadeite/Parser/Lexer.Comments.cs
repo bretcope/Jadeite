@@ -73,7 +73,7 @@ namespace Jadeite.Parser
             }
 
             if (dex > Index)
-                ConsumeToken(_htmlCommentBuffered ? TokenType.BufferedHtmlComment : TokenType.UnbufferedHtmlComment, dex - Index, sb.ToString());
+                ConsumeToken(_htmlCommentBuffered ? JadeiteSyntaxKind.BufferedHtmlComment : JadeiteSyntaxKind.UnbufferedHtmlComment, dex - Index, sb.ToString());
         }
 
         private Token ScanCodeLineComment()
@@ -96,7 +96,7 @@ namespace Jadeite.Parser
                 break;
             }
 
-            return ConsumeToken(TokenType.CodeComment, valueLen, Input.Substring(Index + 2, valueLen - 2));
+            return ConsumeToken(JadeiteSyntaxKind.CodeComment, valueLen, Input.Substring(Index + 2, valueLen - 2));
         }
     }
 }

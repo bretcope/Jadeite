@@ -48,7 +48,7 @@ namespace Jadeite.Parser
                 Lex();
         }
 
-        protected Token ConsumeToken(TokenType type, int length, object value = null, bool useTextAsValue = false)
+        protected Token ConsumeToken(JadeiteSyntaxKind type, int length, object value = null, bool useTextAsValue = false)
         {
             var text = Input.Substring(Index, length);
             var tok = new Token

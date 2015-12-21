@@ -3,7 +3,6 @@
 	- Filters
 	- Add include to lexer
 	- Add extends to lexer
-	- Add named blocks to lexer
 
 - Terminals are camelCase or literal symbols
 - Non-terminals are PascalCase
@@ -250,6 +249,11 @@ CodeIdentifierList
 	codeIdentifier
 
 Code
+	Statement ; Code
+	Statement ;-opt
+
+Statement
+	Expression
 	//
 
 ArgumentList

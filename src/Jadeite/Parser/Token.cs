@@ -4,17 +4,18 @@ using Jadeite.Parser.Nodes;
 
 namespace Jadeite.Parser
 {
-    public enum TokenType
+    public enum JadeiteSyntaxKind
     {
-        Invalid = 0,
-        EndOfInput,
+        [StartOf(SyntaxCategory.InvalidToken)]
+        InvalidToken = 0,
 
-        // significant white space
+        [StartOf(SyntaxCategory.Whitespace)]
+        EndOfInput,
         Indent,
         Outdent,
         EndOfLine,
 
-        // punctuation
+        [StartOf(SyntaxCategory.Punctuation)]
         Hash,
         Dot,
         Pipe,
@@ -63,94 +64,71 @@ namespace Jadeite.Parser
         OpenSquareBracket,
         CloseSquareBracket,
 
-        // keywords
-        Extends,
-        Prepend,
-        Append,
-        Block,
-        Include,
-        Mixin,
-        Each,
-        If,
-        Else,
-        Switch,
-        Case,
-        AndAttributes, // &attributes
-        Model,
-        Doctype,
+        // ALL KEYWORD SECTIONS MUST BE CONSECUTIVE
 
-        // templating elements
+        [StartOf(SyntaxCategory.TemplateKeyword)]
+        AppendKeyword,
+        AttributesKeyword,
+        BlockKeyword,
+        DoctypeKeyword,
+        ExtendsKeyword,
+        IncludeKeyword,
+        MixinKeyword,
+        PrependKeyword,
+
+        [StartOf(SyntaxCategory.CodeKeyword)]
+        BreakKeyword,
+        CaseKeyword,
+        ConstKeyword,
+        ContinueKeyword,
+        DefaultKeyword,
+        ElseKeyword,
+        FalseKeyword,
+        FuncKeyword,
+        IfKeyword,
+        InKeyword,
+        LoopKeyword,
+        ModelKeyword,
+        NullKeyword,
+        ReturnKeyword,
+        SwitchKeyword,
+        TrueKeyword,
+        VarKeyword,
+
+        [StartOf(SyntaxCategory.TypeKeyword)]
+        BoolKeyword,
+        ByteKeyword,
+        CharKeyword,
+        DoubleKeyword,
+        IntKeyword,
+        LongKeyword,
+        SByteKeyword,
+        ShortKeyword,
+        StringKeyword,
+        UIntKeyword,
+        ULongKeyword,
+        UShortKeyword,
+
+        [StartOf(SyntaxCategory.TemplateLiteral)]
         BufferedHtmlComment,
         UnbufferedHtmlComment,
         HtmlIdentifier,
         HtmlText,
 
-        // code elements
+        [StartOf(SyntaxCategory.CodeLiteral)]
         CodeComment,
         CodeIdentifier,
         IntegerLiteral,
         FloatingPointLiteral,
         StringLiteral,
-    }
 
-    internal static class Keyword
-    {
-        public const string EXTENDS = "extends";
-        public const string PREPEND = "prepend";
-        public const string APPEND = "append";
-        public const string BLOCK = "block";
-        public const string INCLUDE = "include";
-        public const string MIXIN = "mixin";
-        public const string EACH = "each";
-        public const string IF = "if";
-        public const string ELSE = "else";
-        public const string SWITCH = "switch";
-        public const string CASE = "case";
-        public const string ANDATTRIBUTES = "&attributes";
-        public const string MODEL = "model";
-        public const string DOCTYPE = "doctype";
-
-        public static string GetString(TokenType type)
-        {
-            switch (type)
-            {
-                case TokenType.Extends:
-                    return EXTENDS;
-                case TokenType.Prepend:
-                    return PREPEND;
-                case TokenType.Append:
-                    return APPEND;
-                case TokenType.Block:
-                    return BLOCK;
-                case TokenType.Include:
-                    return INCLUDE;
-                case TokenType.Mixin:
-                    return MIXIN;
-                case TokenType.Each:
-                    return EACH;
-                case TokenType.If:
-                    return IF;
-                case TokenType.Else:
-                    return ELSE;
-                case TokenType.Switch:
-                    return SWITCH;
-                case TokenType.Case:
-                    return CASE;
-                case TokenType.AndAttributes:
-                    return ANDATTRIBUTES;
-                case TokenType.Model:
-                    return MODEL;
-                case TokenType.Doctype:
-                    return DOCTYPE;
-                default:
-                    throw new Exception($"Keyword.GetString() called with token type {type}. Only keyword token types are allowed."); // todo
-            }
-        }
+        [StartOf(SyntaxCategory.InvalidNode)]
+        InvalidNode,
     }
 
     public class Token : ISyntaxElement
     {
-        public TokenType Type { get; internal set; }
+        public JadeiteSyntaxKind Type { get; internal set; }
         public string Text { get; internal set; }
         public object Value { get; internal set; }
         public Position Position { get; internal set; }

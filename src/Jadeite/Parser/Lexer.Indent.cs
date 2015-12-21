@@ -31,13 +31,13 @@ namespace Jadeite.Parser
             {
                 case '\r':
                     if (_indentConsumesNewLines)
-                        ConsumeToken(TokenType.EndOfLine, NextChar() == '\n' ? 2 : 1);
+                        ConsumeToken(JadeiteSyntaxKind.EndOfLine, NextChar() == '\n' ? 2 : 1);
                     else 
                         ExitState();
                     return;
                 case '\n':
                     if (_indentConsumesNewLines)
-                        ConsumeToken(TokenType.EndOfLine, 1);
+                        ConsumeToken(JadeiteSyntaxKind.EndOfLine, 1);
                     else 
                         ExitState();
                     return;
@@ -112,7 +112,7 @@ namespace Jadeite.Parser
 
                 do
                 {
-                    ConsumeToken(TokenType.Outdent, 0);
+                    ConsumeToken(JadeiteSyntaxKind.Outdent, 0);
                     delta++;
 
                 } while (delta < 0);
@@ -125,7 +125,7 @@ namespace Jadeite.Parser
 
                 while (delta > 0)
                 {
-                    ConsumeToken(TokenType.Indent, _indentCharCount);
+                    ConsumeToken(JadeiteSyntaxKind.Indent, _indentCharCount);
                     delta--;
                 }
             }

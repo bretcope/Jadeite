@@ -16,21 +16,21 @@ namespace Jadeite.Parser
             switch (CurrentChar())
             {
                 case ')':
-                    ConsumeToken(TokenType.CloseParen, 1);
+                    ConsumeToken(JadeiteSyntaxKind.CloseParen, 1);
                     ExitState();
                     return;
                 case '=':
-                    ConsumeToken(TokenType.Equals, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Equals, 1);
                     TransitionToCode(CodeScanMode.Attributes);
                     return;
                 case '!':
                     if (NextChar() != '=')
                         throw new Exception($"Expected token at Line {Line} Column {Column}."); // todo
-                    ConsumeToken(TokenType.BangEquals, 2);
+                    ConsumeToken(JadeiteSyntaxKind.BangEquals, 2);
                     TransitionToCode(CodeScanMode.Attributes);
                     return;
                 case ',':
-                    ConsumeToken(TokenType.Comma, 1);
+                    ConsumeToken(JadeiteSyntaxKind.Comma, 1);
                     return;
                 case '\r':
                 case '\n':

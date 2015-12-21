@@ -245,7 +245,7 @@ namespace Jadeite.Parser
                 throw new NotImplementedException($"Decimal types have not been implemented for Jadeite yet. Line {Line} Column {Column}.");
             }
 
-            ConsumeToken(TokenType.FloatingPointLiteral, endIndex - Index, value);
+            ConsumeToken(JadeiteSyntaxKind.FloatingPointLiteral, endIndex - Index, value);
         }
 
         private void FinishIntegerScan(ulong value, int digitCount, int endIndex)
@@ -261,7 +261,7 @@ namespace Jadeite.Parser
             if (IsWordCharacter(CharAt(endIndex)))
                 throw new Exception($"Invalid numeric literal Line {Line} Column {Column}."); // todo
 
-            ConsumeToken(TokenType.IntegerLiteral, endIndex - Index, finalVal);
+            ConsumeToken(JadeiteSyntaxKind.IntegerLiteral, endIndex - Index, finalVal);
         }
 
         private object ULongToCorrectIntegerType(ulong value, int suffixIndex, out int suffixLength)
