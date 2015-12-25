@@ -225,11 +225,7 @@ UnescapedBufferedCode
 	!= Expression endOfLine
 
 UnbufferedCode
-	- endOfLine UnbufferedCodeBlock
 	-_opt Statement
-
-UnbufferedCodeBlock
-	indent StatementList outdent
 
 HtmlComment
 	bufferedHtmlComment endOfLine
