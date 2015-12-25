@@ -34,16 +34,18 @@ Code Keywords
 	default
 	else
 	false
+	for
+	foreach
 	func
 	if
 	in
-	loop
 	model
 	null
 	return
 	switch
 	true
 	var
+	while
 
 Type Keywords
 	bool
@@ -323,9 +325,18 @@ SwitchLabel
 	default endOfLine
 
 IterationStatement
-	loop Expression_opt endOfLine DocumentBlock                                     // while
-	loop ForInitializer_opt ; Expression ; ForIterator_opt endOfLine DocumentBlock  // for
-	loop AssignmentTarget in Expression endOfLine DocumentBlock                   // for-each
+	WhileStatement
+	ForeachStatement
+	ForStatement
+
+WhileStatement
+	while Expression_opt endOfLine DocumentBlock
+
+ForeachStatement
+	foreach AssignmentTarget in Expression endOfLine DocumentBlock
+
+ForStatement
+	for ForInitializer_opt ; Expression ; ForIterator_opt endOfLine DocumentBlock
 
 ForInitializer
 	LocalVariableDeclaration

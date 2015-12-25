@@ -158,6 +158,10 @@ namespace Jadeite.Parser
                 case 'f':
                     if (TryConsumeKeyword(JadeiteSyntaxKind.FalseKeyword, out tok))
                         break;
+                    if (TryConsumeKeyword(JadeiteSyntaxKind.ForKeyword, out tok))
+                        break;
+                    if (TryConsumeKeyword(JadeiteSyntaxKind.ForeachKeyword, out tok))
+                        break;
                     TryConsumeKeyword(JadeiteSyntaxKind.FuncKeyword, out tok);
                     break;
                 case 'i':
@@ -168,8 +172,6 @@ namespace Jadeite.Parser
                     TryConsumeKeyword(JadeiteSyntaxKind.IntKeyword, out tok);
                     break;
                 case 'l':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.LoopKeyword, out tok))
-                        break;
                     TryConsumeKeyword(JadeiteSyntaxKind.LongKeyword, out tok);
                     break;
                 case 'm':
@@ -202,6 +204,9 @@ namespace Jadeite.Parser
                     break;
                 case 'v':
                     TryConsumeKeyword(JadeiteSyntaxKind.VarKeyword, out tok);
+                    break;
+                case 'w':
+                    TryConsumeKeyword(JadeiteSyntaxKind.WhileKeyword, out tok);
                     break;
             }
 
