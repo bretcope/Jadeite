@@ -117,6 +117,7 @@ namespace Jadeite.Parser
         HtmlText,
 
         [StartOf(SyntaxCategory.CodeLiteral)]
+        CharLiteral,
         CodeComment,
         CodeIdentifier,
         IntegerLiteral,

@@ -68,6 +68,7 @@ Templating Elements
 	htmlText
 
 Code Elements
+	charLiteral
 	codeComment
 	codeIdentifier
 	integerLiteral
@@ -267,6 +268,182 @@ MixinDefinition
 
 MixinParametersDefinition
 	( CodeIdentifierList_opt )
+	
+--- TYPES ------------------------------------------------
+
+BuiltInType
+	bool
+	NumericType
+	string
+
+NumericType
+	IntegerType
+	FloatingPointType
+
+IntegerType
+	sbyte
+	byte
+	short
+	ushort
+	int
+	uint
+	long
+	ulong
+	char
+
+FloatingPointType
+	double
+
+--- EXPRESSIONS ------------------------------------------
+
+Literal
+	BooleanLiteral
+	charLiteral
+	NumericLiteral
+	stringLiteral
+
+BooleanLiteral
+	true
+	false
+
+NumericLiteral
+	integerLiteral
+	floatingPointLiteral
+	
+ArgumentList
+	Expression , ArgumentList
+	Expression
+
+Expression
+	NonAssignmentExpression
+	Assignment
+
+NonAssignmentExpression
+	ConditionalExpression
+
+ExpressionList
+	Expression , ExpressionList
+	Expression
+
+PrimaryExpression
+	Literal
+	codeIdentifier
+	model
+	ParenthesizedExpression
+	MemberAccess
+	InvocationExpression
+	ElementAccess
+	PostIncrementExpression
+	PostDecrementExpression
+
+ParenthesizedExpression
+	( Expression )
+
+MemberAccess
+	PrimaryExpression . codeIdentifier
+
+ElementAccess
+	PrimaryExpression [ ArgumentList ]
+
+Assignment
+	UnaryExpression AssignmentOperator Expression
+
+AssignmentOperator
+	=
+	+=
+	-=
+	*=
+	/=
+	%=
+	&=
+	|=
+	^=
+	<<=
+	>>=
+
+InvocationExpression
+	PrimaryExpression ( ArgumentList_opt )
+
+PostIncrementExpression
+	PrimaryExpression ++
+
+PostDecrementExpression
+	PrimaryExpression--
+
+UnaryExpression
+	PrimaryExpression
+	+ UnaryExpression
+	- UnaryExpression
+	! UnaryExpression
+	~ UnaryExpression
+	PreIncrementExpression
+	PreDecrementExpression
+	CastExpression
+
+PreIncrementExpression
+	++ UnaryExpression
+
+PreDecrementExpression
+	-- UnaryExpression
+
+CastExpression
+	( NumericType ) UnaryExpression
+
+MultiplicativeExpression
+	UnaryExpression
+	MultiplicativeExpression * UnaryExpression
+	MultiplicativeExpression / UnaryExpression
+	MultiplicativeExpression % UnaryExpression
+
+AdditiveExpression
+	MultiplicativeExpression
+	AdditiveExpression + MultiplicativeExpression
+	AdditiveExpression - MultiplicativeExpression
+
+ShiftExpression
+	AdditiveExpression
+	ShiftExpression << AdditiveExpression
+	ShiftExpression >> AdditiveExpression
+
+RelationalExpression
+	ShiftExpression
+	RelationalExpression < ShiftExpression
+	RelationalExpression > ShiftExpression
+	RelationalExpression <= ShiftExpression
+	RelationalExpression >= ShiftExpression
+
+EqualityExpression
+	RelationalExpression
+	EqualityExpression == RelationalExpression
+	EqualityExpression != RelationalExpression
+
+AndExpression
+	EqualityExpression
+	AndExpression & EqualityExpression
+
+XorExpression
+	AndExpression
+	XorExpression ^ AndExpression
+
+OrExpression
+	XorExpression
+	OrExpression | XorExpression
+
+ConditionalAndExpression
+	OrExpression
+	ConditionalAndExpression && OrExpression
+
+ConditionalOrExpression
+	ConditionalAndExpression
+	ConditionalOrExpression || ConditionalAndExpression
+
+NullCoalescingExpression
+	ConditionalOrExpression
+	ConditionalOrExpression ?? NullCoalescingExpression
+
+ConditionalExpression
+	NullCoalescingExpression
+	NullCoalescingExpression ? Expression : Expression
 
 --- STATEMENTS -------------------------------------------
 
@@ -386,41 +563,3 @@ MultipleVariableDeclaration
 CodeIdentifierList
 	codeIdentifier , CodeIdentifierList
 	codeIdentifier
-
---- EXPRESSIONS ------------------------------------------
-
-ArgumentList
-	Expression , ArgumentList
-	Expression
-
-Expression
-	ConditionalExpression
-	Assignment
-
-ExpressionList
-	Expression , ExpressionList
-	Expression
-
-PrimaryExpression
-	//
-
-Assignment
-	//
-
-ConditionalExpression
-	//
-
-InvocationExpression
-	PrimaryExpression ( ArgumentList_opt )
-
-PostIncrementExpression
-	//
-
-PostDecrementExpression
-	//
-
-PreIncrementExpression
-	//
-
-PreDecrementExpression
-	//
