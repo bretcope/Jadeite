@@ -11,118 +11,118 @@
 --- TERMINALS --------------------------------------------
 
 Significant Whitespace
-	endOfInput
-	endOfLine
-	indent
-	outdent
+	EndOfInput endOfInput
+	Indent indent
+	Outdent outdent
+	EndOfLine endOfLine
 
 Templating Kewords
-	append
-	block
-	doctype
-	extends
-	include
-	mixin
-	prepend
+	AppendKeyword append
+	BlockKeyword block
+	DoctypeKeyword doctype
+	ExtendsKeyword extends
+	IncludeKeyword include
+	MixinKeyword mixin
+	PrependKeyword prepend
 
 Code Keywords
-	attributes
-	break
-	case
-	const
-	continue
-	default
-	else
-	false
-	for
-	foreach
-	func
-	if
-	in
-	model
-	null
-	return
-	switch
-	true
-	var
-	while
+	AttributesKeyword attributes
+	BreakKeyword break
+	CaseKeyword case
+	ConstKeyword const
+	ContinueKeyword continue
+	DefaultKeyword default
+	ElseKeyword else
+	FalseKeyword false
+	ForKeyword for
+	ForeachKeyword foreach
+	FuncKeyword func
+	IfKeyword if
+	InKeyword in
+	ModelKeyword model
+	NullKeyword null
+	ReturnKeyword return
+	SwitchKeyword switch
+	TrueKeyword true
+	VarKeyword var
+	WhileKeyword while
 
 Type Keywords
-	bool
-	byte
-	char
-	double
-	int
-	long
-	sbyte
-	short
-	string
-	uint
-	ulong
-	ushort
+	BoolKeyword bool
+	ByteKeyword byte
+	CharKeyword char
+	DoubleKeyword double
+	IntKeyword int
+	LongKeyword long
+	SbyteKeyword sbyte
+	ShortKeyword short
+	StringKeyword string
+	UintKeyword uint
+	UlongKeyword ulong
+	UshortKeywordKeywordKeyword ushort  
 
 Templating Elements
-	bufferedHtmlComment
-	unbufferedHtmlComment
-	htmlIdentifier
-	htmlText
+	BufferedHtmlComment bufferedHtmlComment
+	UnbufferedHtmlComment unbufferedHtmlComment
+	HtmlIdentifier htmlIdentifier
+	HtmlText htmlText
 
 Code Elements
-	charLiteral
-	codeComment
-	codeIdentifier
-	integerLiteral
-	floatingPointLiteral
-	stringLiteral
+	CharLiteral charLiteral
+	CodeComment codeComment
+	CodeIdentifier codeIdentifier
+	IntegerLiteral integerLiteral
+	FloatingPointLiteral floatingPointLiteral
+	StringLiteral stringLiteral
 
-Punctuation
-	#
-	.
-	|
-	||
-	|=
-	&
-	&&
-	&=
-	^
-	^=
-	+
-	++
-	+=
-	-
-	--
-	-=
-	*
-	*=
-	/
-	/=
-	%
-	%=
-	=
-	==
-	<
-	<<
-	<=
-	<<=
-	>
-	>>
-	>=
-	>>=
-	,
-	;
-	!
-	!=
-	?
-	:
-	(
-	)
-	#{
-	!{
-	{
-	}
-	#[
-	[
-	]
+Punctuation and Operators
+	Hash #
+	Dot .
+	Pipe |
+	PipePipe ||
+	PipeEquals |=
+	And &
+	AndAnd &&
+	AndEquals &=
+	Caret ^
+	CaretEquals ^=
+	Plus +
+	PlusPlus ++
+	PlusEquals +=
+	Minus -
+	MinusMinus --
+	MinusEquals -=
+	Asterisk *
+	Asterisk *=
+	ForwardSlash /
+	ForwardSlashEquals /=
+	Percent %
+	PercentEquals %=
+	Equals =
+	EqualsEquals ==
+	LessThan <
+	LessThanLessThan <<
+	LessThanEquals <=
+	LessThanLessThanEquals <<=
+	GreaterThan >
+	GreaterThanGreaterThan >>
+	GreaterThanEquals >=
+	GreaterThanGreaterThanEquals >>=
+	Comma ,
+	SemiColon ;
+	Bang !
+	BangEquals !=
+	QuestionMark ?
+	Colon :
+	OpenParen (
+	CloseParen )
+	OpenEscapedInterpolation #{
+	OpenUnescapedInterpolation !{
+	OpenCurly {
+	CloseCurly }
+	OpenTagInterpolation #[
+	OpenSquareBracket [
+	CloseSquareBracket ]
 
 --- TEMPLATE NON-TERMINALS -------------------------------
 
@@ -301,6 +301,7 @@ Literal
 	charLiteral
 	NumericLiteral
 	stringLiteral
+	null
 
 BooleanLiteral
 	true
