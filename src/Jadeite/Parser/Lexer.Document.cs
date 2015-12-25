@@ -106,7 +106,7 @@ namespace Jadeite.Parser
             if (tok == null)
                 return false;
             
-            switch (tok.Type)
+            switch (tok.Kind)
             {
                 case JadeiteSyntaxKind.DoctypeKeyword:
                     TransitionToBody(isInterpolation: false);
@@ -120,7 +120,7 @@ namespace Jadeite.Parser
                 case JadeiteSyntaxKind.IncludeKeyword:
                 case JadeiteSyntaxKind.MixinKeyword:
                 default:
-                    throw new Exception($"Unsupported transition from document to keyword type {tok.Type}.");
+                    throw new Exception($"Unsupported transition from document to keyword type {tok.Kind}.");
             }
         }
     }

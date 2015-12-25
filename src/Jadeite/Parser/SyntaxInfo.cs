@@ -16,6 +16,9 @@ namespace Jadeite.Parser
         TemplateLiteral,
         CodeLiteral,
         InvalidNode,
+        TemplateNode,
+        CodeExpression,
+        CodeStatement
     }
 
     internal class StartOfAttribute : Attribute

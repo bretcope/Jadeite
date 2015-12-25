@@ -6,7 +6,7 @@ namespace Jadeite.Parser
 {
     public class Token : ISyntaxElement
     {
-        public JadeiteSyntaxKind Type { get; internal set; }
+        public JadeiteSyntaxKind Kind { get; internal set; }
         public string Text { get; internal set; }
         public object Value { get; internal set; }
         public Position Position { get; internal set; }

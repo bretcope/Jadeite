@@ -8,6 +8,7 @@ namespace Jadeite.Parser.Nodes
 
         public IReadOnlyList<ISyntaxElement> Children => _children.AsReadOnly();
 
+        public abstract JadeiteSyntaxKind Kind { get; }
         public bool IsToken => false;
         public bool IsNode => true;
         public virtual bool IsHtmlNode => false;
@@ -31,6 +32,7 @@ namespace Jadeite.Parser.Nodes
 
     public interface ISyntaxElement
     {
+        JadeiteSyntaxKind Kind { get; }
         bool IsToken { get; }
         bool IsNode { get; }
         bool IsHtmlNode { get; }

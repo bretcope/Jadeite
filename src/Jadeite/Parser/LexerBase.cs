@@ -53,7 +53,7 @@ namespace Jadeite.Parser
             var text = Input.Substring(Index, length);
             var tok = new Token
             {
-                Type = type,
+                Kind = type,
                 Text = text,
                 Value = useTextAsValue ? text : value,
                 LeadingTrivia = PopTrivia(),
