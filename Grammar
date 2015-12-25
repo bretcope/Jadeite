@@ -326,6 +326,7 @@ PrimaryExpression
 	Literal
 	codeIdentifier
 	model
+	attributes
 	ParenthesizedExpression
 	MemberAccess
 	InvocationExpression
@@ -343,7 +344,7 @@ ElementAccess
 	PrimaryExpression [ ArgumentList ]
 
 Assignment
-	UnaryExpression AssignmentOperator Expression
+	AssignmentTarget AssignmentOperator Expression
 
 AssignmentOperator
 	=
