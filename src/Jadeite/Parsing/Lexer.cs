@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace Jadeite.Parsing
 {
-    public partial class Lexer : LexerBase
+    public sealed partial class Lexer : LexerBase
     {
         private enum LexerState : byte
         {
@@ -26,7 +26,7 @@ namespace Jadeite.Parsing
 
         public string IndentString { get; }
 
-        public Lexer(string input, string indent = "\t") : base(input)
+        public Lexer(string input, string indent) : base(input)
         {
             SetIndent(indent);
             IndentString = indent;

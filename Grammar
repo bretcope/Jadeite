@@ -126,18 +126,24 @@ Punctuation and Operators
 
 --- TEMPLATE NON-TERMINALS -------------------------------
 
+Start
+	EndOfLineList_opt File endOfInput
+	
+EndOfLineList
+	endOfLine EndOfLineList
+	endOfLine
+
 File
-	Template_opt MixinList_opt endOfInput
+	Template MixinList_opt
 
 Template
 	ModelDefinition Document
 
 ModelDefinition
-	endOfLine ModelDefinition
 	model codeIdentifier endOfLine
 
 Document
-	ExtendsDefinition_opt DocumentBody
+	EndOfLineList_opt ExtendsDefinition_opt DocumentBody
 
 ExtendsDefinition
 	extends ( ArgumentList )  // expecting params (string viewName, object viewModel)
@@ -259,7 +265,6 @@ MixinList
 	MixinDefinition
 
 MixinDefinition
-	endOfLine MixinDefinition
 	mixin htmlIdentifier MixinParametersDefinition_opt DocumentBlock
 
 MixinParametersDefinition

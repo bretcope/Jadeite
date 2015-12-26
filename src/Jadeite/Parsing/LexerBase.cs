@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace Jadeite.Parsing
@@ -9,7 +10,7 @@ namespace Jadeite.Parsing
 
         private string _trivia = "";
 
-        private Queue<Token> _tokenQueue = new Queue<Token>(); 
+        private readonly LookAheadQueue<Token> _tokenQueue = new LookAheadQueue<Token>();
 
         protected int Length { get; }
         protected int Index { get; private set; }
@@ -32,19 +33,34 @@ namespace Jadeite.Parsing
 
         public Token Advance()
         {
-            QueueNext();
+            QueueTokens(1);
             return _tokenQueue.Dequeue();
         }
 
-        public Token Peek()
+        public Token AdvanceKind(JadeiteSyntaxKind kind)
         {
-            QueueNext();
-            return _tokenQueue.Peek();
+            var tok = Advance();
+            if (tok.Kind != kind)
+                throw new Exception($"Expected {kind} at Line {Line} Column {Column}."); // todo
+
+            return tok;
         }
 
-        private void QueueNext()
+        public Token Current()
         {
-            while (_tokenQueue.Count == 0)
+            QueueTokens(1);
+            return _tokenQueue.Current();
+        }
+
+        public Token LookAhead()
+        {
+            QueueTokens(2);
+            return _tokenQueue.LookAhead();
+        }
+
+        private void QueueTokens(int needed)
+        {
+            while (_tokenQueue.Count < needed)
                 Lex();
         }
 

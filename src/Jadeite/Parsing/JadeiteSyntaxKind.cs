@@ -130,6 +130,7 @@ namespace Jadeite.Parsing
         InvalidNode,
 
         [StartOf(SyntaxCategory.TemplateNode)]
+        Start,
         File,
         Template,
         ModelDefinition,

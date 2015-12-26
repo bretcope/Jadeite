@@ -11,11 +11,6 @@ namespace Jadeite.Parsing
         public string LeadingTrivia { get; internal set; }
         public string TrailingTrivia { get; internal set; }
 
-        public bool IsToken => true;
-        public bool IsNode => false;
-        public bool IsHtmlNode => false;
-        public bool IsCodeNode => false;
-
         internal Token()
         {
         }
