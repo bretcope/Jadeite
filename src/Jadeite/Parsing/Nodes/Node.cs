@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Jadeite.Parser.Nodes
+namespace Jadeite.Parsing.Nodes
 {
     public abstract class Node : ISyntaxElement
     {

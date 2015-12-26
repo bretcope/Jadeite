@@ -1,5 +1,5 @@
 ﻿
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public enum JadeiteSyntaxKind
     {

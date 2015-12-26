@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public partial class Lexer : LexerBase
     {

@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public partial class Lexer
     {

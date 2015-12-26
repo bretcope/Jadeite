@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public abstract partial class LexerBase
     {

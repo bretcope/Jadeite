@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public enum SyntaxCategory
     {

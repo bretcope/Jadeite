@@ -1,8 +1,6 @@
-﻿
-using System;
-using Jadeite.Parser.Nodes;
+﻿using Jadeite.Parsing.Nodes;
 
-namespace Jadeite.Parser
+namespace Jadeite.Parsing
 {
     public class Token : ISyntaxElement
     {
