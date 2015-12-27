@@ -140,7 +140,7 @@ Template
 	ModelDefinition Document
 
 ModelDefinition
-	model codeIdentifier endOfLine
+	model TypeIdentifier endOfLine
 
 Document
 	EndOfLineList_opt ExtendsDefinition_opt DocumentBody
@@ -294,6 +294,12 @@ IntegerType
 
 FloatingPointType
 	double
+
+TypeIdentifier
+	codeIdentifier . TypeIdentifier
+	BuiltInType . TypeIdentifier
+	codeIdentifier
+	BuiltInType
 
 --- EXPRESSIONS ------------------------------------------
 

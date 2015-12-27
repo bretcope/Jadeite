@@ -167,6 +167,7 @@ namespace Jadeite.Parsing
         MixinParametersDefinition,
 
         [StartOf(SyntaxCategory.CodeExpression)]
+        TypeIdentifier,
         Literal,
         BooleanLiteral,
         NumericLiteral,
