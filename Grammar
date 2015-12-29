@@ -238,14 +238,14 @@ HtmlComment
 	unbufferedHtmlComment endOfLine
 
 TextBodyElementList
-	TextBodyElement
 	TextBodyElement TextBodyElementList
+	TextBodyElement
 
 TextBodyElement
 	htmlText
-	#[ InterpolatedTagDefinition ]   // interpolated tag
-	#{ Expression }                  // interpolated escaped buffered code
-	!{ Expression }                  // interpolated unescaped buffered code
+	InterpolatedTag
+	EscapedInterpolatedExpression
+	UnescapedInterpolatedExpression
 
 InterpolatedTag
 	#[ InterpolatedTagDefinition ]
@@ -259,6 +259,12 @@ InterpolatedTagBody
 	!= Expression                 // unescaped buffered code
 	TextBodyElementList           // normal body
 	/                             // self-closing tag
+
+EscapedInterpolatedExpression
+	#{ Expression }
+
+UnescapedInterpolatedExpression
+	!{ Expression }
 
 MixinList
 	MixinDefinition MixinList
@@ -317,7 +323,7 @@ BooleanLiteral
 NumericLiteral
 	integerLiteral
 	floatingPointLiteral
-	
+
 ArgumentList
 	Expression , ArgumentList
 	Expression

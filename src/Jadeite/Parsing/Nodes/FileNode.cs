@@ -2,27 +2,29 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class FileNode : Node
+    public sealed class FileNode : INode
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.File;
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.File;
 
+        public ElementList Children { get; } = new ElementList();
         public TemplateNode Template { get; private set; }
-        public ElementList Mixins { get; } = new ElementList(JadeiteSyntaxKind.MixinList);
+        public MixinListNode Mixins { get; private set; }
 
         internal FileNode() { }
 
         internal void AddTemplate(TemplateNode node)
         {
             Debug.Assert(Template == null);
+            Debug.Assert(Mixins == null);
 
-            AddChild(node);
+            Children.Add(node);
             Template = node;
         }
 
-        internal void AddMixin(MixinDefinitionNode node)
+        internal void SetMixins(MixinListNode node)
         {
-            AddChild(node);
-            Mixins.Add(node);
+            Debug.Assert(Mixins == null);
+            Mixins = node;
         }
     }
 }

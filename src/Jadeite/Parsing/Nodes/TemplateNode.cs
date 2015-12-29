@@ -2,12 +2,13 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class TemplateNode : Node
+    public sealed class TemplateNode : INode
     {
+        public ElementList Children { get; } = new ElementList();
         public ModelDefinitionNode ModelDefinition { get; private set; }
         public DocumentNode Document { get; private set; }
 
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Template;
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Template;
 
         internal TemplateNode() { }
 
@@ -15,7 +16,7 @@ namespace Jadeite.Parsing.Nodes
         {
             Debug.Assert(ModelDefinition == null);
 
-            AddChild(node);
+            Children.Add(node);
             ModelDefinition = node;
         }
 
@@ -23,7 +24,7 @@ namespace Jadeite.Parsing.Nodes
         {
             Debug.Assert(Document == null);
 
-            AddChild(node);
+            Children.Add(node);
             Document = node;
         }
     }

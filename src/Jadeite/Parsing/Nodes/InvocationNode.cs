@@ -2,9 +2,10 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class InvocationNode : Node
+    public sealed class InvocationNode : INode
     {
-        public override JadeiteSyntaxKind Kind { get; }
+        public JadeiteSyntaxKind Kind { get; }
+        public ElementList Children { get; } = new ElementList();
         public ISyntaxElement LeftHandSide { get; private set; }
         public ArgumentListNode ArgumentList { get; private set; }
 
@@ -18,7 +19,7 @@ namespace Jadeite.Parsing.Nodes
         {
             Debug.Assert(LeftHandSide == null);
 
-            AddChild(e);
+            Children.Add(e);
             LeftHandSide = e;
         }
 
@@ -26,7 +27,7 @@ namespace Jadeite.Parsing.Nodes
         {
             Debug.Assert(ArgumentList == null);
 
-            AddChild(node);
+            Children.Add(node);
             ArgumentList = node;
         }
 
@@ -36,14 +37,14 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(LeftHandSide != null);
             Debug.Assert(ArgumentList == null);
 
-            AddChild(tok);
+            Children.Add(tok);
         }
 
         internal void SetClose(Token tok)
         {
             Debug.Assert(IsCorrectClose(tok.Kind));
 
-            AddChild(tok);
+            Children.Add(tok);
         }
 
         private static bool IsInvocationKind(JadeiteSyntaxKind kind)
@@ -54,6 +55,7 @@ namespace Jadeite.Parsing.Nodes
                 case JadeiteSyntaxKind.IncludeDefinition:
                 case JadeiteSyntaxKind.ElementAccess:
                 case JadeiteSyntaxKind.InvocationExpression:
+                    return true;
                 default:
                     return false;
             }

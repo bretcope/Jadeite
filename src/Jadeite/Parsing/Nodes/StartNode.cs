@@ -3,11 +3,12 @@ using System.Diagnostics;
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class StartNode : Node
+    public sealed class StartNode : INode
     {
+        public ElementList Children { get; } = new ElementList();
         public FileNode File { get; private set; }
 
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Start;
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Start;
 
         internal StartNode() { }
 
@@ -16,14 +17,14 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(tok.Kind == JadeiteSyntaxKind.EndOfLine);
             Debug.Assert(File == null); // shouldn't be adding new lines after file has been added
 
-            AddChild(tok);
+            Children.Add(tok);
         }
 
         internal void SetFile(FileNode node)
         {
             Debug.Assert(File == null);
 
-            AddChild(node);
+            Children.Add(node);
             File = node;
         }
     }

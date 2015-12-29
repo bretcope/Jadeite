@@ -2,9 +2,10 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class BinaryExpressionNode : Node
+    public sealed class BinaryExpressionNode : INode
     {
-        public override JadeiteSyntaxKind Kind { get; }
+        public JadeiteSyntaxKind Kind { get; }
+        public ElementList Children { get; } = new ElementList();
         public ISyntaxElement LeftHandSide { get; private set; }
         public Token Operator { get; private set; }
         public ISyntaxElement RightHandSide { get; private set; }
@@ -21,7 +22,7 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(Operator == null);
             Debug.Assert(RightHandSide == null);
 
-            AddChild(e);
+            Children.Add(e);
             LeftHandSide = e;
         }
 
@@ -32,7 +33,7 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(Operator == null);
             Debug.Assert(RightHandSide == null);
 
-            AddChild(tok);
+            Children.Add(tok);
             Operator = tok;
         }
 
@@ -42,7 +43,7 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(Operator != null);
             Debug.Assert(RightHandSide == null);
 
-            AddChild(e);
+            Children.Add(e);
             RightHandSide = e;
         }
 

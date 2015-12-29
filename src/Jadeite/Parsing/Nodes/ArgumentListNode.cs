@@ -4,23 +4,24 @@ using System.Diagnostics;
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class ArgumentListNode : Node
+    public sealed class ArgumentListNode : INode
     {
         public List<ISyntaxElement> Arguments { get; } = new List<ISyntaxElement>();
+        public ElementList Children { get; } = new ElementList();
 
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ArgumentList;
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ArgumentList;
 
         internal ArgumentListNode() { }
 
         internal void AddComma(Token tok)
         {
             Debug.Assert(tok.Kind == JadeiteSyntaxKind.Comma);
-            AddChild(tok);
+            Children.Add(tok);
         }
 
         internal void AddArgument(ISyntaxElement e)
         {
-            AddChild(e);
+            Children.Add(e);
             Arguments.Add(e);
         }
     }

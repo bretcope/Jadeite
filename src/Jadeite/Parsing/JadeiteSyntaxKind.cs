@@ -162,6 +162,8 @@ namespace Jadeite.Parsing
         InterpolatedTag,
         InterpolatedTagDefinition,
         InterpolatedTagBody,
+        EscapedInterpolatedExpression,
+        UnescapedInterpolatedExpression,
         MixinList,
         MixinDefinition,
         MixinParametersDefinition,

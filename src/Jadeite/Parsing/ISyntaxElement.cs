@@ -1,4 +1,5 @@
-﻿using Jadeite.Parsing.Nodes;
+﻿using System.Collections.Generic;
+using Jadeite.Parsing.Nodes;
 
 namespace Jadeite.Parsing
 {
@@ -10,5 +11,10 @@ namespace Jadeite.Parsing
     public interface IParentElement : ISyntaxElement
     {
         ElementList Body { get; }
+    }
+
+    public interface INode : ISyntaxElement
+    {
+        ElementList Children { get; }
     }
 }

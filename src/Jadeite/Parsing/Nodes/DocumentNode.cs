@@ -2,12 +2,13 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class DocumentNode : Node, IParentElement
+    public sealed class DocumentNode : INode, IParentElement
     {
+        public ElementList Children { get; } = new ElementList();
         public InvocationNode Extends { get; private set; }
         public ElementList Body { get; private set; }
 
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Document;
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Document;
 
         internal DocumentNode() { }
 
@@ -16,7 +17,7 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(node.Kind == JadeiteSyntaxKind.ExtendsDefinition);
             Debug.Assert(Extends == null);
 
-            AddChild(node);
+            Children.Add(node);
             Extends = node;
         }
 
@@ -26,7 +27,15 @@ namespace Jadeite.Parsing.Nodes
             Debug.Assert(Extends == null);
             Debug.Assert(Body == null);
 
-            AddChild(tok);
+            Children.Add(tok);
+        }
+
+        internal void SetDocumentBody(DocumentBodyNode node)
+        {
+            Debug.Assert(Body == null);
+
+            Children.Add(node);
+            Body = node;
         }
     }
 }
