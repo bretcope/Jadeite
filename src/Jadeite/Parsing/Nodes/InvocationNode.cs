@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace Jadeite.Parsing.Nodes
+﻿namespace Jadeite.Parsing.Nodes
 {
     public sealed class InvocationNode : INode
     {
@@ -11,13 +9,13 @@ namespace Jadeite.Parsing.Nodes
 
         internal InvocationNode(JadeiteSyntaxKind kind)
         {
-            Debug.Assert(IsInvocationKind(kind));
+            ParsingDebug.Assert(IsInvocationKind(kind));
             Kind = kind;
         }
 
         internal void SetLeftHandSide(ISyntaxElement e)
         {
-            Debug.Assert(LeftHandSide == null);
+            ParsingDebug.Assert(LeftHandSide == null);
 
             Children.Add(e);
             LeftHandSide = e;
@@ -25,7 +23,7 @@ namespace Jadeite.Parsing.Nodes
 
         internal void SetArgumentList(ArgumentListNode node)
         {
-            Debug.Assert(ArgumentList == null);
+            ParsingDebug.Assert(ArgumentList == null);
 
             Children.Add(node);
             ArgumentList = node;
@@ -33,16 +31,16 @@ namespace Jadeite.Parsing.Nodes
 
         internal void SetOpen(Token tok)
         {
-            Debug.Assert(IsCorrectOpen(tok.Kind));
-            Debug.Assert(LeftHandSide != null);
-            Debug.Assert(ArgumentList == null);
+            ParsingDebug.Assert(IsCorrectOpen(tok.Kind));
+            ParsingDebug.Assert(LeftHandSide != null);
+            ParsingDebug.Assert(ArgumentList == null);
 
             Children.Add(tok);
         }
 
         internal void SetClose(Token tok)
         {
-            Debug.Assert(IsCorrectClose(tok.Kind));
+            ParsingDebug.Assert(IsCorrectClose(tok.Kind));
 
             Children.Add(tok);
         }

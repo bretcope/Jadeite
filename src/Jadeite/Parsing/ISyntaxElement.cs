@@ -8,11 +8,6 @@ namespace Jadeite.Parsing
         JadeiteSyntaxKind Kind { get; }
     }
 
-    public interface IParentElement : ISyntaxElement
-    {
-        ElementList Body { get; }
-    }
-
     public interface INode : ISyntaxElement
     {
         ElementList Children { get; }

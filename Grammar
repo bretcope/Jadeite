@@ -156,13 +156,13 @@ DocumentBodyElement
 	DoctypeDefinition
 	NamedBlock
 	IncludeDefinition
-	BufferedCode
+	EscapedBufferedCode
 	UnescapedBufferedCode
-	UnbufferedCode
 	DocumentBlock
 	HtmlComment
-	Tag
 	endOfLine
+	UnbufferedCode
+	Tag
 
 DoctypeDefinition
 	doctype TextBodyElementList endOfLine
@@ -214,17 +214,23 @@ AndAttributes
 	&attributes ( CodeIdentifierList_opt )
 
 TagBody
-	: Tag                                                // tag expansion
-	. endofLine PipelessTextBlock_opt                    // pipeless text
-	BufferedCode DocumentBlock_opt                       // escaped buffered code
+	TagExpansion
+	PipelessText
+	EscapedBufferedCode DocumentBlock_opt                       // escaped buffered code
 	UnescapedBufferedCode DocumentBlock_opt              // unescaped buffered code
 	TextBodyElementList_opt endOfLine DocumentBlock_opt  // normal body
 	/ endOfLine                                          // self-closing tag
 
+TagExpansion
+	: Tag
+
+PipelessText
+	. endofLine PipelessTextBlock_opt
+
 PipelessTextBlock
 	indent TextBodyElementList outdent
 
-BufferedCode
+EscapedBufferedCode
 	= Expression endOfLine
 
 UnescapedBufferedCode

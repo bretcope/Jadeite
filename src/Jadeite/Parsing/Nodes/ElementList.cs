@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -55,13 +56,11 @@ namespace Jadeite.Parsing.Nodes
 
         internal override void Add(ISyntaxElement e)
         {
-#if DEBUG
-            switch (e.Kind)
-            {
-                case JadeiteSyntaxKind.HtmlText:
-                
-            }
-#endif
+            ParsingDebug.AssertKindIsOneOf(
+                JadeiteSyntaxKind.HtmlText,
+                JadeiteSyntaxKind.InterpolatedTag,
+                JadeiteSyntaxKind.EscapedInterpolatedExpression,
+                JadeiteSyntaxKind.UnescapedInterpolatedExpression);
 
             base.Add(e);
         }

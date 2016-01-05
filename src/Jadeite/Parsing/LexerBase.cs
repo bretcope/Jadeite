@@ -84,7 +84,7 @@ namespace Jadeite.Parsing
 
             UpdatePosition(Index + length);
 
-            _tokenQueue.Enqueue(tok);
+            _tokenQueue.Push(tok);
             return tok;
         }
 

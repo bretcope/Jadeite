@@ -4,32 +4,26 @@ using Jadeite.Parsing.Nodes;
 
 namespace Jadeite.Parsing
 {
-    public partial class Parser
+    public sealed partial class Parser : ParserBase
     {
-        private readonly Lexer _lexer;
-        private readonly Stack<IParentElement> _parentStack = new Stack<IParentElement>();
-
-        public Parser(string input, string indent)
+        public Parser(string input, string indent) : base(input, indent)
         {
-            _lexer = new Lexer(input, indent);
         }
 
         public StartNode Parse()
         {
             var start = new StartNode();
 
-            while (_lexer.Current().Kind == JadeiteSyntaxKind.EndOfLine)
+            while (Current.Kind == JadeiteSyntaxKind.EndOfLine)
             {
-                start.AddEndOfLine(_lexer.Advance());
+                start.AddEndOfLine(Advance());
             }
 
             var file = ParseFile();
             start.SetFile(file);
 
-            // loop
-
             // check to make sure we're at end of input
-            if (_lexer.Current().Kind != JadeiteSyntaxKind.EndOfInput)
+            if (Current.Kind != JadeiteSyntaxKind.EndOfInput)
                 throw new Exception("Parser did not consume all input."); // todo
 
             return start;
@@ -37,7 +31,13 @@ namespace Jadeite.Parsing
 
         private FileNode ParseFile()
         {
-            //
+            var file = new FileNode();
+            file.SetTemplate(ParseTemplate());
+
+            if (Current.Kind == JadeiteSyntaxKind.MixinKeyword)
+                file.SetMixins(ParseMixinList());
+
+            return file;
         }
     }
 }

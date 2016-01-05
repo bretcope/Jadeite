@@ -2,7 +2,7 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class DocumentNode : INode, IParentElement
+    public sealed class DocumentNode : INode
     {
         public ElementList Children { get; } = new ElementList();
         public InvocationNode Extends { get; private set; }

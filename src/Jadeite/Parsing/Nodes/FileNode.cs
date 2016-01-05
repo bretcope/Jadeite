@@ -12,7 +12,7 @@ namespace Jadeite.Parsing.Nodes
 
         internal FileNode() { }
 
-        internal void AddTemplate(TemplateNode node)
+        internal void SetTemplate(TemplateNode node)
         {
             Debug.Assert(Template == null);
             Debug.Assert(Mixins == null);

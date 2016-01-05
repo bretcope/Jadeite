@@ -7,57 +7,44 @@ namespace Jadeite.Parsing
 {
     public partial class Parser
     {
-        /*
-        Template
-	        ModelDefinition Document
-        */
         private TemplateNode ParseTemplate()
         {
             var template = new TemplateNode();
+
             template.SetModelDefinition(ParseModelDefinition());
             template.SetDocument(ParseDocument());
 
             return template;
         }
-
-        /*
-        ModelDefinition
-	        model TypeIdentifier endOfLine
-        */
+        
         private ModelDefinitionNode ParseModelDefinition()
         {
             var model = new ModelDefinitionNode();
-            model.SetModelKeyword(_lexer.AdvanceKind(JadeiteSyntaxKind.ModelKeyword));
+
+            model.SetModelKeyword(AdvanceKind(JadeiteSyntaxKind.ModelKeyword));
             model.SetTypeIdentifier(ParseTypeIdentifier());
-            model.SetEndOfLine(_lexer.AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            model.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
 
             return model;
         }
-
-        /*
-        TypeIdentifier
-	        codeIdentifier . TypeIdentifier
-	        BuiltInType . TypeIdentifier
-	        codeIdentifier
-	        BuiltInType
-        */
+        
         private TypeIdentifierNode ParseTypeIdentifier()
         {
             var ident = new TypeIdentifierNode();
 
             while (true)
             {
-                var tok = _lexer.Current();
+                var tok = Current;
                 if (tok.Kind != JadeiteSyntaxKind.CodeIdentifier && !SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword))
                 {
                     throw new Exception($"Expected a type at Line {tok.Position.Line} Column {tok.Position.Column}."); // todo
                 }
 
-                ident.AddIdentifier(_lexer.Advance());
+                ident.AddIdentifier(Advance());
 
-                if (_lexer.Current().Kind == JadeiteSyntaxKind.Dot)
+                if (Current.Kind == JadeiteSyntaxKind.Dot)
                 {
-                    ident.AddDot(_lexer.Advance());
+                    ident.AddDot(Advance());
                 }
                 else
                 {
@@ -67,47 +54,35 @@ namespace Jadeite.Parsing
 
             return ident;
         }
-
-        /*
-        Document
-	        EndOfLineList_opt ExtendsDefinition_opt DocumentBody
-        */
+        
         private DocumentNode ParseDocument()
         {
             var doc = new DocumentNode();
-            while (_lexer.Current().Kind == JadeiteSyntaxKind.EndOfLine)
-                doc.AddEndOfLine(_lexer.Advance());
+            while (Current.Kind == JadeiteSyntaxKind.EndOfLine)
+                doc.AddEndOfLine(Advance());
 
-            if (_lexer.Current().Kind == JadeiteSyntaxKind.ExtendsKeyword)
+            if (Current.Kind == JadeiteSyntaxKind.ExtendsKeyword)
                 doc.SetExtendsDefinition(ParseExtendsDefinition());
 
             doc.SetDocumentBody(ParseDocumentBody());
 
             return doc;
         }
-
-        /*
-        ExtendsDefinition
-	        extends ( ArgumentList )  // expecting params (string viewName, object viewModel)
-        */
+        
         private InvocationNode ParseExtendsDefinition()
         {
-            Debug.Assert(_lexer.Current().Kind == JadeiteSyntaxKind.ExtendsKeyword);
+            AssertCurrentKind(JadeiteSyntaxKind.ExtendsKeyword);
 
-            var node = new InvocationNode(JadeiteSyntaxKind.ExtendsDefinition);
-            node.SetLeftHandSide(_lexer.Advance());
-            node.SetOpen(_lexer.AdvanceKind(JadeiteSyntaxKind.OpenParen));
-            node.SetArgumentList(ParseArgumentList());
-            node.SetClose(_lexer.AdvanceKind(JadeiteSyntaxKind.CloseParen));
+            var extends = new InvocationNode(JadeiteSyntaxKind.ExtendsDefinition);
 
-            return node;
+            extends.SetLeftHandSide(Advance());
+            extends.SetOpen(AdvanceKind(JadeiteSyntaxKind.OpenParen));
+            extends.SetArgumentList(ParseArgumentList());
+            extends.SetClose(AdvanceKind(JadeiteSyntaxKind.CloseParen));
+
+            return extends;
         }
-
-        /*
-        DocumentBody
-	        DocumentBodyElement DocumentBody
-	        DocumentBodyElement
-        */
+        
         private DocumentBodyNode ParseDocumentBody()
         {
             var body = new DocumentBodyNode();
@@ -120,41 +95,131 @@ namespace Jadeite.Parsing
             // grammar requires at least one element
             if (body.Count == 0)
             {
-                var pos = _lexer.Current().Position;
+                var pos = Current.Position;
                 throw new Exception($"Document body didn't have at least one element at Line {pos.Line}."); // todo
             }
 
             return body;
         }
-
-        /*
-        DocumentBodyElement
-	        DoctypeDefinition
-	        NamedBlock
-	        IncludeDefinition
-	        BufferedCode
-	        UnescapedBufferedCode
-	        UnbufferedCode
-	        DocumentBlock
-	        HtmlComment
-	        Tag
-	        endOfLine
-        */
+        
         private ISyntaxElement TryParseDocumentBodyElement()
         {
-            switch (_lexer.Current().Kind)
+            // all the obvious easy cases
+            switch (Current.Kind)
             {
                 case JadeiteSyntaxKind.DoctypeKeyword:
-                    //
-                    break;
+                    return ParseDoctypeDefinition();
+                case JadeiteSyntaxKind.BlockKeyword:
+                case JadeiteSyntaxKind.AppendKeyword:
+                case JadeiteSyntaxKind.PrependKeyword:
+                    return ParseNamedBlock();
+                case JadeiteSyntaxKind.IncludeKeyword:
+                    return ParseIncludeDefinition();
+                case JadeiteSyntaxKind.Equals:
+                case JadeiteSyntaxKind.BangEquals:
+                    return ParseBufferedCode();
+                case JadeiteSyntaxKind.Indent:
+                    return ParseDocumentBlock();
+                case JadeiteSyntaxKind.BufferedHtmlComment:
+                case JadeiteSyntaxKind.UnbufferedHtmlComment:
+                    return ParseHtmlComment();
+                case JadeiteSyntaxKind.EndOfLine:
+                    return Advance();
             }
+            
+            return (ISyntaxElement)TryParseUnbufferedCode() ?? ParseTag();
         }
 
         private DoctypeDefinitionNode ParseDoctypeDefinition()
         {
-            Debug.Assert(_lexer.Current().Kind == JadeiteSyntaxKind.DoctypeKeyword);
+            var doctype = new DoctypeDefinitionNode();
 
-            //
+            doctype.SetDoctypeKeyword(AdvanceKind(JadeiteSyntaxKind.DoctypeKeyword));
+            doctype.SetTextBody(ParseTextBodyElementList());
+            doctype.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+
+            return doctype;
+        }
+
+        private NamedBlockNode ParseNamedBlock()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.BlockKeyword, JadeiteSyntaxKind.AppendKeyword, JadeiteSyntaxKind.PrependKeyword);
+
+            var namedBlock = new NamedBlockNode();
+
+            // parse the NamedBlockPrefix
+            var tok = Advance();
+            namedBlock.AddPrefix(tok);
+            if (tok.Kind == JadeiteSyntaxKind.BlockKeyword)
+            {
+                var kind = Current.Kind;
+                if (kind == JadeiteSyntaxKind.AppendKeyword || kind == JadeiteSyntaxKind.PrependKeyword)
+                {
+                    namedBlock.AddPrefix(Advance());
+                }
+            }
+
+            namedBlock.SetName(AdvanceKind(JadeiteSyntaxKind.HtmlIdentifier));
+            namedBlock.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+
+            if (Current.Kind == JadeiteSyntaxKind.Indent)
+                namedBlock.SetBody(ParseDocumentBlock());
+
+            return namedBlock;
+        }
+
+        private InvocationNode ParseIncludeDefinition()
+        {
+            var include = new InvocationNode(JadeiteSyntaxKind.IncludeDefinition);
+
+            include.SetLeftHandSide(AdvanceKind(JadeiteSyntaxKind.IncludeKeyword));
+            include.SetOpen(AdvanceKind(JadeiteSyntaxKind.OpenParen));
+            include.SetArgumentList(ParseArgumentList());
+            include.SetClose(AdvanceKind(JadeiteSyntaxKind.CloseParen));
+
+            return include;
+        }
+
+        private BufferedCodeNode ParseBufferedCode()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.Equals, JadeiteSyntaxKind.BangEquals);
+            throw new NotImplementedException();
+        }
+
+        private DocumentBlockNode ParseDocumentBlock()
+        {
+            throw new NotImplementedException();
+        }
+
+        private HtmlCommentNode ParseHtmlComment()
+        {
+            throw new NotImplementedException();
+        }
+
+        private UnbufferedCodeNode TryParseUnbufferedCode()
+        {
+            throw new NotImplementedException();
+        }
+
+        private TagNode ParseTag()
+        {
+            throw new NotImplementedException();
+        }
+
+        private TextBodyElementListNode ParseTextBodyElementList()
+        {
+            throw new NotImplementedException();
+        }
+
+        private MixinListNode ParseMixinList()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.MixinKeyword);
+            throw new NotImplementedException();
+        }
+
+        private MixinDefinitionNode ParseMixinDefinition()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -5,7 +5,7 @@ namespace Jadeite.Parsing.Nodes
     public sealed class DoctypeDefinitionNode : INode
     {
         public ElementList Children { get; } = new ElementList();
-        public 
+        public TextBodyElementListNode Body { get; private set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.DoctypeDefinition;
 
@@ -14,9 +14,24 @@ namespace Jadeite.Parsing.Nodes
         internal void SetDoctypeKeyword(Token tok)
         {
             Debug.Assert(tok.Kind == JadeiteSyntaxKind.DoctypeKeyword);
+            Debug.Assert(Body == null);
             Children.Add(tok);
         }
 
-        //
+        internal void SetTextBody(TextBodyElementListNode body)
+        {
+            Debug.Assert(Body == null);
+
+            Children.Add(body);
+            Body = body;
+        }
+
+        internal void SetEndOfLine(Token tok)
+        {
+            Debug.Assert(tok.Kind == JadeiteSyntaxKind.EndOfLine);
+            Debug.Assert(Body != null);
+
+            Children.Add(tok);
+        }
     }
 }
