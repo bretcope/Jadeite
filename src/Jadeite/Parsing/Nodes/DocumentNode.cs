@@ -1,40 +1,43 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
     public sealed class DocumentNode : INode
     {
-        public ElementList Children { get; } = new ElementList();
+        public EndOfLineListNode EndOfLines { get; private set; }
         public InvocationNode Extends { get; private set; }
-        public ElementList Body { get; private set; }
+        public DocumentBodyNode Body { get; private set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Document;
 
         internal DocumentNode() { }
 
-        internal void SetExtendsDefinition(InvocationNode node)
+        public IEnumerable<ISyntaxElement> GetChildren()
         {
-            Debug.Assert(node.Kind == JadeiteSyntaxKind.ExtendsDefinition);
-            Debug.Assert(Extends == null);
+            if (EndOfLines != null)
+                yield return EndOfLines;
 
-            Children.Add(node);
-            Extends = node;
+            if (Extends != null)
+                yield return Extends;
+
+            yield return Body;
         }
 
-        internal void AddEndOfLine(Token tok)
+        internal void SetEndOfLines(EndOfLineListNode endOfLines)
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.EndOfLine);
-            Debug.Assert(Extends == null);
-            Debug.Assert(Body == null);
-
-            Children.Add(tok);
+            ParsingDebug.Assert(EndOfLines == null);
+            EndOfLines = endOfLines;
         }
 
+        internal void SetExtendsDefinition(InvocationNode extends)
+        {
+            ParsingDebug.AssertKindIsOneOf(extends.Kind, JadeiteSyntaxKind.ExtendsDefinition);
+            ParsingDebug.Assert(Extends == null);
+            Extends = extends;
+        }
         internal void SetDocumentBody(DocumentBodyNode node)
         {
-            Debug.Assert(Body == null);
-
-            Children.Add(node);
+            ParsingDebug.Assert(Body == null);
             Body = node;
         }
     }

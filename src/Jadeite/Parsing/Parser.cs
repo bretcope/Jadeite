@@ -14,19 +14,31 @@ namespace Jadeite.Parsing
         {
             var start = new StartNode();
 
-            while (Current.Kind == JadeiteSyntaxKind.EndOfLine)
-            {
-                start.AddEndOfLine(Advance());
-            }
+            if (Current.Kind == JadeiteSyntaxKind.EndOfLine)
+                start.SetEndOfLines(ParseEndOfLineList());
 
-            var file = ParseFile();
-            start.SetFile(file);
+            start.SetFile(ParseFile());
 
             // check to make sure we're at end of input
             if (Current.Kind != JadeiteSyntaxKind.EndOfInput)
                 throw new Exception("Parser did not consume all input."); // todo
 
             return start;
+        }
+
+        private EndOfLineListNode ParseEndOfLineList()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.EndOfLine);
+
+            var endOfLines = new EndOfLineListNode();
+
+            do
+            {
+                endOfLines.Add(Advance());
+
+            } while (Current.Kind == JadeiteSyntaxKind.EndOfLine);
+
+            return endOfLines;
         }
 
         private FileNode ParseFile()

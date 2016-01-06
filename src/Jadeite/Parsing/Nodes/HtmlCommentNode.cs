@@ -1,14 +1,34 @@
-﻿namespace Jadeite.Parsing.Nodes
+﻿using System.Collections.Generic;
+
+namespace Jadeite.Parsing.Nodes
 {
     public sealed class HtmlCommentNode : INode
     {
-        public ElementList Children { get; } = new DocumentBodyNode();
-        public JadeiteSyntaxKind Kind { get; }
+        public Token Comment { get; private set; }
+        public Token EndOfLine { get; private set; }
 
-        internal HtmlCommentNode(JadeiteSyntaxKind kind)
+        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.HtmlComment;
+
+        internal HtmlCommentNode() { }
+
+        public IEnumerable<ISyntaxElement> GetChildren()
         {
-            ParsingDebug.AssertKindIsOneOf(kind, JadeiteSyntaxKind.BufferedHtmlComment, JadeiteSyntaxKind.UnbufferedHtmlComment);
-            Kind = kind;
+            yield return Comment;
+            yield return EndOfLine;
+        }
+
+        internal void SetComment(Token comment)
+        {
+            ParsingDebug.AssertKindIsOneOf(comment.Kind, JadeiteSyntaxKind.BufferedHtmlComment, JadeiteSyntaxKind.UnbufferedHtmlComment);
+            ParsingDebug.Assert(Comment == null);
+            Comment = comment;
+        }
+
+        internal void SetEndOfLine(Token eol)
+        {
+            ParsingDebug.AssertKindIsOneOf(eol.Kind, JadeiteSyntaxKind.EndOfLine);
+            ParsingDebug.Assert(EndOfLine == null);
+            EndOfLine = eol;
         }
     }
 }

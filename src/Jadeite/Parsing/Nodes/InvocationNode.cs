@@ -1,11 +1,14 @@
-﻿namespace Jadeite.Parsing.Nodes
+﻿using System.Collections.Generic;
+
+namespace Jadeite.Parsing.Nodes
 {
     public sealed class InvocationNode : INode
     {
-        public JadeiteSyntaxKind Kind { get; }
-        public ElementList Children { get; } = new ElementList();
         public ISyntaxElement LeftHandSide { get; private set; }
+        public Token Open { get; private set; }
         public ArgumentListNode ArgumentList { get; private set; }
+        public Token Close { get; private set; }
+        public JadeiteSyntaxKind Kind { get; }
 
         internal InvocationNode(JadeiteSyntaxKind kind)
         {
@@ -13,36 +16,38 @@
             Kind = kind;
         }
 
+        public IEnumerable<ISyntaxElement> GetChildren()
+        {
+            yield return LeftHandSide;
+            yield return Open;
+            yield return ArgumentList;
+            yield return Close;
+        }
+
         internal void SetLeftHandSide(ISyntaxElement e)
         {
             ParsingDebug.Assert(LeftHandSide == null);
-
-            Children.Add(e);
             LeftHandSide = e;
+        }
+
+        internal void SetOpen(Token open)
+        {
+            ParsingDebug.Assert(IsCorrectOpen(open.Kind));
+            ParsingDebug.Assert(Open == null);
+            Open = open;
         }
 
         internal void SetArgumentList(ArgumentListNode node)
         {
             ParsingDebug.Assert(ArgumentList == null);
-
-            Children.Add(node);
             ArgumentList = node;
         }
 
-        internal void SetOpen(Token tok)
+        internal void SetClose(Token close)
         {
-            ParsingDebug.Assert(IsCorrectOpen(tok.Kind));
-            ParsingDebug.Assert(LeftHandSide != null);
-            ParsingDebug.Assert(ArgumentList == null);
-
-            Children.Add(tok);
-        }
-
-        internal void SetClose(Token tok)
-        {
-            ParsingDebug.Assert(IsCorrectClose(tok.Kind));
-
-            Children.Add(tok);
+            ParsingDebug.Assert(IsCorrectClose(close.Kind));
+            ParsingDebug.Assert(Close == null);
+            Close = close;
         }
 
         private static bool IsInvocationKind(JadeiteSyntaxKind kind)
@@ -53,6 +58,7 @@
                 case JadeiteSyntaxKind.IncludeDefinition:
                 case JadeiteSyntaxKind.ElementAccess:
                 case JadeiteSyntaxKind.InvocationExpression:
+                case JadeiteSyntaxKind.AndAttributes:
                     return true;
                 default:
                     return false;
@@ -68,6 +74,7 @@
                 case JadeiteSyntaxKind.ExtendsDefinition:
                 case JadeiteSyntaxKind.IncludeDefinition:
                 case JadeiteSyntaxKind.InvocationExpression:
+                case JadeiteSyntaxKind.AndAttributes:
                     return kind == JadeiteSyntaxKind.OpenParen;
                 default:
                     return false;
@@ -83,6 +90,7 @@
                 case JadeiteSyntaxKind.ExtendsDefinition:
                 case JadeiteSyntaxKind.IncludeDefinition:
                 case JadeiteSyntaxKind.InvocationExpression:
+                case JadeiteSyntaxKind.AndAttributes:
                     return kind == JadeiteSyntaxKind.CloseParen;
                 default:
                     return false;

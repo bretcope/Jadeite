@@ -211,7 +211,7 @@ TagAttribute
 	htmlIdentifier
 
 AndAttributes
-	&attributes ( CodeIdentifierList_opt )
+	& attributes ( CodeIdentifierList_opt )
 
 TagBody
 	TagExpansion
@@ -237,7 +237,7 @@ UnescapedBufferedCode
 	!= Expression endOfLine
 
 UnbufferedCode
-	-_opt Statement
+	-_opt Statement  // hard to indicate this in the grammar, but unbuffered code starts with a - or a code keyword
 
 HtmlComment
 	bufferedHtmlComment endOfLine
@@ -565,6 +565,8 @@ AssignmentTarget
 	codeIdentifier
 	SingleVariableDeclaration
 	MultipleVariableDeclaration
+
+ParenthesizedAssignmentTarget
 	( IdentifierOrDeclarationList )
 
 IdentifierOrDeclarationList

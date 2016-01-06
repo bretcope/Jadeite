@@ -10,5 +10,10 @@ namespace Jadeite.Parsing
         {
             throw new NotImplementedException();
         }
+
+        private ISyntaxElement ParseExpression()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

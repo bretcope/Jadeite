@@ -1,37 +1,42 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
     public sealed class DoctypeDefinitionNode : INode
     {
-        public ElementList Children { get; } = new ElementList();
+        public Token DoctypeKeyword { get; private set; }
         public TextBodyElementListNode Body { get; private set; }
+        public Token EndOfLine { get; private set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.DoctypeDefinition;
 
         internal DoctypeDefinitionNode() { }
 
-        internal void SetDoctypeKeyword(Token tok)
+        public IEnumerable<ISyntaxElement> GetChildren()
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.DoctypeKeyword);
-            Debug.Assert(Body == null);
-            Children.Add(tok);
+            yield return DoctypeKeyword;
+            yield return Body;
+            yield return EndOfLine;
+        }
+
+        internal void SetDoctypeKeyword(Token doctype)
+        {
+            ParsingDebug.AssertKindIsOneOf(doctype.Kind, JadeiteSyntaxKind.DoctypeKeyword);
+            ParsingDebug.Assert(DoctypeKeyword == null);
+            DoctypeKeyword = doctype;
         }
 
         internal void SetTextBody(TextBodyElementListNode body)
         {
-            Debug.Assert(Body == null);
-
-            Children.Add(body);
+            ParsingDebug.Assert(Body == null);
             Body = body;
         }
 
-        internal void SetEndOfLine(Token tok)
+        internal void SetEndOfLine(Token eol)
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.EndOfLine);
-            Debug.Assert(Body != null);
-
-            Children.Add(tok);
+            ParsingDebug.AssertKindIsOneOf(eol.Kind, JadeiteSyntaxKind.EndOfLine);
+            ParsingDebug.Assert(EndOfLine == null);
+            EndOfLine = eol;
         }
     }
 }

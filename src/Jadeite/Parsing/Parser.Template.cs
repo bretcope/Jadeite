@@ -58,8 +58,8 @@ namespace Jadeite.Parsing
         private DocumentNode ParseDocument()
         {
             var doc = new DocumentNode();
-            while (Current.Kind == JadeiteSyntaxKind.EndOfLine)
-                doc.AddEndOfLine(Advance());
+            if (Current.Kind == JadeiteSyntaxKind.EndOfLine)
+                doc.SetEndOfLines(ParseEndOfLineList());
 
             if (Current.Kind == JadeiteSyntaxKind.ExtendsKeyword)
                 doc.SetExtendsDefinition(ParseExtendsDefinition());
@@ -87,13 +87,13 @@ namespace Jadeite.Parsing
         {
             var body = new DocumentBodyNode();
             ISyntaxElement e;
-            while ((e = TryParseDocumentBodyElement()) != null)
+            while ((e = ParseOptionalDocumentBodyElement()) != null)
             {
                 body.Add(e);
             }
 
             // grammar requires at least one element
-            if (body.Count == 0)
+            if (body.ChildrenCount == 0)
             {
                 var pos = Current.Position;
                 throw new Exception($"Document body didn't have at least one element at Line {pos.Line}."); // todo
@@ -102,7 +102,7 @@ namespace Jadeite.Parsing
             return body;
         }
         
-        private ISyntaxElement TryParseDocumentBodyElement()
+        private ISyntaxElement ParseOptionalDocumentBodyElement()
         {
             // all the obvious easy cases
             switch (Current.Kind)
@@ -127,7 +127,7 @@ namespace Jadeite.Parsing
                     return Advance();
             }
             
-            return (ISyntaxElement)TryParseUnbufferedCode() ?? ParseTag();
+            return (ISyntaxElement)ParseOptionalUnbufferedCode() ?? ParseTag(optional: true);
         }
 
         private DoctypeDefinitionNode ParseDoctypeDefinition()
@@ -183,25 +183,65 @@ namespace Jadeite.Parsing
         private BufferedCodeNode ParseBufferedCode()
         {
             AssertCurrentKind(JadeiteSyntaxKind.Equals, JadeiteSyntaxKind.BangEquals);
-            throw new NotImplementedException();
+
+            var begin = Advance();
+            var kind = begin.Kind == JadeiteSyntaxKind.Equals ? JadeiteSyntaxKind.EscapedBufferedCode : JadeiteSyntaxKind.UnescapedBufferedCode;
+            var buffered = new BufferedCodeNode(kind);
+
+            buffered.SetBeginningToken(begin);
+            buffered.SetExpression(ParseExpression());
+            buffered.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+
+            return buffered;
         }
 
         private DocumentBlockNode ParseDocumentBlock()
         {
-            throw new NotImplementedException();
+            var block = new DocumentBlockNode();
+
+            block.SetIndent(AdvanceKind(JadeiteSyntaxKind.Indent));
+            block.SetBody(ParseDocumentBody());
+            block.SetOutdent(AdvanceKind(JadeiteSyntaxKind.Outdent));
+
+            return block;
         }
 
         private HtmlCommentNode ParseHtmlComment()
         {
-            throw new NotImplementedException();
+            AssertCurrentKind(JadeiteSyntaxKind.BufferedHtmlComment, JadeiteSyntaxKind.UnbufferedHtmlComment);
+
+            var comment = new HtmlCommentNode();
+
+            comment.SetComment(Advance());
+            comment.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+
+            return comment;
         }
 
-        private UnbufferedCodeNode TryParseUnbufferedCode()
+        private UnbufferedCodeNode ParseOptionalUnbufferedCode()
         {
-            throw new NotImplementedException();
+            var kind = Current.Kind;
+            UnbufferedCodeNode code;
+            if (kind == JadeiteSyntaxKind.Minus)
+            {
+                code = new UnbufferedCodeNode();
+                code.SetPrefix(Advance());
+            }
+            else if (SyntaxInfo.IsOfCategory(kind, SyntaxCategory.CodeKeyword))
+            {
+                code = new UnbufferedCodeNode();
+            }
+            else
+            {
+                return null;
+            }
+
+            code.SetStatement(ParseStatement());
+
+            return code;
         }
 
-        private TagNode ParseTag()
+        private TagNode ParseTag(bool optional)
         {
             throw new NotImplementedException();
         }

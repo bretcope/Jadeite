@@ -1,35 +1,42 @@
-﻿using System.Diagnostics;
-using Jadeite.Parsing.Nodes;
+﻿using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
     public sealed class ModelDefinitionNode : INode
     {
-        public ElementList Children { get; } = new ElementList();
+        public Token ModelKeyword { get; private set; }
         public TypeIdentifierNode TypeIdentifier { get; private set; }
+        public Token EndOfLine { get; private set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ModelDefinition;
 
         internal ModelDefinitionNode() { }
 
-        internal void SetModelKeyword(Token tok)
+        public IEnumerable<ISyntaxElement> GetChildren()
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.ModelKeyword);
-            Children.Add(tok);
+            yield return ModelKeyword;
+            yield return TypeIdentifier;
+            yield return EndOfLine;
+        }
+
+        internal void SetModelKeyword(Token model)
+        {
+            ParsingDebug.AssertKindIsOneOf(model.Kind, JadeiteSyntaxKind.ModelKeyword);
+            ParsingDebug.Assert(ModelKeyword == null);
+            ModelKeyword = model;
         }
 
         internal void SetTypeIdentifier(TypeIdentifierNode node)
         {
-            Debug.Assert(TypeIdentifier == null);
-
-            Children.Add(node);
+            ParsingDebug.Assert(TypeIdentifier == null);
             TypeIdentifier = node;
         }
 
-        internal void SetEndOfLine(Token tok)
+        internal void SetEndOfLine(Token endOfLine)
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.EndOfLine);
-            Children.Add(tok);
+            ParsingDebug.AssertKindIsOneOf(endOfLine.Kind, JadeiteSyntaxKind.EndOfLine);
+            ParsingDebug.Assert(EndOfLine == null);
+            EndOfLine = endOfLine;
         }
     }
 }

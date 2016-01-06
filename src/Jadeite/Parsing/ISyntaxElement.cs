@@ -10,6 +10,6 @@ namespace Jadeite.Parsing
 
     public interface INode : ISyntaxElement
     {
-        ElementList Children { get; }
+        IEnumerable<ISyntaxElement> GetChildren();
     }
 }

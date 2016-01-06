@@ -131,6 +131,7 @@ namespace Jadeite.Parsing
 
         [StartOf(SyntaxCategory.TemplateNode)]
         Start,
+        EndOfLineList,
         File,
         Template,
         ModelDefinition,
@@ -142,7 +143,6 @@ namespace Jadeite.Parsing
         IncludeDefinition,
         DocumentBlock,
         Tag,
-        TagElementDeclaration,
         ClassOrIdList,
         ClassOrId,
         TagAttributes,
@@ -228,6 +228,7 @@ namespace Jadeite.Parsing
         ContinueStatement,
         ReturnStatement,
         AssignmentTarget,
+        ParenthesizedAssignmentTarget,
         IdentifierOrDeclarationList,
         IdentifierOrDeclaration,
         SingleVariableDeclaration,

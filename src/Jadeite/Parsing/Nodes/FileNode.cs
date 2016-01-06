@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
@@ -6,24 +6,28 @@ namespace Jadeite.Parsing.Nodes
     {
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.File;
 
-        public ElementList Children { get; } = new ElementList();
         public TemplateNode Template { get; private set; }
         public MixinListNode Mixins { get; private set; }
 
         internal FileNode() { }
 
+        public IEnumerable<ISyntaxElement> GetChildren()
+        {
+            yield return Template;
+
+            if (Mixins != null)
+                yield return Mixins;
+        }
+
         internal void SetTemplate(TemplateNode node)
         {
-            Debug.Assert(Template == null);
-            Debug.Assert(Mixins == null);
-
-            Children.Add(node);
+            ParsingDebug.Assert(Template == null);
             Template = node;
         }
 
         internal void SetMixins(MixinListNode node)
         {
-            Debug.Assert(Mixins == null);
+            ParsingDebug.Assert(Mixins == null);
             Mixins = node;
         }
     }
