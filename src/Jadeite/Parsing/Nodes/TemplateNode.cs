@@ -5,8 +5,10 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class TemplateNode : INode
     {
-        public ModelDefinitionNode ModelDefinition { get; private set; }
-        public DocumentNode Document { get; private set; }
+        [AssertKind(JadeiteSyntaxKind.ModelDefinition)]
+        public ModelDefinitionNode ModelDefinition { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.Document)]
+        public DocumentNode Document { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Template;
 
@@ -16,18 +18,6 @@ namespace Jadeite.Parsing.Nodes
         {
             yield return ModelDefinition;
             yield return Document;
-        }
-
-        internal void SetModelDefinition(ModelDefinitionNode node)
-        {
-            Debug.Assert(ModelDefinition == null);
-            ModelDefinition = node;
-        }
-
-        internal void SetDocument(DocumentNode node)
-        {
-            Debug.Assert(Document == null);
-            Document = node;
         }
     }
 }

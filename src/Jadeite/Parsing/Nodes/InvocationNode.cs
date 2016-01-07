@@ -2,17 +2,20 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class InvocationNode : INode
+    public sealed class InvocationNode : INode, ICustomDebugNode
     {
-        public ISyntaxElement LeftHandSide { get; private set; }
-        public Token Open { get; private set; }
-        public ArgumentListNode ArgumentList { get; private set; }
-        public Token Close { get; private set; }
+        [AssertNotNull]
+        public ISyntaxElement LeftHandSide { get; internal set; }
+        [AssertNotNull]
+        public Token Open { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.ArgumentList)]
+        public ArgumentListNode ArgumentList { get; internal set; }
+        [AssertNotNull]
+        public Token Close { get; internal set; }
         public JadeiteSyntaxKind Kind { get; }
 
         internal InvocationNode(JadeiteSyntaxKind kind)
         {
-            ParsingDebug.Assert(IsInvocationKind(kind));
             Kind = kind;
         }
 
@@ -24,30 +27,11 @@ namespace Jadeite.Parsing.Nodes
             yield return Close;
         }
 
-        internal void SetLeftHandSide(ISyntaxElement e)
+        void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.Assert(LeftHandSide == null);
-            LeftHandSide = e;
-        }
-
-        internal void SetOpen(Token open)
-        {
-            ParsingDebug.Assert(IsCorrectOpen(open.Kind));
-            ParsingDebug.Assert(Open == null);
-            Open = open;
-        }
-
-        internal void SetArgumentList(ArgumentListNode node)
-        {
-            ParsingDebug.Assert(ArgumentList == null);
-            ArgumentList = node;
-        }
-
-        internal void SetClose(Token close)
-        {
-            ParsingDebug.Assert(IsCorrectClose(close.Kind));
-            ParsingDebug.Assert(Close == null);
-            Close = close;
+            ParsingDebug.Assert(IsInvocationKind(Kind));
+            ParsingDebug.Assert(IsCorrectOpen(Open.Kind));
+            ParsingDebug.Assert(IsCorrectClose(Close.Kind));
         }
 
         private static bool IsInvocationKind(JadeiteSyntaxKind kind)

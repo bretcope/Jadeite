@@ -6,8 +6,10 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class StartNode : INode
     {
-        public EndOfLineListNode EndOfLines { get; private set; }
-        public FileNode File { get; private set; }
+        [AssertKind(true, JadeiteSyntaxKind.EndOfLineList)]
+        public EndOfLineListNode EndOfLines { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.File)]
+        public FileNode File { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Start;
 
@@ -19,18 +21,6 @@ namespace Jadeite.Parsing.Nodes
                 yield return EndOfLines;
 
             yield return File;
-        }
-
-        internal void SetEndOfLines(EndOfLineListNode endOfLines)
-        {
-            Debug.Assert(EndOfLines == null);
-            EndOfLines = endOfLines;
-        }
-
-        internal void SetFile(FileNode node)
-        {
-            Debug.Assert(File == null);
-            File = node;
         }
     }
 }

@@ -1,18 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class BracketedNode : INode
-    { 
-        public Token Open { get; private set; }
-        public ISyntaxElement Body { get; private set; }
-        public Token Close { get; private set; }
+    public class BracketedNode : INode, ICustomDebugNode
+    {
+        public Token Open { get; internal set; }
+        public ISyntaxElement Body { get; internal set; }
+        public Token Close { get; internal set; }
         public JadeiteSyntaxKind Kind { get; }
 
         internal BracketedNode(JadeiteSyntaxKind kind)
         {
-            ParsingDebug.Assert(IsBracketedKind(kind));
             Kind = kind;
         }
 
@@ -24,29 +22,16 @@ namespace Jadeite.Parsing.Nodes
             yield return Close;
         }
 
-        internal void SetOpen(Token open)
+        void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.Assert(IsCorrectOpen(open.Kind));
-            ParsingDebug.Assert(Open == null);
-            Open = open;
+            ParsingDebug.Assert(IsBracketedKind(Kind));
+            ParsingDebug.Assert(IsCorrectOpen(Open.Kind));
+            ParsingDebug.Assert(IsCorrectClose(Close.Kind));
         }
 
-        internal void SetBody(ISyntaxElement body)
+        private bool IsBracketedKind(JadeiteSyntaxKind kind)
         {
-            ParsingDebug.Assert(Body == null);
-            Body = body;
-        }
-
-        internal void SetClose(Token close)
-        {
-            ParsingDebug.Assert(IsCorrectClose(close.Kind));
-            ParsingDebug.Assert(Close == null);
-            Close = close;
-        }
-
-        private static bool IsBracketedKind(JadeiteSyntaxKind kind)
-        {
-            switch (kind)
+            switch (Kind)
             {
                 case JadeiteSyntaxKind.InterpolatedTag:
                 case JadeiteSyntaxKind.EscapedInterpolatedExpression:
@@ -61,9 +46,9 @@ namespace Jadeite.Parsing.Nodes
             }
         }
 
-        private static bool IsCorrectOpen(JadeiteSyntaxKind kind)
+        private bool IsCorrectOpen(JadeiteSyntaxKind kind)
         {
-            switch (kind)
+            switch (Kind)
             {
                 case JadeiteSyntaxKind.InterpolatedTag:
                     return kind == JadeiteSyntaxKind.OpenTagInterpolation;
@@ -81,9 +66,9 @@ namespace Jadeite.Parsing.Nodes
             }
         }
 
-        private static bool IsCorrectClose(JadeiteSyntaxKind kind)
+        private bool IsCorrectClose(JadeiteSyntaxKind kind)
         {
-            switch (kind)
+            switch (Kind)
             {
                 case JadeiteSyntaxKind.InterpolatedTag:
                     return kind == JadeiteSyntaxKind.CloseSquareBracket;

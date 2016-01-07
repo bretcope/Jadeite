@@ -2,11 +2,13 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class TagAttributeNode : INode
+    public sealed class TagAttributeNode : INode, ICustomDebugNode
     {
-        public Token LeftHandSide { get; private set; }
-        public Token Operator { get; private set; }
-        public ISyntaxElement RightHandSide { get; private set; }
+        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        public Token LeftHandSide { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.Equals, JadeiteSyntaxKind.BangEquals)]
+        public Token Operator { get; internal set; }
+        public ISyntaxElement RightHandSide { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TagAttribute;
 
@@ -22,24 +24,9 @@ namespace Jadeite.Parsing.Nodes
             }
         }
 
-        internal void SetLeftHandSide(Token left)
+        void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.AssertKindIsOneOf(left.Kind, JadeiteSyntaxKind.HtmlIdentifier);
-            ParsingDebug.Assert(LeftHandSide == null);
-            LeftHandSide = left;
-        }
-
-        internal void SetOperator(Token op)
-        {
-            ParsingDebug.AssertKindIsOneOf(op.Kind, JadeiteSyntaxKind.Equals, JadeiteSyntaxKind.BangEquals);
-            ParsingDebug.Assert(Operator == null);
-            Operator = op;
-        }
-
-        internal void SetRightHandSide(ISyntaxElement expression)
-        {
-            ParsingDebug.Assert(RightHandSide == null);
-            RightHandSide = expression;
+            ParsingDebug.Assert((Operator == null) == (RightHandSide == null));
         }
     }
 }

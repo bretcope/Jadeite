@@ -29,7 +29,7 @@ namespace Jadeite.Parsing.Nodes
             Commas.Add(comma);
         }
 
-        internal virtual void AddItem(T item)
+        protected void AddItem(T item)
         {
             ParsingDebug.Assert(Items.Count == Commas.Count);
             Items.Add(item);
@@ -43,6 +43,11 @@ namespace Jadeite.Parsing.Nodes
         public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ArgumentList;
 
         internal ArgumentListNode() { }
+
+        internal void AddArgument(ISyntaxElement argument)
+        {
+            AddItem(argument);
+        }
     }
 
     public sealed class TagAttributesListNode : CommaSeparatedListNode<TagAttributeNode>
@@ -50,6 +55,11 @@ namespace Jadeite.Parsing.Nodes
         public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TagAttributesList;
 
         internal TagAttributesListNode() { }
+
+        internal void AddTagAttribute(TagAttributeNode tagAttribute)
+        {
+            AddItem(tagAttribute);
+        }
     }
 
     public sealed class ExpressionListNode : CommaSeparatedListNode<ISyntaxElement>
@@ -57,6 +67,11 @@ namespace Jadeite.Parsing.Nodes
         public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ExpressionList;
 
         internal ExpressionListNode() { }
+
+        internal void AddExpression(ISyntaxElement expression)
+        {
+            AddItem(expression);
+        }
     }
 
     public sealed class StatementExpressionListNode : CommaSeparatedListNode<ISyntaxElement>
@@ -64,6 +79,11 @@ namespace Jadeite.Parsing.Nodes
         public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.StatementExpressionList;
 
         internal StatementExpressionListNode() { }
+
+        internal void AddStatementExpression(ISyntaxElement statementExpression)
+        {
+            AddItem(statementExpression);
+        }
     }
 
     public sealed class IdentifierOrDeclarationListNode : CommaSeparatedListNode<ISyntaxElement>
@@ -72,10 +92,10 @@ namespace Jadeite.Parsing.Nodes
 
         internal IdentifierOrDeclarationListNode() { }
 
-        internal override void AddItem(ISyntaxElement item)
+        internal void AddIdentifierOrDeclaration(ISyntaxElement item)
         {
             ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteSyntaxKind.CodeIdentifier, JadeiteSyntaxKind.SingleVariableDeclaration);
-            base.AddItem(item);
+            AddItem(item);
         }
     }
 
@@ -85,10 +105,10 @@ namespace Jadeite.Parsing.Nodes
 
         internal CodeIdentifierListNode() { }
 
-        internal override void AddItem(Token item)
+        internal void AddCodeIdentifier(Token item)
         {
             ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteSyntaxKind.CodeIdentifier);
-            base.AddItem(item);
+            AddItem(item);
         }
     }
 }

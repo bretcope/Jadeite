@@ -2,16 +2,18 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class BufferedCodeNode : INode
+    public sealed class BufferedCodeNode : INode, ICustomDebugNode
     {
-        public Token BeginningToken { get; private set; }
-        public ISyntaxElement Expression { get; private set; }
-        public Token EndOfLine { get; private set; }
+        [AssertNotNull]
+        public Token BeginningToken { get; internal set; }
+        [AssertNotNull]
+        public ISyntaxElement Expression { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        public Token EndOfLine { get; internal set; }
         public JadeiteSyntaxKind Kind { get; }
 
         internal BufferedCodeNode(JadeiteSyntaxKind kind)
         {
-            ParsingDebug.AssertKindIsOneOf(kind, JadeiteSyntaxKind.EscapedBufferedCode, JadeiteSyntaxKind.UnescapedBufferedCode);
             Kind = kind;
         }
 
@@ -22,26 +24,11 @@ namespace Jadeite.Parsing.Nodes
             yield return EndOfLine;
         }
 
-        internal void SetBeginningToken(Token tok)
+        void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.Assert((Kind == JadeiteSyntaxKind.EscapedBufferedCode && tok.Kind == JadeiteSyntaxKind.Equals)
-                || (Kind == JadeiteSyntaxKind.UnescapedBufferedCode && tok.Kind == JadeiteSyntaxKind.BangEquals));
-            ParsingDebug.Assert(BeginningToken == null);
-
-            BeginningToken = tok;
-        }
-
-        internal void SetExpression(ISyntaxElement expression)
-        {
-            ParsingDebug.Assert(Expression == null);
-            Expression = expression;
-        }
-
-        internal void SetEndOfLine(Token eol)
-        {
-            ParsingDebug.AssertKindIsOneOf(eol.Kind, JadeiteSyntaxKind.EndOfLine);
-            ParsingDebug.Assert(EndOfLine == null);
-            EndOfLine = eol;
+            ParsingDebug.AssertKindIsOneOf(Kind, JadeiteSyntaxKind.EscapedBufferedCode, JadeiteSyntaxKind.UnescapedBufferedCode);
+            ParsingDebug.Assert((Kind == JadeiteSyntaxKind.EscapedBufferedCode && BeginningToken.Kind == JadeiteSyntaxKind.Equals)
+                || (Kind == JadeiteSyntaxKind.UnescapedBufferedCode && BeginningToken.Kind == JadeiteSyntaxKind.BangEquals));
         }
     }
 }

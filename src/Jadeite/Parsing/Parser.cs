@@ -15,9 +15,9 @@ namespace Jadeite.Parsing
             var start = new StartNode();
 
             if (Current.Kind == JadeiteSyntaxKind.EndOfLine)
-                start.SetEndOfLines(ParseEndOfLineList());
+                start.EndOfLines = ParseEndOfLineList();
 
-            start.SetFile(ParseFile());
+            start.File = ParseFile();
 
             // check to make sure we're at end of input
             if (Current.Kind != JadeiteSyntaxKind.EndOfInput)
@@ -44,10 +44,10 @@ namespace Jadeite.Parsing
         private FileNode ParseFile()
         {
             var file = new FileNode();
-            file.SetTemplate(ParseTemplate());
+            file.Template = ParseTemplate();
 
             if (Current.Kind == JadeiteSyntaxKind.MixinKeyword)
-                file.SetMixins(ParseMixinList());
+                file.Mixins = ParseMixinList();
 
             return file;
         }

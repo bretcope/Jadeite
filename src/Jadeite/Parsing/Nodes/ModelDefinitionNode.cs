@@ -4,9 +4,12 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class ModelDefinitionNode : INode
     {
-        public Token ModelKeyword { get; private set; }
-        public TypeIdentifierNode TypeIdentifier { get; private set; }
-        public Token EndOfLine { get; private set; }
+        [AssertKind(JadeiteSyntaxKind.ModelKeyword)]
+        public Token ModelKeyword { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.TypeIdentifier)]
+        public TypeIdentifierNode TypeIdentifier { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        public Token EndOfLine { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ModelDefinition;
 
@@ -17,26 +20,6 @@ namespace Jadeite.Parsing.Nodes
             yield return ModelKeyword;
             yield return TypeIdentifier;
             yield return EndOfLine;
-        }
-
-        internal void SetModelKeyword(Token model)
-        {
-            ParsingDebug.AssertKindIsOneOf(model.Kind, JadeiteSyntaxKind.ModelKeyword);
-            ParsingDebug.Assert(ModelKeyword == null);
-            ModelKeyword = model;
-        }
-
-        internal void SetTypeIdentifier(TypeIdentifierNode node)
-        {
-            ParsingDebug.Assert(TypeIdentifier == null);
-            TypeIdentifier = node;
-        }
-
-        internal void SetEndOfLine(Token endOfLine)
-        {
-            ParsingDebug.AssertKindIsOneOf(endOfLine.Kind, JadeiteSyntaxKind.EndOfLine);
-            ParsingDebug.Assert(EndOfLine == null);
-            EndOfLine = endOfLine;
         }
     }
 }

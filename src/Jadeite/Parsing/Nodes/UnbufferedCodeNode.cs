@@ -4,8 +4,10 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class UnbufferedCodeNode : INode
     {
-        public Token PrefixHyphen { get; private set; }
-        public ISyntaxElement Statement { get; private set; }
+        [AssertKind(true, JadeiteSyntaxKind.Minus)]
+        public Token PrefixHyphen { get; internal set; }
+        [AssertNotNull]
+        public ISyntaxElement Statement { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.UnbufferedCode;
 
@@ -17,19 +19,6 @@ namespace Jadeite.Parsing.Nodes
                 yield return PrefixHyphen;
 
             yield return Statement;
-        }
-
-        internal void SetPrefix(Token prefix)
-        {
-            ParsingDebug.AssertKindIsOneOf(prefix.Kind, JadeiteSyntaxKind.Minus);
-            ParsingDebug.Assert(PrefixHyphen == null);
-            PrefixHyphen = prefix;
-        }
-
-        internal void SetStatement(ISyntaxElement statement)
-        {
-            ParsingDebug.Assert(Statement == null);
-            Statement = statement;
         }
     }
 }

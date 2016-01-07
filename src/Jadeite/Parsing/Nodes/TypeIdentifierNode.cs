@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class TypeIdentifierNode : INode
+    public sealed class TypeIdentifierNode : INode, ICustomDebugNode
     {
         public SyntaxList<Token> Parts { get; } = new SyntaxList<Token>();
 
@@ -17,16 +17,27 @@ namespace Jadeite.Parsing.Nodes
             return Parts;
         }
 
-        internal void AddDot(Token tok)
+        internal void AddToken(Token tok)
         {
-            ParsingDebug.AssertKindIsOneOf(tok.Kind, JadeiteSyntaxKind.Dot);
             Parts.Add(tok);
         }
 
-        internal void AddIdentifier(Token tok)
+        void ICustomDebugNode.AssertIsValid()
         {
-            Debug.Assert(tok.Kind == JadeiteSyntaxKind.CodeIdentifier || SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword));
-            Parts.Add(tok);
+            ParsingDebug.Assert(Parts.Count % 2 == 1); // should always be an odd number of parts
+
+            for (var i = 0; i < Parts.Count; i++)
+            {
+                var tok = Parts[i];
+                if (i % 2 == 0)
+                {
+                    ParsingDebug.Assert(tok.Kind == JadeiteSyntaxKind.CodeIdentifier || SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword));
+                }
+                else
+                {
+                    ParsingDebug.AssertKindIsOneOf(tok.Kind, JadeiteSyntaxKind.Dot);
+                }
+            }
         }
     }
 }

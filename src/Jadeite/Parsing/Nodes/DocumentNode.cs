@@ -4,9 +4,12 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class DocumentNode : INode
     {
-        public EndOfLineListNode EndOfLines { get; private set; }
-        public InvocationNode Extends { get; private set; }
-        public DocumentBodyNode Body { get; private set; }
+        [AssertKind(true, JadeiteSyntaxKind.EndOfLineList)]
+        public EndOfLineListNode EndOfLines { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.ExtendsDefinition)]
+        public InvocationNode Extends { get; internal set; }
+        [AssertNotNull]
+        public DocumentBodyNode Body { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Document;
 
@@ -21,24 +24,6 @@ namespace Jadeite.Parsing.Nodes
                 yield return Extends;
 
             yield return Body;
-        }
-
-        internal void SetEndOfLines(EndOfLineListNode endOfLines)
-        {
-            ParsingDebug.Assert(EndOfLines == null);
-            EndOfLines = endOfLines;
-        }
-
-        internal void SetExtendsDefinition(InvocationNode extends)
-        {
-            ParsingDebug.AssertKindIsOneOf(extends.Kind, JadeiteSyntaxKind.ExtendsDefinition);
-            ParsingDebug.Assert(Extends == null);
-            Extends = extends;
-        }
-        internal void SetDocumentBody(DocumentBodyNode node)
-        {
-            ParsingDebug.Assert(Body == null);
-            Body = node;
         }
     }
 }

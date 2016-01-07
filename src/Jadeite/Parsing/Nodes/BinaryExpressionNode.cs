@@ -2,12 +2,14 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class BinaryExpressionNode : INode
+    public sealed class BinaryExpressionNode : INode, ICustomDebugNode
     {
         public JadeiteSyntaxKind Kind { get; }
-        public ISyntaxElement LeftHandSide { get; private set; }
-        public Token Operator { get; private set; }
-        public ISyntaxElement RightHandSide { get; private set; }
+        [AssertNotNull]
+        public ISyntaxElement LeftHandSide { get; internal set; }
+        public Token Operator { get; internal set; }
+        [AssertNotNull]
+        public ISyntaxElement RightHandSide { get; internal set; }
 
         internal BinaryExpressionNode(JadeiteSyntaxKind kind)
         {
@@ -22,23 +24,9 @@ namespace Jadeite.Parsing.Nodes
             yield return RightHandSide;
         }
 
-        internal void SetLeftHandSide(ISyntaxElement e)
+        void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.Assert(LeftHandSide == null);
-            LeftHandSide = e;
-        }
-
-        internal void SetOperator(Token tok)
-        {
-            ParsingDebug.Assert(IsBinaryExpressionOperator(tok.Kind));
-            ParsingDebug.Assert(Operator == null);
-            Operator = tok;
-        }
-
-        internal void SetRightHandSide(ISyntaxElement e)
-        {
-            ParsingDebug.Assert(RightHandSide == null);
-            RightHandSide = e;
+            ParsingDebug.Assert(IsValidOperator(Operator.Kind));
         }
 
         private static bool IsBinaryExpressionKind(JadeiteSyntaxKind kind)
@@ -52,12 +40,12 @@ namespace Jadeite.Parsing.Nodes
             }
         }
 
-        private static bool IsBinaryExpressionOperator(JadeiteSyntaxKind kind)
+        private bool IsValidOperator(JadeiteSyntaxKind kind)
         {
-            switch (kind)
+            switch (Kind)
             {
-                case JadeiteSyntaxKind.Dot:
-                    return true;
+                case JadeiteSyntaxKind.MemberAccess:
+                    return kind == JadeiteSyntaxKind.Dot;
                 default:
                     return false;
             }

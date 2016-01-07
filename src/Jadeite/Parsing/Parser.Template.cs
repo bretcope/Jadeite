@@ -11,8 +11,8 @@ namespace Jadeite.Parsing
         {
             var template = new TemplateNode();
 
-            template.SetModelDefinition(ParseModelDefinition());
-            template.SetDocument(ParseDocument());
+            template.ModelDefinition = ParseModelDefinition();
+            template.Document = ParseDocument();
 
             return template;
         }
@@ -21,9 +21,9 @@ namespace Jadeite.Parsing
         {
             var model = new ModelDefinitionNode();
 
-            model.SetModelKeyword(AdvanceKind(JadeiteSyntaxKind.ModelKeyword));
-            model.SetTypeIdentifier(ParseTypeIdentifier());
-            model.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            model.ModelKeyword = AdvanceKind(JadeiteSyntaxKind.ModelKeyword);
+            model.TypeIdentifier = ParseTypeIdentifier();
+            model.EndOfLine = AdvanceKind(JadeiteSyntaxKind.EndOfLine);
 
             return model;
         }
@@ -40,11 +40,11 @@ namespace Jadeite.Parsing
                     throw new Exception($"Expected a type at Line {tok.Position.Line} Column {tok.Position.Column}."); // todo
                 }
 
-                ident.AddIdentifier(Advance());
+                ident.AddToken(Advance());
 
                 if (Current.Kind == JadeiteSyntaxKind.Dot)
                 {
-                    ident.AddDot(Advance());
+                    ident.AddToken(Advance());
                 }
                 else
                 {
@@ -59,12 +59,12 @@ namespace Jadeite.Parsing
         {
             var doc = new DocumentNode();
             if (Current.Kind == JadeiteSyntaxKind.EndOfLine)
-                doc.SetEndOfLines(ParseEndOfLineList());
+                doc.EndOfLines = ParseEndOfLineList();
 
             if (Current.Kind == JadeiteSyntaxKind.ExtendsKeyword)
-                doc.SetExtendsDefinition(ParseExtendsDefinition());
+                doc.Extends = ParseExtendsDefinition();
 
-            doc.SetDocumentBody(ParseDocumentBody());
+            doc.Body = ParseDocumentBody();
 
             return doc;
         }
@@ -75,10 +75,10 @@ namespace Jadeite.Parsing
 
             var extends = new InvocationNode(JadeiteSyntaxKind.ExtendsDefinition);
 
-            extends.SetLeftHandSide(Advance());
-            extends.SetOpen(AdvanceKind(JadeiteSyntaxKind.OpenParen));
-            extends.SetArgumentList(ParseArgumentList());
-            extends.SetClose(AdvanceKind(JadeiteSyntaxKind.CloseParen));
+            extends.LeftHandSide = Advance();
+            extends.Open = AdvanceKind(JadeiteSyntaxKind.OpenParen);
+            extends.ArgumentList = ParseArgumentList();
+            extends.Close = AdvanceKind(JadeiteSyntaxKind.CloseParen);
 
             return extends;
         }
@@ -134,9 +134,9 @@ namespace Jadeite.Parsing
         {
             var doctype = new DoctypeDefinitionNode();
 
-            doctype.SetDoctypeKeyword(AdvanceKind(JadeiteSyntaxKind.DoctypeKeyword));
-            doctype.SetTextBody(ParseTextBodyElementList());
-            doctype.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            doctype.DoctypeKeyword = AdvanceKind(JadeiteSyntaxKind.DoctypeKeyword);
+            doctype.Body = ParseTextBodyElementList();
+            doctype.EndOfLine = AdvanceKind(JadeiteSyntaxKind.EndOfLine);
 
             return doctype;
         }
@@ -149,21 +149,30 @@ namespace Jadeite.Parsing
 
             // parse the NamedBlockPrefix
             var tok = Advance();
-            namedBlock.AddPrefix(tok);
             if (tok.Kind == JadeiteSyntaxKind.BlockKeyword)
             {
+                namedBlock.BlockKeyword = tok;
+
                 var kind = Current.Kind;
-                if (kind == JadeiteSyntaxKind.AppendKeyword || kind == JadeiteSyntaxKind.PrependKeyword)
-                {
-                    namedBlock.AddPrefix(Advance());
-                }
+                if (kind == JadeiteSyntaxKind.AppendKeyword)
+                    namedBlock.AppendKeyword = Advance();
+                else if (kind == JadeiteSyntaxKind.PrependKeyword)
+                    namedBlock.PrependKeyword = Advance();
+            }
+            else if (tok.Kind == JadeiteSyntaxKind.AppendKeyword)
+            {
+                namedBlock.AppendKeyword = tok;
+            }
+            else
+            {
+                namedBlock.PrependKeyword = tok;
             }
 
-            namedBlock.SetName(AdvanceKind(JadeiteSyntaxKind.HtmlIdentifier));
-            namedBlock.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            namedBlock.Name = AdvanceKind(JadeiteSyntaxKind.HtmlIdentifier);
+            namedBlock.EndOfLine = AdvanceKind(JadeiteSyntaxKind.EndOfLine);
 
             if (Current.Kind == JadeiteSyntaxKind.Indent)
-                namedBlock.SetBody(ParseDocumentBlock());
+                namedBlock.Body = ParseDocumentBlock();
 
             return namedBlock;
         }
@@ -172,10 +181,10 @@ namespace Jadeite.Parsing
         {
             var include = new InvocationNode(JadeiteSyntaxKind.IncludeDefinition);
 
-            include.SetLeftHandSide(AdvanceKind(JadeiteSyntaxKind.IncludeKeyword));
-            include.SetOpen(AdvanceKind(JadeiteSyntaxKind.OpenParen));
-            include.SetArgumentList(ParseArgumentList());
-            include.SetClose(AdvanceKind(JadeiteSyntaxKind.CloseParen));
+            include.LeftHandSide = AdvanceKind(JadeiteSyntaxKind.IncludeKeyword);
+            include.Open = AdvanceKind(JadeiteSyntaxKind.OpenParen);
+            include.ArgumentList = ParseArgumentList();
+            include.Close = AdvanceKind(JadeiteSyntaxKind.CloseParen);
 
             return include;
         }
@@ -188,9 +197,9 @@ namespace Jadeite.Parsing
             var kind = begin.Kind == JadeiteSyntaxKind.Equals ? JadeiteSyntaxKind.EscapedBufferedCode : JadeiteSyntaxKind.UnescapedBufferedCode;
             var buffered = new BufferedCodeNode(kind);
 
-            buffered.SetBeginningToken(begin);
-            buffered.SetExpression(ParseExpression());
-            buffered.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            buffered.BeginningToken = begin;
+            buffered.Expression = ParseExpression();
+            buffered.EndOfLine = AdvanceKind(JadeiteSyntaxKind.EndOfLine);
 
             return buffered;
         }
@@ -199,9 +208,9 @@ namespace Jadeite.Parsing
         {
             var block = new DocumentBlockNode();
 
-            block.SetIndent(AdvanceKind(JadeiteSyntaxKind.Indent));
-            block.SetBody(ParseDocumentBody());
-            block.SetOutdent(AdvanceKind(JadeiteSyntaxKind.Outdent));
+            block.Indent = AdvanceKind(JadeiteSyntaxKind.Indent);
+            block.Body = ParseDocumentBody();
+            block.Outdent = AdvanceKind(JadeiteSyntaxKind.Outdent);
 
             return block;
         }
@@ -212,8 +221,8 @@ namespace Jadeite.Parsing
 
             var comment = new HtmlCommentNode();
 
-            comment.SetComment(Advance());
-            comment.SetEndOfLine(AdvanceKind(JadeiteSyntaxKind.EndOfLine));
+            comment.Comment = Advance();
+            comment.EndOfLine = AdvanceKind(JadeiteSyntaxKind.EndOfLine);
 
             return comment;
         }
@@ -225,7 +234,7 @@ namespace Jadeite.Parsing
             if (kind == JadeiteSyntaxKind.Minus)
             {
                 code = new UnbufferedCodeNode();
-                code.SetPrefix(Advance());
+                code.PrefixHyphen = Advance();
             }
             else if (SyntaxInfo.IsOfCategory(kind, SyntaxCategory.CodeKeyword))
             {
@@ -236,7 +245,7 @@ namespace Jadeite.Parsing
                 return null;
             }
 
-            code.SetStatement(ParseStatement());
+            code.Statement = ParseStatement();
 
             return code;
         }

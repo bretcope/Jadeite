@@ -6,8 +6,10 @@ namespace Jadeite.Parsing.Nodes
     {
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.File;
 
-        public TemplateNode Template { get; private set; }
-        public MixinListNode Mixins { get; private set; }
+        [AssertKind(JadeiteSyntaxKind.Template)]
+        public TemplateNode Template { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.MixinList)]
+        public MixinListNode Mixins { get; internal set; }
 
         internal FileNode() { }
 
@@ -17,18 +19,6 @@ namespace Jadeite.Parsing.Nodes
 
             if (Mixins != null)
                 yield return Mixins;
-        }
-
-        internal void SetTemplate(TemplateNode node)
-        {
-            ParsingDebug.Assert(Template == null);
-            Template = node;
-        }
-
-        internal void SetMixins(MixinListNode node)
-        {
-            ParsingDebug.Assert(Mixins == null);
-            Mixins = node;
         }
     }
 }

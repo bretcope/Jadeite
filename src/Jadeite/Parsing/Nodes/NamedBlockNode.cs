@@ -2,14 +2,20 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public class NamedBlockNode : INode
+    public class NamedBlockNode : INode, ICustomDebugNode
     {
-        public Token BlockKeyword { get; private set; }
-        public Token AppendKeyword { get; private set; }
-        public Token PrependKeyword { get; private set; }
-        public Token Name { get; private set; }
-        public Token EndOfLine { get; private set; }
-        public DocumentBlockNode Body { get; private set; }
+        [AssertKind(true, JadeiteSyntaxKind.BlockKeyword)]
+        public Token BlockKeyword { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.AppendKeyword)]
+        public Token AppendKeyword { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.PrependKeyword)]
+        public Token PrependKeyword { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        public Token Name { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        public Token EndOfLine { get; internal set; }
+        [AssertKind(true, JadeiteSyntaxKind.DocumentBlock)]
+        public DocumentBlockNode Body { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.NamedBlock;
         public bool IsAppend => AppendKeyword != null;
@@ -33,44 +39,9 @@ namespace Jadeite.Parsing.Nodes
                 yield return Body;
         }
 
-        internal void AddPrefix(Token tok)
+        void ICustomDebugNode.AssertIsValid()
         {
-            if (tok.Kind == JadeiteSyntaxKind.BlockKeyword)
-            {
-                ParsingDebug.Assert(BlockKeyword == null);
-                BlockKeyword = tok;
-            }
-            else if (tok.Kind == JadeiteSyntaxKind.AppendKeyword)
-            {
-                ParsingDebug.Assert(AppendKeyword == null);
-                AppendKeyword = tok;
-            }
-            else
-            {
-                ParsingDebug.AssertKindIsOneOf(tok.Kind, JadeiteSyntaxKind.PrependKeyword);
-                ParsingDebug.Assert(PrependKeyword == null);
-                PrependKeyword = tok;
-            }
-        }
-
-        internal void SetName(Token name)
-        {
-            ParsingDebug.AssertKindIsOneOf(name.Kind, JadeiteSyntaxKind.HtmlIdentifier);
-            ParsingDebug.Assert(Name == null);
-            Name = name;
-        }
-
-        internal void SetEndOfLine(Token eol)
-        {
-            ParsingDebug.AssertKindIsOneOf(eol.Kind, JadeiteSyntaxKind.EndOfLine);
-            ParsingDebug.Assert(EndOfLine == null);
-            EndOfLine = eol;
-        }
-
-        internal void SetBody(DocumentBlockNode body)
-        {
-            ParsingDebug.Assert(Body == null);
-            Body = body;
+            ParsingDebug.Assert(!(AppendKeyword != null && PrependKeyword != null)); // shouldn't be both an append and a prepend
         }
     }
 }

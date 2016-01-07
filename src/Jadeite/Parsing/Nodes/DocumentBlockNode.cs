@@ -4,9 +4,12 @@ namespace Jadeite.Parsing.Nodes
 {
     public sealed class DocumentBlockNode : INode
     {
-        public Token Indent { get; private set; }
-        public DocumentBodyNode Body { get; private set; }
-        public Token Outdent { get; private set; }
+        [AssertKind(JadeiteSyntaxKind.Indent)]
+        public Token Indent { get; internal set; }
+        [AssertNotNull]
+        public DocumentBodyNode Body { get; internal set; }
+        [AssertKind(JadeiteSyntaxKind.Outdent)]
+        public Token Outdent { get; internal set; }
 
         public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.DocumentBlock;
 
@@ -17,26 +20,6 @@ namespace Jadeite.Parsing.Nodes
             yield return Indent;
             yield return Body;
             yield return Outdent;
-        }
-
-        internal void SetIndent(Token indent)
-        {
-            ParsingDebug.AssertKindIsOneOf(indent.Kind, JadeiteSyntaxKind.Indent);
-            ParsingDebug.Assert(Indent == null);
-            Indent = indent;
-        }
-
-        internal void SetBody(DocumentBodyNode body)
-        {
-            ParsingDebug.Assert(Body == null);
-            Body = body;
-        }
-
-        internal void SetOutdent(Token outdent)
-        {
-            ParsingDebug.AssertKindIsOneOf(outdent.Kind, JadeiteSyntaxKind.Outdent);
-            ParsingDebug.Assert(Outdent == null);
-            Outdent = outdent;
         }
     }
 }

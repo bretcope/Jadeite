@@ -12,4 +12,9 @@ namespace Jadeite.Parsing
     {
         IEnumerable<ISyntaxElement> GetChildren();
     }
+
+    internal interface ICustomDebugNode
+    {
+        void AssertIsValid();
+    }
 }
