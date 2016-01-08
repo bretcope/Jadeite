@@ -199,10 +199,10 @@ ClassOrId
 	# htmlIdentifier  // ID
 
 TagAttributes
-	( TagAttributesList_opt )
+	( TagAttributeList_opt )
 
-TagAttributesList
-	TagAttribute , TagAttributesList
+TagAttributeList
+	TagAttribute , TagAttributeList
 	TagAttribute
 
 TagAttribute
@@ -211,15 +211,14 @@ TagAttribute
 	htmlIdentifier
 
 AndAttributes
-	& attributes ( CodeIdentifierList_opt )
+	& attributes ( ArgumentList_opt )
 
 TagBody
 	TagExpansion
 	PipelessText
-	EscapedBufferedCode DocumentBlock_opt                       // escaped buffered code
-	UnescapedBufferedCode DocumentBlock_opt              // unescaped buffered code
-	TextBodyElementList_opt endOfLine DocumentBlock_opt  // normal body
-	/ endOfLine                                          // self-closing tag
+	BufferedCodeBody
+	TextBody
+	SelfClosingBody
 
 TagExpansion
 	: Tag
@@ -229,6 +228,10 @@ PipelessText
 
 PipelessTextBlock
 	indent TextBodyElementList outdent
+
+BufferedCodeBody
+	EscapedBufferedCode DocumentBlock_opt
+	UnescapedBufferedCode DocumentBlock_opt
 
 EscapedBufferedCode
 	= Expression endOfLine
@@ -242,6 +245,9 @@ UnbufferedCode
 HtmlComment
 	bufferedHtmlComment endOfLine
 	unbufferedHtmlComment endOfLine
+
+TextBody
+	TextBodyElementList_opt endOfLine DocumentBlock_opt
 
 TextBodyElementList
 	TextBodyElement TextBodyElementList
@@ -260,17 +266,29 @@ InterpolatedTagDefinition
 	TagElementDeclaration TagAttributes_opt InterpolatedTagBody_opt
 
 InterpolatedTagBody
-	: InterpolatedTagDefinition   // tag expansion
-	= Expression                  // escaped buffered code
-	!= Expression                 // unescaped buffered code
-	TextBodyElementList           // normal body
-	/                             // self-closing tag
+	InterpolatedTagExpansion
+	InterpolatedEscapedBufferedCode
+	InterpolatedUnescapedBufferedCode
+	TextBodyElementList
+	/                                 // self-closing tag
+
+InterpolatedTagExpansion
+	: InterpolatedTagDefinition
+
+InterpolatedEscapedBufferedCode
+	= Expression
+
+InterpolatedUnescapedBufferedCode
+	!= Expression
 
 EscapedInterpolatedExpression
 	#{ Expression }
 
 UnescapedInterpolatedExpression
 	!{ Expression }
+
+SelfClosingBody
+	/ endOfLine
 
 MixinList
 	MixinDefinition MixinList

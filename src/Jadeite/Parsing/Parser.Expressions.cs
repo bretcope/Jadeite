@@ -6,7 +6,7 @@ namespace Jadeite.Parsing
 {
     public partial class Parser
     {
-        private ArgumentListNode ParseArgumentList()
+        private ArgumentListNode ParseArgumentList(bool optional)
         {
             throw new NotImplementedException();
         }

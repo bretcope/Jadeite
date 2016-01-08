@@ -77,7 +77,7 @@ namespace Jadeite.Parsing
 
             extends.LeftHandSide = Advance();
             extends.Open = AdvanceKind(JadeiteSyntaxKind.OpenParen);
-            extends.ArgumentList = ParseArgumentList();
+            extends.ArgumentList = ParseArgumentList(optional: false);
             extends.Close = AdvanceKind(JadeiteSyntaxKind.CloseParen);
 
             return extends;
@@ -183,7 +183,7 @@ namespace Jadeite.Parsing
 
             include.LeftHandSide = AdvanceKind(JadeiteSyntaxKind.IncludeKeyword);
             include.Open = AdvanceKind(JadeiteSyntaxKind.OpenParen);
-            include.ArgumentList = ParseArgumentList();
+            include.ArgumentList = ParseArgumentList(optional: false);
             include.Close = AdvanceKind(JadeiteSyntaxKind.CloseParen);
 
             return include;
@@ -251,6 +251,126 @@ namespace Jadeite.Parsing
         }
 
         private TagNode ParseTag(bool optional)
+        {
+            TagNode tag = null;
+
+            var kind = Current.Kind;
+            if (kind == JadeiteSyntaxKind.HtmlIdentifier)
+            {
+                tag = new TagNode();
+                tag.ElementName = Advance();
+            }
+
+            if (kind == JadeiteSyntaxKind.Dot || kind == JadeiteSyntaxKind.Hash)
+            {
+                if (tag == null)
+                    tag = new TagNode();
+
+                tag.ClassOrIdList = ParseClassOrIdList();
+            }
+
+            if (tag == null)
+            {
+                if (optional)
+                    return null;
+                
+                throw new Exception($"Expected a tag at line {Current.Position.Line} column {Current.Position.Column}."); // todo
+            }
+
+            if (Current.Kind == JadeiteSyntaxKind.OpenParen)
+                tag.Attributes = ParseTagAttributes();
+
+            if (Current.Kind == JadeiteSyntaxKind.And)
+                tag.AndAttributes = ParseAndAttributes();
+
+            tag.Body = ParseTagBody();
+
+            return tag;
+        }
+
+        private ClassOrIdListNode ParseClassOrIdList()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.Dot, JadeiteSyntaxKind.Hash);
+
+            var list = new ClassOrIdListNode();
+            JadeiteSyntaxKind kind;
+            do
+            {
+                var classOrId = new ClassOrIdNode();
+                classOrId.Prefix = Advance();
+                classOrId.Name = AdvanceKind(JadeiteSyntaxKind.HtmlIdentifier);
+
+                list.Add(classOrId);
+
+                kind = Current.Kind;
+
+            } while (kind == JadeiteSyntaxKind.Dot || kind == JadeiteSyntaxKind.Hash);
+
+            return list;
+        }
+
+        private BracketedNode ParseTagAttributes()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.OpenParen);
+
+            var attributes = new BracketedNode(JadeiteSyntaxKind.TagAttributes);
+
+            attributes.Open = Advance();
+            attributes.Body = ParseTagAttributesList();
+            attributes.Close = AdvanceKind(JadeiteSyntaxKind.CloseParen);
+
+            return attributes;
+        }
+
+        private TagAttributeListNode ParseTagAttributesList()
+        {
+            var list = new TagAttributeListNode();
+
+            while (true)
+            {
+                list.AddTagAttribute(ParseTagAttribute());
+
+                if (Current.Kind == JadeiteSyntaxKind.Comma)
+                    list.AddComma(Advance());
+                else 
+                    break;
+            }
+
+            return list;
+        }
+
+        private TagAttributeNode ParseTagAttribute()
+        {
+            var attribute = new TagAttributeNode();
+
+            attribute.LeftHandSide = AdvanceKind(JadeiteSyntaxKind.HtmlIdentifier);
+
+            var kind = Current.Kind;
+            if (kind == JadeiteSyntaxKind.Equals || kind == JadeiteSyntaxKind.BangEquals)
+            {
+                attribute.Operator = Advance();
+                attribute.RightHandSide = ParseExpression();
+            }
+
+            return attribute;
+        }
+
+        private AndAttributesNode ParseAndAttributes()
+        {
+            AssertCurrentKind(JadeiteSyntaxKind.And);
+
+            var and = new AndAttributesNode();
+
+            and.And = Advance();
+            and.AttributesKeyword = AdvanceKind(JadeiteSyntaxKind.AttributesKeyword);
+            and.OpenParen = AdvanceKind(JadeiteSyntaxKind.OpenParen);
+            and.Arguments = ParseArgumentList(optional: true);
+            and.CloseParen = AdvanceKind(JadeiteSyntaxKind.CloseParen);
+
+            return and;
+        }
+
+        private ISyntaxElement ParseTagBody()
         {
             throw new NotImplementedException();
         }

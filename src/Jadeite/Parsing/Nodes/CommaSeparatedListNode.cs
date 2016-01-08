@@ -50,11 +50,11 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
-    public sealed class TagAttributesListNode : CommaSeparatedListNode<TagAttributeNode>
+    public sealed class TagAttributeListNode : CommaSeparatedListNode<TagAttributeNode>
     {
         public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TagAttributesList;
 
-        internal TagAttributesListNode() { }
+        internal TagAttributeListNode() { }
 
         internal void AddTagAttribute(TagAttributeNode tagAttribute)
         {
