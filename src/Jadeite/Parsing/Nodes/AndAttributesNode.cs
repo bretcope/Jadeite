@@ -2,20 +2,21 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.AndAttributes)]
     public sealed class AndAttributesNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.And)]
+        [AssertKind(JadeiteKind.And)]
         public Token And { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.AttributesKeyword)]
+        [AssertKind(JadeiteKind.AttributesKeyword)]
         public Token AttributesKeyword { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.OpenParen)]
+        [AssertKind(JadeiteKind.OpenParen)]
         public Token OpenParen { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.ArgumentList)]
+        [AssertKind(true, JadeiteKind.ArgumentList)]
         public ArgumentListNode Arguments { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.CloseParen)]
+        [AssertKind(JadeiteKind.CloseParen)]
         public Token CloseParen { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.AndAttributes;
+        public JadeiteKind Kind => JadeiteKind.AndAttributes;
 
         internal AndAttributesNode() { }
 

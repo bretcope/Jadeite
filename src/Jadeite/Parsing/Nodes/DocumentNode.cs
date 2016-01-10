@@ -2,16 +2,17 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.Document)]
     public sealed class DocumentNode : INode
     {
-        [AssertKind(true, JadeiteSyntaxKind.EndOfLineList)]
+        [AssertKind(true, JadeiteKind.EndOfLineList)]
         public EndOfLineListNode EndOfLines { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.ExtendsDefinition)]
+        [AssertKind(true, JadeiteKind.ExtendsDefinition)]
         public InvocationNode Extends { get; internal set; }
         [AssertNotNull]
         public DocumentBodyNode Body { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Document;
+        public JadeiteKind Kind => JadeiteKind.Document;
 
         internal DocumentNode() { }
 

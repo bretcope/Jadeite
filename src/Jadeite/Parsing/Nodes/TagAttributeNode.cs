@@ -2,15 +2,16 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.TagAttribute)]
     public sealed class TagAttributeNode : INode, ICustomDebugNode
     {
-        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        [AssertKind(JadeiteKind.HtmlIdentifier)]
         public Token LeftHandSide { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.Equals, JadeiteSyntaxKind.BangEquals)]
+        [AssertKind(true, JadeiteKind.Equals, JadeiteKind.BangEquals)]
         public Token Operator { get; internal set; }
         public ISyntaxElement RightHandSide { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TagAttribute;
+        public JadeiteKind Kind => JadeiteKind.TagAttribute;
 
         internal TagAttributeNode() { }
 

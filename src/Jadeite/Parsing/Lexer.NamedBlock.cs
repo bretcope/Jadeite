@@ -20,12 +20,12 @@ namespace Jadeite.Parsing
                     ExitState();
                     return;
                 case 'a':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.AppendKeyword))
+                    if (TryConsumeKeyword(JadeiteKind.AppendKeyword))
                         return;
 
                     goto default;
                 case 'p':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.PrependKeyword))
+                    if (TryConsumeKeyword(JadeiteKind.PrependKeyword))
                         return;
 
                     goto default;

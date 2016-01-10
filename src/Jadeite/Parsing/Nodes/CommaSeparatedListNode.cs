@@ -6,7 +6,7 @@ namespace Jadeite.Parsing.Nodes
     {
         public SyntaxList<T> Items { get; } = new SyntaxList<T>();
         public SyntaxList<Token> Commas { get; } = new SyntaxList<Token>();
-        public abstract JadeiteSyntaxKind Kind { get; }
+        public abstract JadeiteKind Kind { get; }
 
         internal CommaSeparatedListNode() { }
 
@@ -23,7 +23,7 @@ namespace Jadeite.Parsing.Nodes
 
         internal void AddComma(Token comma)
         {
-            ParsingDebug.AssertKindIsOneOf(comma.Kind, JadeiteSyntaxKind.Comma);
+            ParsingDebug.AssertKindIsOneOf(comma.Kind, JadeiteKind.Comma);
             ParsingDebug.Assert(Items.Count == Commas.Count + 1);
 
             Commas.Add(comma);
@@ -38,9 +38,10 @@ namespace Jadeite.Parsing.Nodes
 
     // All of the classes which inherit from CommaSeparatedListNode follows:
 
+    [NodeKind(JadeiteKind.ArgumentList)]
     public sealed class ArgumentListNode : CommaSeparatedListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ArgumentList;
+        public override JadeiteKind Kind => JadeiteKind.ArgumentList;
 
         internal ArgumentListNode() { }
 
@@ -50,9 +51,10 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
+    [NodeKind(JadeiteKind.TagAttributesList)]
     public sealed class TagAttributeListNode : CommaSeparatedListNode<TagAttributeNode>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TagAttributesList;
+        public override JadeiteKind Kind => JadeiteKind.TagAttributesList;
 
         internal TagAttributeListNode() { }
 
@@ -62,9 +64,10 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
+    [NodeKind(JadeiteKind.ExpressionList)]
     public sealed class ExpressionListNode : CommaSeparatedListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ExpressionList;
+        public override JadeiteKind Kind => JadeiteKind.ExpressionList;
 
         internal ExpressionListNode() { }
 
@@ -74,9 +77,10 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
+    [NodeKind(JadeiteKind.StatementExpressionList)]
     public sealed class StatementExpressionListNode : CommaSeparatedListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.StatementExpressionList;
+        public override JadeiteKind Kind => JadeiteKind.StatementExpressionList;
 
         internal StatementExpressionListNode() { }
 
@@ -86,28 +90,30 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
+    [NodeKind(JadeiteKind.IdentifierOrDeclarationList)]
     public sealed class IdentifierOrDeclarationListNode : CommaSeparatedListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.IdentifierOrDeclarationList;
+        public override JadeiteKind Kind => JadeiteKind.IdentifierOrDeclarationList;
 
         internal IdentifierOrDeclarationListNode() { }
 
         internal void AddIdentifierOrDeclaration(ISyntaxElement item)
         {
-            ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteSyntaxKind.CodeIdentifier, JadeiteSyntaxKind.SingleVariableDeclaration);
+            ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteKind.CodeIdentifier, JadeiteKind.SingleVariableDeclaration);
             AddItem(item);
         }
     }
 
+    [NodeKind(JadeiteKind.CodeIdentifierList)]
     public sealed class CodeIdentifierListNode : CommaSeparatedListNode<Token>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.CodeIdentifierList;
+        public override JadeiteKind Kind => JadeiteKind.CodeIdentifierList;
 
         internal CodeIdentifierListNode() { }
 
         internal void AddCodeIdentifier(Token item)
         {
-            ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteSyntaxKind.CodeIdentifier);
+            ParsingDebug.AssertKindIsOneOf(item.Kind, JadeiteKind.CodeIdentifier);
             AddItem(item);
         }
     }

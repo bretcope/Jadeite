@@ -2,16 +2,17 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.ModelDefinition)]
     public sealed class ModelDefinitionNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.ModelKeyword)]
+        [AssertKind(JadeiteKind.ModelKeyword)]
         public Token ModelKeyword { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.TypeIdentifier)]
+        [AssertKind(JadeiteKind.TypeIdentifier)]
         public TypeIdentifierNode TypeIdentifier { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ModelDefinition;
+        public JadeiteKind Kind => JadeiteKind.ModelDefinition;
 
         internal ModelDefinitionNode() { }
 

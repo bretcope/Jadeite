@@ -2,18 +2,18 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.MemberAccess)]
     public sealed class BinaryExpressionNode : INode, ICustomDebugNode
     {
-        public JadeiteSyntaxKind Kind { get; }
+        public JadeiteKind Kind { get; }
         [AssertNotNull]
         public ISyntaxElement LeftHandSide { get; internal set; }
         public Token Operator { get; internal set; }
         [AssertNotNull]
         public ISyntaxElement RightHandSide { get; internal set; }
 
-        internal BinaryExpressionNode(JadeiteSyntaxKind kind)
+        internal BinaryExpressionNode(JadeiteKind kind)
         {
-            ParsingDebug.Assert(IsBinaryExpressionKind(kind));
             Kind = kind;
         }
 
@@ -29,23 +29,12 @@ namespace Jadeite.Parsing.Nodes
             ParsingDebug.Assert(IsValidOperator(Operator.Kind));
         }
 
-        private static bool IsBinaryExpressionKind(JadeiteSyntaxKind kind)
-        {
-            switch (kind)
-            {
-                case JadeiteSyntaxKind.MemberAccess:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        private bool IsValidOperator(JadeiteSyntaxKind kind)
+        private bool IsValidOperator(JadeiteKind kind)
         {
             switch (Kind)
             {
-                case JadeiteSyntaxKind.MemberAccess:
-                    return kind == JadeiteSyntaxKind.Dot;
+                case JadeiteKind.MemberAccess:
+                    return kind == JadeiteKind.Dot;
                 default:
                     return false;
             }

@@ -37,7 +37,7 @@ namespace Jadeite.Parsing
             return _tokenQueue.Dequeue();
         }
 
-        public Token AdvanceKind(JadeiteSyntaxKind kind)
+        public Token AdvanceKind(JadeiteKind kind)
         {
             var tok = Advance();
             if (tok.Kind != kind)
@@ -64,7 +64,7 @@ namespace Jadeite.Parsing
                 Lex();
         }
 
-        protected Token ConsumeToken(JadeiteSyntaxKind type, int length, object value = null, bool useTextAsValue = false)
+        protected Token ConsumeToken(JadeiteKind type, int length, object value = null, bool useTextAsValue = false)
         {
             var text = Input.Substring(Index, length);
             var tok = new Token

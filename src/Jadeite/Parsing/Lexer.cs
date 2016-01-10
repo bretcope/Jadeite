@@ -97,25 +97,25 @@ namespace Jadeite.Parsing
             switch (CurrentChar())
             {
                 case 'a':
-                    TryConsumeKeyword(JadeiteSyntaxKind.AppendKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.AppendKeyword, out tok);
                     break;
                 case 'b':
-                    TryConsumeKeyword(JadeiteSyntaxKind.BlockKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.BlockKeyword, out tok);
                     break;
                 case 'd':
-                    TryConsumeKeyword(JadeiteSyntaxKind.DoctypeKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.DoctypeKeyword, out tok);
                     break;
                 case 'e':
-                    TryConsumeKeyword(JadeiteSyntaxKind.ExtendsKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.ExtendsKeyword, out tok);
                     break;
                 case 'i':
-                    TryConsumeKeyword(JadeiteSyntaxKind.IncludeKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.IncludeKeyword, out tok);
                     break;
                 case 'm':
-                    TryConsumeKeyword(JadeiteSyntaxKind.MixinKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.MixinKeyword, out tok);
                     break;
                 case 'p':
-                    TryConsumeKeyword(JadeiteSyntaxKind.PrependKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.PrependKeyword, out tok);
                     break;
             }
 
@@ -129,97 +129,97 @@ namespace Jadeite.Parsing
             switch (CurrentChar())
             {
                 case 'a':
-                    TryConsumeKeyword(JadeiteSyntaxKind.AttributesKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.AttributesKeyword, out tok);
                     break;
                 case 'b':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.BreakKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.BreakKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.BoolKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.BoolKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.ByteKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.ByteKeyword, out tok);
                     break;
                 case 'c':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.CaseKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.CaseKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ConstKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ConstKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ContinueKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ContinueKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.CharKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.CharKeyword, out tok);
                     break;
                 case 'd':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.DefaultKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.DefaultKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.DoubleKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.DoubleKeyword, out tok);
                     break;
                 case 'e':
-                    TryConsumeKeyword(JadeiteSyntaxKind.ElseKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.ElseKeyword, out tok);
                     break;
                 case 'f':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.FalseKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.FalseKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ForKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ForKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ForeachKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ForeachKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.FuncKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.FuncKeyword, out tok);
                     break;
                 case 'i':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.IfKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.IfKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.InKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.InKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.IntKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.IntKeyword, out tok);
                     break;
                 case 'l':
-                    TryConsumeKeyword(JadeiteSyntaxKind.LongKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.LongKeyword, out tok);
                     break;
                 case 'm':
-                    TryConsumeKeyword(JadeiteSyntaxKind.ModelKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.ModelKeyword, out tok);
                     break;
                 case 'n':
-                    TryConsumeKeyword(JadeiteSyntaxKind.NullKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.NullKeyword, out tok);
                     break;
                 case 'r':
-                    TryConsumeKeyword(JadeiteSyntaxKind.ReturnKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.ReturnKeyword, out tok);
                     break;
                 case 's':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.SwitchKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.SwitchKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.SByteKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.SByteKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ShortKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ShortKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.StringKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.StringKeyword, out tok);
                     break;
                 case 't':
-                    TryConsumeKeyword(JadeiteSyntaxKind.TrueKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.TrueKeyword, out tok);
                     break;
                 case 'u':
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.UIntKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.UIntKeyword, out tok))
                         break;
-                    if (TryConsumeKeyword(JadeiteSyntaxKind.ULongKeyword, out tok))
+                    if (TryConsumeKeyword(JadeiteKind.ULongKeyword, out tok))
                         break;
-                    TryConsumeKeyword(JadeiteSyntaxKind.UShortKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.UShortKeyword, out tok);
                     break;
                 case 'v':
-                    TryConsumeKeyword(JadeiteSyntaxKind.VarKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.VarKeyword, out tok);
                     break;
                 case 'w':
-                    TryConsumeKeyword(JadeiteSyntaxKind.WhileKeyword, out tok);
+                    TryConsumeKeyword(JadeiteKind.WhileKeyword, out tok);
                     break;
             }
 
             return tok;
         }
 
-        private bool TryConsumeKeyword(JadeiteSyntaxKind type)
+        private bool TryConsumeKeyword(JadeiteKind type)
         {
             Token tok;
             return TryConsumeKeyword(type, out tok);
         }
 
-        private bool TryConsumeKeyword(JadeiteSyntaxKind type, out Token tok)
+        private bool TryConsumeKeyword(JadeiteKind type, out Token tok)
         {
             var keyword = SyntaxInfo.GetKeywordString(type);
             var kLen = keyword.Length;

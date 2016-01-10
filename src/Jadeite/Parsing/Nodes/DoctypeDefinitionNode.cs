@@ -2,16 +2,17 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.DoctypeDefinition)]
     public sealed class DoctypeDefinitionNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.DoctypeKeyword)]
+        [AssertKind(JadeiteKind.DoctypeKeyword)]
         public Token DoctypeKeyword { get; internal set; }
         [AssertNotNull]
         public TextBodyElementListNode Body { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.DoctypeDefinition;
+        public JadeiteKind Kind => JadeiteKind.DoctypeDefinition;
 
         internal DoctypeDefinitionNode() { }
 

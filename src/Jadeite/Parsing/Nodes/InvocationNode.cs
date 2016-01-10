@@ -2,19 +2,26 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(
+        JadeiteKind.ExtendsDefinition,
+        JadeiteKind.IncludeDefinition,
+        JadeiteKind.ElementAccess,
+        JadeiteKind.InvocationExpression,
+        JadeiteKind.AndAttributes
+    )]
     public sealed class InvocationNode : INode, ICustomDebugNode
     {
         [AssertNotNull]
         public ISyntaxElement LeftHandSide { get; internal set; }
         [AssertNotNull]
         public Token Open { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.ArgumentList)]
+        [AssertKind(JadeiteKind.ArgumentList)]
         public ArgumentListNode ArgumentList { get; internal set; }
         [AssertNotNull]
         public Token Close { get; internal set; }
-        public JadeiteSyntaxKind Kind { get; }
+        public JadeiteKind Kind { get; }
 
-        internal InvocationNode(JadeiteSyntaxKind kind)
+        internal InvocationNode(JadeiteKind kind)
         {
             Kind = kind;
         }
@@ -29,53 +36,37 @@ namespace Jadeite.Parsing.Nodes
 
         void ICustomDebugNode.AssertIsValid()
         {
-            ParsingDebug.Assert(IsInvocationKind(Kind));
             ParsingDebug.Assert(IsCorrectOpen(Open.Kind));
             ParsingDebug.Assert(IsCorrectClose(Close.Kind));
         }
 
-        private static bool IsInvocationKind(JadeiteSyntaxKind kind)
+        private bool IsCorrectOpen(JadeiteKind kind)
         {
-            switch (kind)
+            switch (Kind)
             {
-                case JadeiteSyntaxKind.ExtendsDefinition:
-                case JadeiteSyntaxKind.IncludeDefinition:
-                case JadeiteSyntaxKind.ElementAccess:
-                case JadeiteSyntaxKind.InvocationExpression:
-                case JadeiteSyntaxKind.AndAttributes:
-                    return true;
+                case JadeiteKind.ElementAccess:
+                    return kind == JadeiteKind.OpenSquareBracket;
+                case JadeiteKind.ExtendsDefinition:
+                case JadeiteKind.IncludeDefinition:
+                case JadeiteKind.InvocationExpression:
+                case JadeiteKind.AndAttributes:
+                    return kind == JadeiteKind.OpenParen;
                 default:
                     return false;
             }
         }
 
-        private bool IsCorrectOpen(JadeiteSyntaxKind kind)
+        private bool IsCorrectClose(JadeiteKind kind)
         {
             switch (Kind)
             {
-                case JadeiteSyntaxKind.ElementAccess:
-                    return kind == JadeiteSyntaxKind.OpenSquareBracket;
-                case JadeiteSyntaxKind.ExtendsDefinition:
-                case JadeiteSyntaxKind.IncludeDefinition:
-                case JadeiteSyntaxKind.InvocationExpression:
-                case JadeiteSyntaxKind.AndAttributes:
-                    return kind == JadeiteSyntaxKind.OpenParen;
-                default:
-                    return false;
-            }
-        }
-
-        private bool IsCorrectClose(JadeiteSyntaxKind kind)
-        {
-            switch (Kind)
-            {
-                case JadeiteSyntaxKind.ElementAccess:
-                    return kind == JadeiteSyntaxKind.CloseSquareBracket;
-                case JadeiteSyntaxKind.ExtendsDefinition:
-                case JadeiteSyntaxKind.IncludeDefinition:
-                case JadeiteSyntaxKind.InvocationExpression:
-                case JadeiteSyntaxKind.AndAttributes:
-                    return kind == JadeiteSyntaxKind.CloseParen;
+                case JadeiteKind.ElementAccess:
+                    return kind == JadeiteKind.CloseSquareBracket;
+                case JadeiteKind.ExtendsDefinition:
+                case JadeiteKind.IncludeDefinition:
+                case JadeiteKind.InvocationExpression:
+                case JadeiteKind.AndAttributes:
+                    return kind == JadeiteKind.CloseParen;
                 default:
                     return false;
             }

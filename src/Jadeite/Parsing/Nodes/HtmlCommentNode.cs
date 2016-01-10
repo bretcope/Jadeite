@@ -2,14 +2,15 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.HtmlComment)]
     public sealed class HtmlCommentNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.BufferedHtmlComment, JadeiteSyntaxKind.UnbufferedHtmlComment)]
+        [AssertKind(JadeiteKind.BufferedHtmlComment, JadeiteKind.UnbufferedHtmlComment)]
         public Token Comment { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.HtmlComment;
+        public JadeiteKind Kind => JadeiteKind.HtmlComment;
 
         internal HtmlCommentNode() { }
 

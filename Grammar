@@ -217,8 +217,8 @@ TagBody
 	TagExpansion
 	PipelessText
 	BufferedCodeBody
-	TextBody
 	SelfClosingBody
+	TextBody
 
 TagExpansion
 	: Tag
@@ -263,7 +263,7 @@ InterpolatedTag
 	#[ InterpolatedTagDefinition ]
 
 InterpolatedTagDefinition
-	TagElementDeclaration TagAttributes_opt InterpolatedTagBody_opt
+	TagElementDeclaration TagAttributes_opt AndAttributes_opt InterpolatedTagBody_opt
 
 InterpolatedTagBody
 	InterpolatedTagExpansion

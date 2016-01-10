@@ -2,16 +2,17 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.ClassOrId)]
     public sealed class ClassOrIdNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.Dot, JadeiteSyntaxKind.Hash)]
+        [AssertKind(JadeiteKind.Dot, JadeiteKind.Hash)]
         public Token Prefix { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        [AssertKind(JadeiteKind.HtmlIdentifier)]
         public Token Name { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ClassOrId;
-        public bool IsClass => Prefix.Kind == JadeiteSyntaxKind.Dot;
-        public bool IsId => Prefix.Kind == JadeiteSyntaxKind.Hash;
+        public JadeiteKind Kind => JadeiteKind.ClassOrId;
+        public bool IsClass => Prefix.Kind == JadeiteKind.Dot;
+        public bool IsId => Prefix.Kind == JadeiteKind.Hash;
 
         internal ClassOrIdNode() { }
 

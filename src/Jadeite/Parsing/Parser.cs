@@ -14,13 +14,13 @@ namespace Jadeite.Parsing
         {
             var start = new StartNode();
 
-            if (Current.Kind == JadeiteSyntaxKind.EndOfLine)
+            if (Current.Kind == JadeiteKind.EndOfLine)
                 start.EndOfLines = ParseEndOfLineList();
 
             start.File = ParseFile();
 
             // check to make sure we're at end of input
-            if (Current.Kind != JadeiteSyntaxKind.EndOfInput)
+            if (Current.Kind != JadeiteKind.EndOfInput)
                 throw new Exception("Parser did not consume all input."); // todo
 
             return start;
@@ -28,7 +28,7 @@ namespace Jadeite.Parsing
 
         private EndOfLineListNode ParseEndOfLineList()
         {
-            AssertCurrentKind(JadeiteSyntaxKind.EndOfLine);
+            AssertCurrentKind(JadeiteKind.EndOfLine);
 
             var endOfLines = new EndOfLineListNode();
 
@@ -36,7 +36,7 @@ namespace Jadeite.Parsing
             {
                 endOfLines.Add(Advance());
 
-            } while (Current.Kind == JadeiteSyntaxKind.EndOfLine);
+            } while (Current.Kind == JadeiteKind.EndOfLine);
 
             return endOfLines;
         }
@@ -46,7 +46,7 @@ namespace Jadeite.Parsing
             var file = new FileNode();
             file.Template = ParseTemplate();
 
-            if (Current.Kind == JadeiteSyntaxKind.MixinKeyword)
+            if (Current.Kind == JadeiteKind.MixinKeyword)
                 file.Mixins = ParseMixinList();
 
             return file;

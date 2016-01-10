@@ -11,7 +11,7 @@ namespace Jadeite.Parsing
         protected Token Current => _lexer.Current();
         protected Token LookAhead => _lexer.LookAhead();
         protected Token Advance() => _lexer.Advance();
-        protected Token AdvanceKind(JadeiteSyntaxKind kind) => _lexer.AdvanceKind(kind);
+        protected Token AdvanceKind(JadeiteKind kind) => _lexer.AdvanceKind(kind);
 
         internal ParserBase(string input, string indent)
         {
@@ -19,7 +19,7 @@ namespace Jadeite.Parsing
         }
 
         [Conditional("DEBUG")]
-        protected void AssertCurrentKind(params JadeiteSyntaxKind[] oneOf)
+        protected void AssertCurrentKind(params JadeiteKind[] oneOf)
         {
             ParsingDebug.AssertKindIsOneOf(Current.Kind, oneOf);
         }

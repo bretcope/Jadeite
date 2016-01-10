@@ -2,18 +2,19 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.MixinDefinition)]
     public sealed class MixinDefinitionNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.MixinKeyword)]
+        [AssertKind(JadeiteKind.MixinKeyword)]
         public Token MixinKeyword { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        [AssertKind(JadeiteKind.HtmlIdentifier)]
         public Token Name { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.MixinParametersDefinition)]
+        [AssertKind(true, JadeiteKind.MixinParametersDefinition)]
         public BracketedNode ParametersDefinition { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.DocumentBlock)]
-        public DocumentBlockNode Body { get; internal set; }
+        [AssertKind(JadeiteKind.DocumentBlock)]
+        public BlockNode Block { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.MixinDefinition;
+        public JadeiteKind Kind => JadeiteKind.MixinDefinition;
 
         internal MixinDefinitionNode() { }
 
@@ -23,7 +24,7 @@ namespace Jadeite.Parsing.Nodes
             yield return Name;
             if (ParametersDefinition != null)
                 yield return ParametersDefinition;
-            yield return Body;
+            yield return Block;
         }
     }
 }

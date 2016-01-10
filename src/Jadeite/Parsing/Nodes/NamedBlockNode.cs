@@ -2,22 +2,23 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.NamedBlock)]
     public class NamedBlockNode : INode, ICustomDebugNode
     {
-        [AssertKind(true, JadeiteSyntaxKind.BlockKeyword)]
+        [AssertKind(true, JadeiteKind.BlockKeyword)]
         public Token BlockKeyword { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.AppendKeyword)]
+        [AssertKind(true, JadeiteKind.AppendKeyword)]
         public Token AppendKeyword { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.PrependKeyword)]
+        [AssertKind(true, JadeiteKind.PrependKeyword)]
         public Token PrependKeyword { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.HtmlIdentifier)]
+        [AssertKind(JadeiteKind.HtmlIdentifier)]
         public Token Name { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.DocumentBlock)]
-        public DocumentBlockNode Body { get; internal set; }
+        [AssertKind(true, JadeiteKind.DocumentBlock)]
+        public BlockNode Block { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.NamedBlock;
+        public JadeiteKind Kind => JadeiteKind.NamedBlock;
         public bool IsAppend => AppendKeyword != null;
         public bool IsPrepend => PrependKeyword != null;
 
@@ -35,8 +36,8 @@ namespace Jadeite.Parsing.Nodes
             yield return Name;
             yield return EndOfLine;
 
-            if (Body != null)
-                yield return Body;
+            if (Block != null)
+                yield return Block;
         }
 
         void ICustomDebugNode.AssertIsValid()

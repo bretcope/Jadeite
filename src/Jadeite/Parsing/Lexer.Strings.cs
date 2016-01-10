@@ -123,11 +123,11 @@ namespace Jadeite.Parsing
                 if (sb.Length != 1)
                     throw new Exception($"Invalid character literal at Line {Line} Column {Column}.");
 
-                ConsumeToken(JadeiteSyntaxKind.CharLiteral, dex - Index, sb[0]);
+                ConsumeToken(JadeiteKind.CharLiteral, dex - Index, sb[0]);
             }
             else
             {
-                ConsumeToken(JadeiteSyntaxKind.StringLiteral, dex - Index, sb.ToString());
+                ConsumeToken(JadeiteKind.StringLiteral, dex - Index, sb.ToString());
             }
 
         }

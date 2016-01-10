@@ -2,14 +2,15 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.UnbufferedCode)]
     public sealed class UnbufferedCodeNode : INode
     {
-        [AssertKind(true, JadeiteSyntaxKind.Minus)]
+        [AssertKind(true, JadeiteKind.Minus)]
         public Token PrefixHyphen { get; internal set; }
         [AssertNotNull]
         public ISyntaxElement Statement { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.UnbufferedCode;
+        public JadeiteKind Kind => JadeiteKind.UnbufferedCode;
 
         internal UnbufferedCodeNode() { }
 

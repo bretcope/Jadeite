@@ -1,7 +1,7 @@
 ﻿
 namespace Jadeite.Parsing
 {
-    public enum JadeiteSyntaxKind
+    public enum JadeiteKind
     {
         // ============= TERMINALS =================================================
 
@@ -56,7 +56,7 @@ namespace Jadeite.Parsing
         OpenParen,
         CloseParen,
         OpenEscapedInterpolation,    // #{
-        OpenNonEscapedInterpolation, // !{
+        OpenUnscapedInterpolation, // !{
         OpenCurly,
         CloseCurly,
         OpenTagInterpolation, // #[
@@ -152,6 +152,7 @@ namespace Jadeite.Parsing
         TagExpansion,
         PipelessText,
         PipelessTextBlock,
+        BufferedCodeBody,
         EscapedBufferedCode,
         UnescapedBufferedCode,
         UnbufferedCode,

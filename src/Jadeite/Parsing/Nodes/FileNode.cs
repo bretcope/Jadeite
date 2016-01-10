@@ -2,14 +2,15 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.File)]
     public sealed class FileNode : INode
     {
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.File;
-
-        [AssertKind(JadeiteSyntaxKind.Template)]
+        [AssertKind(JadeiteKind.Template)]
         public TemplateNode Template { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.MixinList)]
+        [AssertKind(true, JadeiteKind.MixinList)]
         public MixinListNode Mixins { get; internal set; }
+
+        public JadeiteKind Kind => JadeiteKind.File;
 
         internal FileNode() { }
 

@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.TypeIdentifier)]
     public sealed class TypeIdentifierNode : INode, ICustomDebugNode
     {
         public SyntaxList<Token> Parts { get; } = new SyntaxList<Token>();
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TypeIdentifier;
+        public JadeiteKind Kind => JadeiteKind.TypeIdentifier;
 
         internal TypeIdentifierNode() { }
 
@@ -31,11 +30,11 @@ namespace Jadeite.Parsing.Nodes
                 var tok = Parts[i];
                 if (i % 2 == 0)
                 {
-                    ParsingDebug.Assert(tok.Kind == JadeiteSyntaxKind.CodeIdentifier || SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword));
+                    ParsingDebug.Assert(tok.Kind == JadeiteKind.CodeIdentifier || SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword));
                 }
                 else
                 {
-                    ParsingDebug.AssertKindIsOneOf(tok.Kind, JadeiteSyntaxKind.Dot);
+                    ParsingDebug.AssertKindIsOneOf(tok.Kind, JadeiteKind.Dot);
                 }
             }
         }

@@ -56,7 +56,7 @@ namespace Jadeite.Parsing
 
             // figure out category ranges
             var cat = (int)SyntaxCategory.InvalidToken;
-            var type = typeof(JadeiteSyntaxKind);
+            var type = typeof(JadeiteKind);
             foreach (var val in Enum.GetValues(type))
             {
                 var ival = (int)val;
@@ -104,7 +104,7 @@ namespace Jadeite.Parsing
 
             for (var i = 0; i < length; i++)
             {
-                var kind = (JadeiteSyntaxKind)(i + offset);
+                var kind = (JadeiteKind)(i + offset);
                 var str = kind.ToString();
 
                 Debug.Assert(IsTokenKind(kind));
@@ -116,14 +116,14 @@ namespace Jadeite.Parsing
             return keywords;
         }
 
-        public static bool IsOfCategory(JadeiteSyntaxKind kind, SyntaxCategory category)
+        public static bool IsOfCategory(JadeiteKind kind, SyntaxCategory category)
         {
             var r = _ranges[(int)category];
             var ival = (int)kind;
             return ival >= r.Start && ival < r.End;
         }
 
-        public static SyntaxCategory GetCategory(JadeiteSyntaxKind kind)
+        public static SyntaxCategory GetCategory(JadeiteKind kind)
         {
             for (var i = 0; i < _ranges.Length; i++)
             {
@@ -135,17 +135,17 @@ namespace Jadeite.Parsing
             throw new Exception($"Unknown JadeiteKind {kind}. It does not appear to be in a category range.");
         }
 
-        private static bool IsTokenKind(JadeiteSyntaxKind kind)
+        public static bool IsTokenKind(JadeiteKind kind)
         {
-            return kind > JadeiteSyntaxKind.InvalidToken && kind < JadeiteSyntaxKind.InvalidNode;
+            return kind > JadeiteKind.InvalidToken && kind < JadeiteKind.InvalidNode;
         }
 
-        private static bool IsNodeKind(JadeiteSyntaxKind kind)
+        public static bool IsNodeKind(JadeiteKind kind)
         {
-            return kind > JadeiteSyntaxKind.InvalidNode;
+            return kind > JadeiteKind.InvalidNode;
         }
 
-        internal static string GetKeywordString(JadeiteSyntaxKind kind)
+        internal static string GetKeywordString(JadeiteKind kind)
         {
             return _keywords[(int)kind - _keywordOffset];
         }

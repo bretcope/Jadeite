@@ -21,7 +21,7 @@ namespace Jadeite.Parsing
                     while (IsNewLine(CharAt(i)))
                         i++;
 
-                    ConsumeToken(JadeiteSyntaxKind.HtmlText, i - Index, useTextAsValue: true);
+                    ConsumeToken(JadeiteKind.HtmlText, i - Index, useTextAsValue: true);
                     TransitionToIndent(_pipelessIndent);
                     break;
                 case INVALID_CHAR:

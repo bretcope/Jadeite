@@ -4,14 +4,15 @@ using System.Diagnostics;
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.Start)]
     public sealed class StartNode : INode
     {
-        [AssertKind(true, JadeiteSyntaxKind.EndOfLineList)]
+        [AssertKind(true, JadeiteKind.EndOfLineList)]
         public EndOfLineListNode EndOfLines { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.File)]
+        [AssertKind(JadeiteKind.File)]
         public FileNode File { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Start;
+        public JadeiteKind Kind => JadeiteKind.Start;
 
         internal StartNode() { }
 

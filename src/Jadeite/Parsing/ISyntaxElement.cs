@@ -5,7 +5,7 @@ namespace Jadeite.Parsing
 {
     public interface ISyntaxElement
     {
-        JadeiteSyntaxKind Kind { get; }
+        JadeiteKind Kind { get; }
     }
 
     public interface INode : ISyntaxElement

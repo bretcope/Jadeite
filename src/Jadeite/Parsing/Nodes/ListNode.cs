@@ -7,7 +7,7 @@ namespace Jadeite.Parsing.Nodes
     {
         private readonly SyntaxList<T> _children = new SyntaxList<T>();
         
-        public abstract JadeiteSyntaxKind Kind { get; }
+        public abstract JadeiteKind Kind { get; }
         public int ChildrenCount => _children.Count;
 
         internal ListNode() { }
@@ -25,9 +25,10 @@ namespace Jadeite.Parsing.Nodes
 
     // All of the classes which inherit from ListNode follows:
 
+    [NodeKind(JadeiteKind.TextBodyElementList)]
     public sealed class TextBodyElementListNode : ListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TextBodyElementList;
+        public override JadeiteKind Kind => JadeiteKind.TextBodyElementList;
 
         internal TextBodyElementListNode() { }
 
@@ -35,52 +36,57 @@ namespace Jadeite.Parsing.Nodes
         {
             ParsingDebug.AssertKindIsOneOf(
                 element.Kind,
-                JadeiteSyntaxKind.HtmlText,
-                JadeiteSyntaxKind.InterpolatedTag,
-                JadeiteSyntaxKind.EscapedInterpolatedExpression,
-                JadeiteSyntaxKind.UnescapedInterpolatedExpression);
+                JadeiteKind.HtmlText,
+                JadeiteKind.InterpolatedTag,
+                JadeiteKind.EscapedInterpolatedExpression,
+                JadeiteKind.UnescapedInterpolatedExpression);
 
             base.Add(element);
         }
     }
 
+    [NodeKind(JadeiteKind.MixinList)]
     public sealed class MixinListNode : ListNode<MixinDefinitionNode>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.MixinList;
+        public override JadeiteKind Kind => JadeiteKind.MixinList;
 
         internal MixinListNode() { }
     }
 
+    [NodeKind(JadeiteKind.DocumentBody)]
     public sealed class DocumentBodyNode : ListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.DocumentBody;
+        public override JadeiteKind Kind => JadeiteKind.DocumentBody;
 
         internal DocumentBodyNode() { }
     }
 
+    [NodeKind(JadeiteKind.ClassOrIdList)]
     public sealed class ClassOrIdListNode : ListNode<ClassOrIdNode>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.ClassOrIdList;
+        public override JadeiteKind Kind => JadeiteKind.ClassOrIdList;
 
         internal ClassOrIdListNode() { }
     }
 
+    [NodeKind(JadeiteKind.EndOfLineList)]
     public sealed class EndOfLineListNode : ListNode<Token>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.EndOfLineList;
+        public override JadeiteKind Kind => JadeiteKind.EndOfLineList;
 
         internal EndOfLineListNode() { }
 
         internal override void Add(Token element)
         {
-            ParsingDebug.AssertKindIsOneOf(element.Kind, JadeiteSyntaxKind.EndOfLine);
+            ParsingDebug.AssertKindIsOneOf(element.Kind, JadeiteKind.EndOfLine);
             base.Add(element);
         }
     }
 
+    [NodeKind(JadeiteKind.StatementList)]
     public sealed class StatementListNode : ListNode<ISyntaxElement>
     {
-        public override JadeiteSyntaxKind Kind => JadeiteSyntaxKind.StatementList;
+        public override JadeiteKind Kind => JadeiteKind.StatementList;
 
         internal StatementListNode() { }
     }

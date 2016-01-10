@@ -15,7 +15,7 @@ namespace TestConsoleApp
 
             var lexer = new Lexer(test, "  ");
             Token tok;
-            while ((tok = lexer.Advance()).Kind != JadeiteSyntaxKind.EndOfInput)
+            while ((tok = lexer.Advance()).Kind != JadeiteKind.EndOfInput)
             {
                 PrintToken(tok);
             }

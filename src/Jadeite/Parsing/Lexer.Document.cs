@@ -24,16 +24,16 @@ namespace Jadeite.Parsing
                     TransitionToIndent();
                     return;
                 case INVALID_CHAR:
-                    ConsumeToken(JadeiteSyntaxKind.EndOfLine, 0);
+                    ConsumeToken(JadeiteKind.EndOfLine, 0);
                     while (IndentLevel > 0)
                     {
-                        ConsumeToken(JadeiteSyntaxKind.Outdent, 0);
+                        ConsumeToken(JadeiteKind.Outdent, 0);
                         IndentLevel--;
                     }
-                    ConsumeToken(JadeiteSyntaxKind.EndOfInput, 0);
+                    ConsumeToken(JadeiteKind.EndOfInput, 0);
                     return;
                 case '|':
-                    var tok = ConsumeToken(JadeiteSyntaxKind.Pipe, 1);
+                    var tok = ConsumeToken(JadeiteKind.Pipe, 1);
                     switch (CurrentChar())
                     {
                         case ' ':
@@ -61,7 +61,7 @@ namespace Jadeite.Parsing
                     TransitionToTag(isInterpolation: false);
                     return;
                 case '-':
-                    ConsumeToken(JadeiteSyntaxKind.Minus, 1);
+                    ConsumeToken(JadeiteKind.Minus, 1);
                     ConsumeWhiteSpaceAsTrivia();
                     switch (CurrentChar())
                     {
@@ -74,13 +74,13 @@ namespace Jadeite.Parsing
                             return;
                     }
                 case '=':
-                    ConsumeToken(JadeiteSyntaxKind.Equals, 1);
+                    ConsumeToken(JadeiteKind.Equals, 1);
                     TransitionToCode(CodeScanMode.Line);
                     return;
                 case '!':
                     if (NextChar() == '=')
                     {
-                        ConsumeToken(JadeiteSyntaxKind.BangEquals, 2);
+                        ConsumeToken(JadeiteKind.BangEquals, 2);
                         TransitionToCode(CodeScanMode.Line);
                         return;
                     }
@@ -108,17 +108,17 @@ namespace Jadeite.Parsing
             
             switch (tok.Kind)
             {
-                case JadeiteSyntaxKind.DoctypeKeyword:
+                case JadeiteKind.DoctypeKeyword:
                     TransitionToBody(isInterpolation: false);
                     return true;
-                case JadeiteSyntaxKind.PrependKeyword:
-                case JadeiteSyntaxKind.AppendKeyword:
-                case JadeiteSyntaxKind.BlockKeyword:
+                case JadeiteKind.PrependKeyword:
+                case JadeiteKind.AppendKeyword:
+                case JadeiteKind.BlockKeyword:
                     TransitionToNamedBlock();
                     return true;
-                case JadeiteSyntaxKind.ExtendsKeyword:
-                case JadeiteSyntaxKind.IncludeKeyword:
-                case JadeiteSyntaxKind.MixinKeyword:
+                case JadeiteKind.ExtendsKeyword:
+                case JadeiteKind.IncludeKeyword:
+                case JadeiteKind.MixinKeyword:
                 default:
                     throw new Exception($"Unsupported transition from document to keyword type {tok.Kind}.");
             }

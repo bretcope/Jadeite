@@ -2,18 +2,19 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    public sealed class TextBody : INode
+    [NodeKind(JadeiteKind.TextBody)]
+    public sealed class TextBodyNode : INode
     {
-        [AssertKind(true, JadeiteSyntaxKind.TextBodyElementList)]
+        [AssertKind(true, JadeiteKind.TextBodyElementList)]
         public TextBodyElementListNode TextBodyElementList { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
-        [AssertKind(true, JadeiteSyntaxKind.DocumentBlock)]
-        public DocumentBlockNode Block { get; internal set; }
+        [AssertKind(true, JadeiteKind.DocumentBlock)]
+        public BlockNode Block { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.TextBody;
+        public JadeiteKind Kind => JadeiteKind.TextBody;
 
-        internal TextBody() { }
+        internal TextBodyNode() { }
 
         public IEnumerable<ISyntaxElement> GetChildren()
         {

@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.Template)]
     public sealed class TemplateNode : INode
     {
-        [AssertKind(JadeiteSyntaxKind.ModelDefinition)]
+        [AssertKind(JadeiteKind.ModelDefinition)]
         public ModelDefinitionNode ModelDefinition { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.Document)]
+        [AssertKind(JadeiteKind.Document)]
         public DocumentNode Document { get; internal set; }
 
-        public JadeiteSyntaxKind Kind => JadeiteSyntaxKind.Template;
+        public JadeiteKind Kind => JadeiteKind.Template;
 
         internal TemplateNode() { }
 

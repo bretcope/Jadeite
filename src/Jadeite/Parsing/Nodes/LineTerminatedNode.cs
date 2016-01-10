@@ -2,15 +2,16 @@
 
 namespace Jadeite.Parsing.Nodes
 {
+    [NodeKind(JadeiteKind.SelfClosingBody)]
     public sealed class LineTerminatedNode : INode
     {
         [AssertNotNull]
         public ISyntaxElement LeftHandSide { get; internal set; }
-        [AssertKind(JadeiteSyntaxKind.EndOfLine)]
+        [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
-        public JadeiteSyntaxKind Kind { get; }
+        public JadeiteKind Kind { get; }
 
-        internal LineTerminatedNode(JadeiteSyntaxKind kind)
+        internal LineTerminatedNode(JadeiteKind kind)
         {
             Kind = kind;
         }
