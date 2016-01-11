@@ -86,6 +86,7 @@ Punctuation and Operators
 	AndEquals &=
 	Caret ^
 	CaretEquals ^=
+	Tilde ~
 	Plus +
 	PlusPlus ++
 	PlusEquals +=
@@ -113,6 +114,7 @@ Punctuation and Operators
 	Bang !
 	BangEquals !=
 	QuestionMark ?
+	QuestionMarkQuestionMark ??
 	Colon :
 	OpenParen (
 	CloseParen )
@@ -488,17 +490,12 @@ ConditionalExpression
 
 Statement
 	StatementExpression endOfLine
-	SelectionStatement
-	IterationStatement
+	IfStatement
+	SwitchStatement
+	WhileStatement
+	ForeachStatement
+	ForStatement
 	JumpStatement
-
-StatementList
-	Statement StatementList
-	Statement
-
-DeclarationStatement
-	LocalVariableDeclaration
-	LocalConstantDeclaration
 
 StatementExpression
 	InvocationExpression
@@ -507,10 +504,6 @@ StatementExpression
 	PostDecrementExpression
 	PreIncrementExpression
 	PreDecrementExpression
-
-SelectionStatement
-	IfStatement
-	SwitchStatement
 
 IfStatement
 	if Expression endOfLine DocumentBlock ElseStatement_opt
@@ -540,11 +533,6 @@ SwitchLabel
 	case ExpressionList endOfLine
 	default endOfLine
 
-IterationStatement
-	WhileStatement
-	ForeachStatement
-	ForStatement
-
 WhileStatement
 	while Expression_opt endOfLine DocumentBlock
 
@@ -552,14 +540,7 @@ ForeachStatement
 	foreach AssignmentTarget in Expression endOfLine DocumentBlock
 
 ForStatement
-	for ForInitializer_opt ; Expression ; ForIterator_opt endOfLine DocumentBlock
-
-ForInitializer
-	LocalVariableDeclaration
-	StatementExpressionList
-
-ForIterator
-	StatementExpressionList
+	for StatementExpressionList_opt ; Expression ; StatementExpressionList_opt endOfLine DocumentBlock
 
 StatementExpressionList
 	StatementExpression , StatementExpressionList
@@ -583,9 +564,10 @@ AssignmentTarget
 	codeIdentifier
 	SingleVariableDeclaration
 	MultipleVariableDeclaration
+	BracketedAssignmentTarget
 
-ParenthesizedAssignmentTarget
-	( IdentifierOrDeclarationList )
+BracketedAssignmentTarget
+	[ IdentifierOrDeclarationList ]
 
 IdentifierOrDeclarationList
 	IdentifierOrDeclaration , IdentifierOrDeclarationList
@@ -599,7 +581,10 @@ SingleVariableDeclaration
 	var codeIdentifier
 
 MultipleVariableDeclaration
-	var ( CodeIdentifierList )
+	var BracketedCodeIdentifierList
+
+BracketedCodeIdentifierList
+	[ CodeIdentifierList ]
 
 CodeIdentifierList
 	codeIdentifier , CodeIdentifierList

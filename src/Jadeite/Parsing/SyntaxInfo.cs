@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace Jadeite.Parsing
 {
@@ -116,14 +117,14 @@ namespace Jadeite.Parsing
             return keywords;
         }
 
-        public static bool IsOfCategory(JadeiteKind kind, SyntaxCategory category)
+        public static bool IsOfCategory(this JadeiteKind kind, SyntaxCategory category)
         {
             var r = _ranges[(int)category];
             var ival = (int)kind;
             return ival >= r.Start && ival < r.End;
         }
 
-        public static SyntaxCategory GetCategory(JadeiteKind kind)
+        public static SyntaxCategory GetCategory(this JadeiteKind kind)
         {
             for (var i = 0; i < _ranges.Length; i++)
             {
@@ -135,17 +136,82 @@ namespace Jadeite.Parsing
             throw new Exception($"Unknown JadeiteKind {kind}. It does not appear to be in a category range.");
         }
 
-        public static bool IsTokenKind(JadeiteKind kind)
+        public static bool IsTokenKind(this JadeiteKind kind)
         {
             return kind > JadeiteKind.InvalidToken && kind < JadeiteKind.InvalidNode;
         }
 
-        public static bool IsNodeKind(JadeiteKind kind)
+        public static bool IsNodeKind(this JadeiteKind kind)
         {
             return kind > JadeiteKind.InvalidNode;
         }
 
-        internal static string GetKeywordString(JadeiteKind kind)
+        public static bool IsAssignmentOperator(this JadeiteKind kind)
+        {
+            switch (kind)
+            {
+                case JadeiteKind.Equals:
+                case JadeiteKind.PlusEquals:
+                case JadeiteKind.MinusEquals:
+                case JadeiteKind.AsteriskEquals:
+                case JadeiteKind.ForwardSlashEquals:
+                case JadeiteKind.PercentEquals:
+                case JadeiteKind.AndEquals:
+                case JadeiteKind.PipeEquals:
+                case JadeiteKind.CaretEquals:
+                case JadeiteKind.LessThanLessThanEquals:
+                case JadeiteKind.GreaterThanGreaterThanEquals:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public static bool IsNumericTypeKeyword(this JadeiteKind kind)
+        {
+            switch (kind)
+            {
+                case JadeiteKind.SByteKeyword:
+                case JadeiteKind.ByteKeyword:
+                case JadeiteKind.ShortKeyword:
+                case JadeiteKind.UShortKeyword:
+                case JadeiteKind.IntKeyword:
+                case JadeiteKind.UIntKeyword:
+                case JadeiteKind.LongKeyword:
+                case JadeiteKind.ULongKeyword:
+                case JadeiteKind.CharKeyword:
+                case JadeiteKind.DoubleKeyword:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneOf(this JadeiteKind kind, JadeiteKind kind1)
+        {
+            return kind == kind1;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneOf(this JadeiteKind kind, JadeiteKind kind1, JadeiteKind kind2)
+        {
+            return kind == kind1 || kind == kind2;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneOf(this JadeiteKind kind, JadeiteKind kind1, JadeiteKind kind2, JadeiteKind kind3)
+        {
+            return kind == kind1 || kind == kind2 || kind == kind3;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsOneOf(this JadeiteKind kind, JadeiteKind kind1, JadeiteKind kind2, JadeiteKind kind3, JadeiteKind kind4)
+        {
+            return kind == kind1 || kind == kind2 || kind == kind3 || kind == kind4;
+        }
+
+        internal static string GetKeywordString(this JadeiteKind kind)
         {
             return _keywords[(int)kind - _keywordOffset];
         }

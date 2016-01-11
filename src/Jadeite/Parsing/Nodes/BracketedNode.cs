@@ -8,10 +8,11 @@ namespace Jadeite.Parsing.Nodes
         JadeiteKind.UnescapedInterpolatedExpression,
         JadeiteKind.MixinParametersDefinition,
         JadeiteKind.ParenthesizedExpression,
-        JadeiteKind.ParenthesizedAssignmentTarget,
-        JadeiteKind.TagAttributes
+        JadeiteKind.BracketedAssignmentTarget,
+        JadeiteKind.TagAttributes,
+        JadeiteKind.BracketedCodeIdentifierList
     )]
-    public class BracketedNode : INode, ICustomDebugNode
+    public sealed class BracketedNode : INode, ICustomDebugNode
     {
         public Token Open { get; internal set; }
         public ISyntaxElement Body { get; internal set; }
@@ -49,9 +50,11 @@ namespace Jadeite.Parsing.Nodes
                     return kind == JadeiteKind.OpenUnscapedInterpolation;
                 case JadeiteKind.MixinParametersDefinition:
                 case JadeiteKind.ParenthesizedExpression:
-                case JadeiteKind.ParenthesizedAssignmentTarget:
+                case JadeiteKind.BracketedAssignmentTarget:
                 case JadeiteKind.TagAttributes:
                     return kind == JadeiteKind.OpenParen;
+                case JadeiteKind.BracketedCodeIdentifierList:
+                    return kind == JadeiteKind.OpenSquareBracket;
                 default:
                     return false;
             }
@@ -68,9 +71,11 @@ namespace Jadeite.Parsing.Nodes
                     return kind == JadeiteKind.CloseCurly;
                 case JadeiteKind.MixinParametersDefinition:
                 case JadeiteKind.ParenthesizedExpression:
-                case JadeiteKind.ParenthesizedAssignmentTarget:
+                case JadeiteKind.BracketedAssignmentTarget:
                 case JadeiteKind.TagAttributes:
                     return kind == JadeiteKind.CloseParen;
+                case JadeiteKind.BracketedCodeIdentifierList:
+                    return kind == JadeiteKind.CloseSquareBracket;
                 default:
                     return false;
             }

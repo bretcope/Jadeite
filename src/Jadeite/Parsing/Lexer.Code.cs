@@ -98,6 +98,9 @@ namespace Jadeite.Parsing
                     else
                         ConsumeToken(JadeiteKind.Caret, 1);
                     return;
+                case '~':
+                    ConsumeToken(JadeiteKind.Tilde, 1);
+                    return;
                 case '+':
                     switch (NextChar())
                     {
@@ -207,7 +210,10 @@ namespace Jadeite.Parsing
                         ConsumeToken(JadeiteKind.Bang, 1);
                     return;
                 case '?':
-                    ConsumeToken(JadeiteKind.QuestionMark, 1);
+                    if (NextChar() == '?')
+                        ConsumeToken(JadeiteKind.QuestionMarkQuestionMark, 2);
+                    else
+                        ConsumeToken(JadeiteKind.QuestionMark, 1);
                     return;
                 case ':':
                     ConsumeToken(JadeiteKind.Colon, 1);

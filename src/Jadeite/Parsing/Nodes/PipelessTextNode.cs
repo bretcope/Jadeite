@@ -10,7 +10,7 @@ namespace Jadeite.Parsing.Nodes
         [AssertKind(JadeiteKind.EndOfLine)]
         public Token EndOfLine { get; internal set; }
         [AssertKind(true, JadeiteKind.PipelessTextBlock)]
-        public BlockNode Body { get; internal set; }
+        public BlockNode Block { get; internal set; }
 
         public JadeiteKind Kind => JadeiteKind.PipelessText;
 
@@ -21,8 +21,8 @@ namespace Jadeite.Parsing.Nodes
             yield return Dot;
             yield return EndOfLine;
 
-            if (Body != null)
-                yield return Body;
+            if (Block != null)
+                yield return Block;
         }
     }
 }

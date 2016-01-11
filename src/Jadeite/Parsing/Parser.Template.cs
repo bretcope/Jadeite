@@ -35,7 +35,7 @@ namespace Jadeite.Parsing
             while (true)
             {
                 var tok = Current;
-                if (tok.Kind != JadeiteKind.CodeIdentifier && !SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword))
+                if (tok.Kind != JadeiteKind.CodeIdentifier && !tok.Kind.IsOfCategory(SyntaxCategory.TypeKeyword))
                 {
                     throw new Exception($"Expected a type at {tok.Position}."); // todo
                 }
@@ -77,7 +77,7 @@ namespace Jadeite.Parsing
 
             extends.LeftHandSide = Advance();
             extends.Open = AdvanceKind(JadeiteKind.OpenParen);
-            extends.ArgumentList = ParseArgumentList(optional: false);
+            extends.ArgumentList = ParseArgumentList();
             extends.Close = AdvanceKind(JadeiteKind.CloseParen);
 
             return extends;
@@ -180,7 +180,7 @@ namespace Jadeite.Parsing
 
             include.LeftHandSide = AdvanceKind(JadeiteKind.IncludeKeyword);
             include.Open = AdvanceKind(JadeiteKind.OpenParen);
-            include.ArgumentList = ParseArgumentList(optional: false);
+            include.ArgumentList = ParseArgumentList();
             include.Close = AdvanceKind(JadeiteKind.CloseParen);
 
             return include;
@@ -240,7 +240,7 @@ namespace Jadeite.Parsing
                 code = new UnbufferedCodeNode();
                 code.PrefixHyphen = Advance();
             }
-            else if (SyntaxInfo.IsOfCategory(kind, SyntaxCategory.CodeKeyword))
+            else if (kind.IsOfCategory(SyntaxCategory.CodeKeyword))
             {
                 code = new UnbufferedCodeNode();
             }
@@ -369,7 +369,8 @@ namespace Jadeite.Parsing
             and.And = Advance();
             and.AttributesKeyword = AdvanceKind(JadeiteKind.AttributesKeyword);
             and.OpenParen = AdvanceKind(JadeiteKind.OpenParen);
-            and.Arguments = ParseArgumentList(optional: true);
+            if (Current.Kind != JadeiteKind.CloseParen)
+                and.Arguments = ParseArgumentList();
             and.CloseParen = AdvanceKind(JadeiteKind.CloseParen);
 
             return and;
@@ -399,11 +400,11 @@ namespace Jadeite.Parsing
             }
         }
 
-        private UnaryExpressionNode ParseTagExpansion(bool interpolated)
+        private UnaryNode ParseTagExpansion(bool interpolated)
         {
             AssertCurrentKind(JadeiteKind.Colon);
 
-            var tagExpansion = new UnaryExpressionNode(JadeiteKind.TagExpansion);
+            var tagExpansion = new UnaryNode(JadeiteKind.TagExpansion);
 
             tagExpansion.Operator = Advance();
             tagExpansion.RightHandSide = ParseTag(optional: false, interpolated: interpolated);
@@ -428,7 +429,7 @@ namespace Jadeite.Parsing
                 block.Body = ParseTextBodyElementList();
                 block.Outdent = AdvanceKind(JadeiteKind.Outdent);
 
-                pipeless.Body = block;
+                pipeless.Block = block;
             }
 
             return pipeless;

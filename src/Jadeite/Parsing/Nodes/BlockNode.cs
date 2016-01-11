@@ -3,13 +3,13 @@ using System.Collections.Generic;
 
 namespace Jadeite.Parsing.Nodes
 {
-    [NodeKind(JadeiteKind.DocumentBlock, JadeiteKind.PipelessTextBlock)]
+    [NodeKind(JadeiteKind.DocumentBlock, JadeiteKind.PipelessTextBlock, JadeiteKind.SwitchBody)]
     public sealed class BlockNode : INode, ICustomDebugNode
     {
         [AssertKind(JadeiteKind.Indent)]
         public Token Indent { get; internal set; }
         [AssertNotNull]
-        public ListNode<ISyntaxElement> Body { get; internal set; }
+        public ISyntaxElement Body { get; internal set; }
         [AssertKind(JadeiteKind.Outdent)]
         public Token Outdent { get; internal set; }
 
@@ -33,6 +33,9 @@ namespace Jadeite.Parsing.Nodes
                 return;
 
             if (Kind == JadeiteKind.PipelessTextBlock && Body.Kind == JadeiteKind.TextBodyElementList)
+                return;
+
+            if (Kind == JadeiteKind.SwitchBody && Body.Kind == JadeiteKind.SwitchSectionList)
                 return;
 
             throw new Exception($"Incorrect body kind for {Kind}.");

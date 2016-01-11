@@ -30,7 +30,7 @@ namespace Jadeite.Parsing.Nodes
                 var tok = Parts[i];
                 if (i % 2 == 0)
                 {
-                    ParsingDebug.Assert(tok.Kind == JadeiteKind.CodeIdentifier || SyntaxInfo.IsOfCategory(tok.Kind, SyntaxCategory.TypeKeyword));
+                    ParsingDebug.Assert(tok.Kind == JadeiteKind.CodeIdentifier || tok.Kind.IsOfCategory(SyntaxCategory.TypeKeyword));
                 }
                 else
                 {

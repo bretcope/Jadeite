@@ -68,7 +68,7 @@ namespace Jadeite.Parsing
             var custom = element as ICustomDebugNode;
             custom?.AssertIsValid();
 
-            var info = GetTypeInfo(element.GetType());
+            var info = GetDebugTypeInfo(element.GetType());
 
             // make sure the node itself is of a valid type
             if (info.NodeKinds?.Length > 0)
@@ -129,7 +129,7 @@ namespace Jadeite.Parsing
             }
         }
 
-        private static DebugTypeInfo GetTypeInfo(Type type)
+        private static DebugTypeInfo GetDebugTypeInfo(Type type)
         {
             DebugTypeInfo info;
             if (s_typeCache.TryGetValue(type, out info))
@@ -141,9 +141,9 @@ namespace Jadeite.Parsing
                     return info;
 
                 // todo - verify type constructors are internal
-
+                
                 info = new DebugTypeInfo();
-                var nodeAttr = type.GetCustomAttribute<NodeKindAttribute>(inherit: false);
+                var nodeAttr = type.GetTypeInfo().GetCustomAttribute<NodeKindAttribute>(inherit: false);
                 if (nodeAttr != null)
                 {
                     if (nodeAttr.Kinds == null || nodeAttr.Kinds.Length == 0)
@@ -152,7 +152,7 @@ namespace Jadeite.Parsing
                     // make sure all of the kinds are actually node kinds, and not token kinds
                     foreach (var k in nodeAttr.Kinds)
                     {
-                        if (!SyntaxInfo.IsNodeKind(k))
+                        if (!k.IsNodeKind())
                             throw new Exception($"{k} not a node kind. It cannot be used in the [NodeKind] attribute on {type.Name}.");
                     }
 

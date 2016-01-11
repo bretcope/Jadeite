@@ -83,15 +83,19 @@ namespace Jadeite.Parsing.Nodes
         }
     }
 
-    [NodeKind(JadeiteKind.StatementList)]
-    public sealed class StatementListNode : ListNode<ISyntaxElement>
+    [NodeKind(JadeiteKind.SwitchSectionList)]
+    public sealed class SwitchSectionListNode : ListNode<SwitchSectionNode>
     {
-        public override JadeiteKind Kind => JadeiteKind.StatementList;
+        public override JadeiteKind Kind => JadeiteKind.SwitchSectionList;
 
-        internal StatementListNode() { }
+        internal SwitchSectionListNode() { }
     }
 
-    // todo SwitchSectionListNode
+    [NodeKind(JadeiteKind.SwitchLabelList)]
+    public sealed class SwitchLabelListNode : ListNode<SwitchLabelNode>
+    {
+        public override JadeiteKind Kind => JadeiteKind.SwitchLabelList;
 
-    // todo SwitchLabelListNode
+        internal SwitchLabelListNode() { }
+    }
 }

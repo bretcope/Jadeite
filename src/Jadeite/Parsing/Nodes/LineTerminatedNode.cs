@@ -2,7 +2,12 @@
 
 namespace Jadeite.Parsing.Nodes
 {
-    [NodeKind(JadeiteKind.SelfClosingBody)]
+    [NodeKind(
+        JadeiteKind.SelfClosingBody,
+        JadeiteKind.BreakStatement,
+        JadeiteKind.ContinueStatement,
+        JadeiteKind.Statement
+    )]
     public sealed class LineTerminatedNode : INode
     {
         [AssertNotNull]

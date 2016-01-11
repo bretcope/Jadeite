@@ -3,7 +3,7 @@
 namespace Jadeite.Parsing.Nodes
 {
     [NodeKind(JadeiteKind.NamedBlock)]
-    public class NamedBlockNode : INode, ICustomDebugNode
+    public sealed class NamedBlockNode : INode, ICustomDebugNode
     {
         [AssertKind(true, JadeiteKind.BlockKeyword)]
         public Token BlockKeyword { get; internal set; }
