@@ -31,12 +31,12 @@ html(lang="en")
     p foo
     p bar
     //- will not output within markup
-    p(width=23)&attributes(someVar) foo
+    p(width=23, height=17)&attributes(someVar) foo
     p&attributes(var1, var2) bar
     div
       //
         As much text as you want
         can go here.
   
-    for (var x = 0; x < 0x7f; x++)
+    for var x = 0; x < 0x7f; x++
       li item

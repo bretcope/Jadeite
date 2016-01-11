@@ -266,7 +266,7 @@ namespace Jadeite.Parsing
                 currentKind = Current.Kind;
             }
 
-            if (currentKind == JadeiteKind.Dot || currentKind == JadeiteKind.Hash)
+            if (currentKind.IsOneOf(JadeiteKind.Dot, JadeiteKind.Hash) && LookAhead.Kind == JadeiteKind.HtmlIdentifier)
             {
                 if (tag == null)
                     tag = new TagNode(interpolated);
@@ -296,9 +296,9 @@ namespace Jadeite.Parsing
         private ClassOrIdListNode ParseClassOrIdList()
         {
             AssertCurrentKind(JadeiteKind.Dot, JadeiteKind.Hash);
+            ParsingDebug.AssertKindIsOneOf(LookAhead.Kind, JadeiteKind.HtmlIdentifier);
 
             var list = new ClassOrIdListNode();
-            JadeiteKind kind;
             do
             {
                 var classOrId = new ClassOrIdNode();
@@ -307,9 +307,7 @@ namespace Jadeite.Parsing
 
                 list.Add(classOrId);
 
-                kind = Current.Kind;
-
-            } while (kind == JadeiteKind.Dot || kind == JadeiteKind.Hash);
+            } while (Current.Kind.IsOneOf(JadeiteKind.Dot, JadeiteKind.Hash) && LookAhead.Kind == JadeiteKind.HtmlIdentifier);
 
             return list;
         }
@@ -500,7 +498,7 @@ namespace Jadeite.Parsing
             if (!optional && list.ChildrenCount == 0)
                 throw new Exception($"Expected a text body element such as text or an interpolation expression. {Current.Position}"); // todo
 
-            return list;
+            return list.ChildrenCount > 0 ? list : null;
         }
 
         private BracketedNode ParseTagInterpolation()

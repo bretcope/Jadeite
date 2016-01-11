@@ -44,9 +44,9 @@ namespace Jadeite.Parsing
             if (Count < 2)
                 throw new Exception("Cannot perform look-ahead when there aren't at least two items in the queue.");
 
-            var index = _head - 1;
-            if (index < 0)
-                index = _array.Length - 1;
+            var index = _head + 1;
+            if (index >= _array.Length)
+                index = 0;
 
             return _array[index];
         }

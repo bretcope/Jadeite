@@ -41,7 +41,7 @@ namespace Jadeite.Parsing
         {
             var tok = Advance();
             if (tok.Kind != kind)
-                throw new Exception($"Expected {kind} at Line {Line} Column {Column}."); // todo
+                throw new Exception($"Expected {kind}, but got {Current().Kind} at Line {Line} Column {Column}."); // todo
 
             return tok;
         }

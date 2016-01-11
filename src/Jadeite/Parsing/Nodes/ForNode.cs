@@ -22,7 +22,7 @@ namespace Jadeite.Parsing.Nodes
         [AssertKind(JadeiteKind.DocumentBlock)]
         public BlockNode Block { get; internal set; }
 
-        public JadeiteKind Kind => JadeiteKind.ForeachStatement;
+        public JadeiteKind Kind => JadeiteKind.ForStatement;
 
         internal ForNode() { }
 
