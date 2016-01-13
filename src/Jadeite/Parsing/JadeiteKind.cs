@@ -158,6 +158,7 @@ namespace Jadeite.Parsing
         EscapedBufferedCode,
         UnescapedBufferedCode,
         UnbufferedCode,
+        PipedText,
         HtmlComment,
         TextBody,
         TextBodyElementList,

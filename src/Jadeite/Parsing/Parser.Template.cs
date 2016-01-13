@@ -122,6 +122,8 @@ namespace Jadeite.Parsing
                     return ParseHtmlComment();
                 case JadeiteKind.EndOfLine:
                     return Advance();
+                case JadeiteKind.Pipe:
+                    return ParsePipedText();
             }
             
             return (ISyntaxElement)ParseOptionalUnbufferedCode() ?? ParseTag(optional: true);
@@ -229,6 +231,19 @@ namespace Jadeite.Parsing
             comment.EndOfLine = AdvanceKind(JadeiteKind.EndOfLine);
 
             return comment;
+        }
+
+        private PipedTextNode ParsePipedText()
+        {
+            AssertCurrentKind(JadeiteKind.Pipe);
+
+            var piped = new PipedTextNode();
+
+            piped.Pipe = Advance();
+            piped.Body = ParseTextBodyElementList(optional: false);
+            piped.EndOfLine = AdvanceKind(JadeiteKind.EndOfLine);
+
+            return piped;
         }
 
         private UnbufferedCodeNode ParseOptionalUnbufferedCode()

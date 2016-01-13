@@ -247,8 +247,8 @@ namespace Jadeite.Parsing
                     }
                     else if (_codeScanMode == CodeScanMode.CurlyInterpolation)
                     {
+                        // curly-interpolation is a special case where we want to exit state, but still consume the token
                         ExitState();
-                        return;
                     }
                     ConsumeToken(JadeiteKind.CloseCurly, 1);
                     return;

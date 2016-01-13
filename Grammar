@@ -164,6 +164,7 @@ DocumentBodyElement
 	HtmlComment
 	endOfLine
 	UnbufferedCode
+	PipedText
 	Tag
 
 DoctypeDefinition
@@ -243,6 +244,9 @@ UnescapedBufferedCode
 
 UnbufferedCode
 	-_opt Statement  // hard to indicate this in the grammar, but unbuffered code starts with a - or a code keyword
+
+PipedText
+	| TextBodyElementList endOfLine
 
 HtmlComment
 	bufferedHtmlComment endOfLine
