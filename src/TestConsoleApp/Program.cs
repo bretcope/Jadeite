@@ -12,8 +12,10 @@ namespace TestConsoleApp
     {
         public static void Main(string[] args)
         {
-            var test = File.ReadAllText("Master.jade");
-            var indent = "  ";
+//            var test = File.ReadAllText("Master.jade");
+//            var indent = "  ";
+            var test = File.ReadAllText(@"Sample\StandAlone.jadeite");
+            var indent = "\t";
 
 //            PrintLexer(test, indent);
             PrintParser(test, indent);

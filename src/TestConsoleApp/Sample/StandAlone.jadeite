@@ -1,0 +1,39 @@
+model StandAlone
+
+doctype html
+html
+	head
+		title= model.Title
+
+		//- inline some styles, but don't show this comment
+		style.
+			.container {
+				width: 800px;
+				background-color: #ddd;
+				margin: 20px auto;
+			}
+
+			p {
+				border: 1px solid red;
+			}
+
+		if model.Scripts != null
+			foreach var s in model.Scripts
+				script(src = s)
+
+	body
+		.container.nav: ul
+			foreach var nav in model.NavItems
+				li.nav-item: a(href=nav.Url)= nav.Name
+
+		.container.content
+			// thanks for looking at the page source
+			p Welcome to the home page of #{model.SiteName}. Isn't it nice?
+			p How would you like to see some random unsorted stuff?
+				| We'll I've got #{model.UnsortedStuff.Count} things to show you.
+
+				ul
+					foreach var [key, val] in model.UnsortedStuff
+						li #[b #{key}]: #{val}
+
+		.container#footer: p todo: add a footer
